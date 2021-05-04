@@ -1,2 +1,1 @@
-# CCBD
-CCBD project
+# Polygon Generator
