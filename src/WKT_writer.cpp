@@ -4,7 +4,7 @@
 using namespace std;
   
 void write(Polygon *p, unsigned num){
-    FILE *f = fopen("WKT.txt", "w");
+    FILE *f = fopen("map.wkt", "w");
     for(unsigned int j = 0; j < num; j++){
         printf("Number of vertices = %u\n", p[j].numVertices);
         fprintf(f, "POLYGON ((");

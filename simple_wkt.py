@@ -9,7 +9,7 @@ def WKT_writer(arrOfTups):
         if numTups != len(arrOfTups)-1:
             txt += ", "
     temp = "POLYGON " + "(" + txt + ")" + "\n"
-    f = open("data.txt","w")
+    f = open("map.wkt","w")
     f.write(temp)
     f.close()
 

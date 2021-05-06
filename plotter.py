@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 cycol = cycle('bgrcmk')
 
-file = open("WKT.txt", mode="r")
+file = open("map.wkt", mode="r")
 polygons = file.read().splitlines()
 file.close()
 
