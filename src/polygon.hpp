@@ -1,23 +1,22 @@
-#include <stdio.h>
+#include<stdio.h>
 #include<stdlib.h>
+#include<utility>
 
 
 class Polygon{
     public:
         unsigned int numVertices;
-        double *xCoordinates, *yCoordinates;
+        std::pair<double, double> *coordinates;
 
         Polygon(){}
 
         Polygon(unsigned int numVertices){
             this->numVertices = numVertices;
-            this->xCoordinates = (double*)malloc(sizeof(double) * numVertices);
-            this->yCoordinates = (double*)malloc(sizeof(double) * numVertices);
+            this->coordinates = (std::pair<double, double> *)malloc(sizeof(std::pair<double, double>) * numVertices);
         }
 
         ~Polygon(){
-            free(this->xCoordinates);
-            free(this->yCoordinates);
+            free(this->coordinates);
         }
 };
 

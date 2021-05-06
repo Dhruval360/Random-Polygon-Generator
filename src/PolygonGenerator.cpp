@@ -4,6 +4,7 @@
 #include<random>
 #include"polygon.hpp"
 
+
 #define N 3
 
 #ifndef PI
@@ -12,6 +13,9 @@
 
 using namespace std;
 
+default_random_engine generator(10);
+uniform_real_distribution<double> distribution(0.0, 1.0);
+
 double clip(double x, double min, double max){
     x = x < min ? min : x;
     x = x > max ? max : x;
@@ -19,8 +23,6 @@ double clip(double x, double min, double max){
 } 
 
 void polygonGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon &p){
-    default_random_engine generator;
-    uniform_real_distribution<double> distribution(0.0, 1.0);
     normal_distribution<double> normal(averageRadius, spike);
 
     irregularity = clip(irregularity, 0, 1) * 2 * PI / p.numVertices;
@@ -44,8 +46,8 @@ void polygonGenerator(double x, double y, double averageRadius, double irregular
     double angle = distribution(generator) * 2*PI;
     for(int i = 0; i < p.numVertices; i++){
         double temp = clip(normal(generator), 0, diameter);
-        p.xCoordinates[i] = x + temp*cos(angle);
-        p.yCoordinates[i] = y + temp*sin(angle);
+        p.coordinates[i].first  = x + temp*cos(angle);
+        p.coordinates[i].second = y + temp*sin(angle);
         angle += angleSteps[i];
     }
     free(angleSteps);
