@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include"polygon.hpp"
+#include"Polygon.hpp"
 
 using namespace std;
   
