@@ -1,27 +1,27 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<utility>
+#include<vector>
 //***********************Dhruval***********************
 class Polygon{
     public:
         unsigned int numVertices;
-        std::pair<double, double> *coordinates;
+        std::vector<std::pair<double, double>> coordinates;
 
         Polygon(){}
 
         Polygon(unsigned int numVertices){
             this->numVertices = numVertices;
-            this->coordinates = (std::pair<double, double> *)malloc(sizeof(std::pair<double, double>) * numVertices);
+            //this->coordinates = (std::pair<double, double> *)malloc(sizeof(std::pair<double, double>) * numVertices);
         }
 
         ~Polygon(){
-            free(this->coordinates);
         }
 };
 double clip(double x, double min, double max);
 void polygonGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon &p);
 void write(Polygon *p, unsigned num);
-
+/*
 //***********************space partition***********************
 //structure that represents a point in the polygon
 typedef struct point_structure{
@@ -46,4 +46,4 @@ void partion_logic(point points_array[], int temp_lr, int temp_rl, int begin, in
 //function to recursively solve the algorithm
 void recursive_partitioning(point points_array[], int num_vertices, int l, int r);
 //writes the randomly generated points to the wkt file
-void write_to_wkt(point points_array[], int num_vertices, char *filename);
+void write_to_wkt(point points_array[], int num_vertices, char *filename);*/
