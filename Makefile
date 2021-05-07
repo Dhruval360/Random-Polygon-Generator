@@ -6,9 +6,9 @@ SHARED_OBJ := shared
 BIN := bin
 EXECUTABLE := ${BIN}/polygonGenerator
 SHARED_LIBRARY := ${BIN}/polygonGenerator.so
-LIBS := -lm
-OBJS := ${OBJ}/WKT_writer.o ${OBJ}/PolygonGenerator.o
-SHARED_OBJS = ${SHARED_OBJ}/WKT_writer.o ${SHARED_OBJ}/PolygonGenerator.o
+LIBS := -lm -lpopt
+OBJS := ${OBJ}/WKT_writer.o ${OBJ}/Algorithms.o ${OBJ}/Driver.o
+SHARED_OBJS = ${SHARED_OBJ}/WKT_writer.o ${SHARED_OBJ}/Algorithms.o
 
 $(shell mkdir -p ${BIN} ${OBJ} ${SHARED_OBJ})
 
@@ -29,7 +29,10 @@ polygonGenerator_SharedLibrary: ${SHARED_OBJS}
 %/WKT_writer.o: ${SRC}/WKT_writer.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
 
-%/PolygonGenerator.o: ${SRC}/PolygonGenerator.cpp
+%/Algorithms.o: ${SRC}/Algorithms.cpp
+	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
+
+%/Driver.o: ${SRC}/Driver.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
 
 clean:
