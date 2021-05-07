@@ -2,4 +2,3 @@ bin/
 obj/
 shared/
 /src/a.out
-/src/space_partition.cpp
