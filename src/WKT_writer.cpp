@@ -1,15 +1,15 @@
-#include<stdio.h>
+#include <fstream>
 #include"Polygon.hpp"
 
 using namespace std;
   
 void write(Polygon *p, unsigned num){
-    FILE *f = fopen("map.wkt", "w");
+    ofstream fout;
+    fout.open("map.wkt");
     for(unsigned int j = 0; j < num; j++){
-        printf("Number of vertices = %u\n", p[j].numVertices);
-        fprintf(f, "POLYGON ((");
-        for(int i = 0; i < p[j].numVertices; i++) fprintf(f, "%lf %lf, ", p[j].coordinates[i].first, p[j].coordinates[i].second);
-        fprintf(f, "%lf %lf))\n", p[j].coordinates[0].first, p[j].coordinates[0].second);
+        fout << "POLYGON ((";
+        for(int i = 0; i < p[j].numVertices; i++) fout << p[j].coordinates[i].first << ' ' << p[j].coordinates[i].second << ", ";
+        fout << p[j].coordinates[0].first << ' ' << p[j].coordinates[0].second << "))\n";
     }
-    fclose(f);  
+    fout.close();  
 }
