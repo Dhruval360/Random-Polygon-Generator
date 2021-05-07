@@ -3,14 +3,9 @@
 #include<math.h>
 #include<random>
 #include"polygon.hpp"
-
-
-#define N 3
-
 #ifndef PI
     #define PI 3.14159265358979323846
 #endif
-
 using namespace std;
 
 default_random_engine generator(10);
@@ -51,15 +46,4 @@ void polygonGenerator(double x, double y, double averageRadius, double irregular
         angle += angleSteps[i];
     }
     free(angleSteps);
-}
-
-int main(){
-    unsigned numVerts = 10;
-    Polygon *p = new Polygon[N];
-    for(unsigned i = 0; i < N; i++){
-        p[i] = Polygon(numVerts + i);
-        polygonGenerator(0, 0, 50, 0.0, 0.0, p[i]);
-    } 
-    write(p, N);
-    return 0;
 }
