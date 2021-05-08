@@ -18,7 +18,7 @@ class Polygon{
 }; 
 
 //implementation of the space partition algorithm to generate random polygons
-void space_partition(Polygon *polygon, int min, int max);
+void space_partition(Polygon *polygon, int min, int max, bool verbose);
 
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
 void write(Polygon *p, unsigned num, char *filename); 
