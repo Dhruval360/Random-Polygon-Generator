@@ -4,9 +4,9 @@
 #include <strings.h>
 #include"Polygon.hpp"
 using namespace std;
-
+//default values of parameters
 int number_of_polygons = 1, verbose = false;
-char *algorithm = NULL;
+char *algorithm = NULL, *filename = NULL;
 bool plot = true, metrics = true;
 
 default_random_engine generator(clock());
@@ -19,6 +19,7 @@ int main(int argc, const char** argv){
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons. Available algorithms: polar, spacePartition, chandappa", "STR" }, // Name the algorithms
         { "plot", 'p', POPT_ARG_SHORT, &plot, 0, "Set p=1 to plot the generated polygons", "NUM" },
         { "metrics", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for timing the program", "NUM"},
+        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "enter name", "STR"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -48,16 +49,16 @@ int main(int argc, const char** argv){
         fprintf(stderr, "polygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
         exit(1);
     }
-    
-    Polygon *p = new Polygon[number_of_polygons]; // Creating an array of polygons
+    // Creating an array of polygons
+    Polygon *polygon = new Polygon[number_of_polygons]; 
     
     for(unsigned i = 0; i < number_of_polygons; i++){
-        p[i] = Polygon(distribution(generator));
-        if(!strcasecmp(algorithm, "polar")) p[i].Generator1(verbose);
-        else if(!strcasecmp(algorithm, "spacePartition")) p[i].Generator2(verbose);
-        else p[i].Generator3(verbose);
+        polygon[i] = Polygon(distribution(generator));
+        if(!strcasecmp(algorithm, "polar")) polygon[i].Generator1(verbose);
+        else if(!strcasecmp(algorithm, "spacePartition")) polygon[i].Generator2(verbose);
+        else polygon[i].Generator3(verbose);
     } 
-    
-    write(p, number_of_polygons); // Writing the polygons to the file in WKT format
+    // Writing the polygons to the file in WKT format
+    write(polygon, number_of_polygons, filename);
     return 0;
 }
