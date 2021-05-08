@@ -29,7 +29,7 @@ void Polygon::Generator2(bool verbose){
     }*/
     static int min = 0;
     static int max = 10;
-    space_partition(this, this->numVertices, min, max);
+    space_partition(this, min, max);
     min+= min_max_interval(generator);
     max+= min_max_interval(generator);
 };
