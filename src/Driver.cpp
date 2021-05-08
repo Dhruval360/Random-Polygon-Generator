@@ -2,7 +2,6 @@
 #include<random>
 #include<popt.h>
 #include"Polygon.hpp"
-
 using namespace std;
 
 int number_of_polygons, verbose;
@@ -26,11 +25,11 @@ int main(int argc, const char** argv){
 
     poptContext poptCONT = poptGetContext("main", argc, argv, options, POPT_CONTEXT_KEEP_FIRST);
     int c = 0; while((c = poptGetNextOpt(poptCONT)) >= 0);
-
     Polygon *p = new Polygon[number_of_polygons];
     for(unsigned i = 0; i < number_of_polygons; i++){
         p[i] = Polygon(distribution(generator));
-        p[i].Generator1(verbose);
+        //p[i].Generator1(verbose);
+        p[i].Generator2(verbose);
     } 
     write(p, number_of_polygons);
     return 0;

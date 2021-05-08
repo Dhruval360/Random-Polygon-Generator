@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
 cycol = cycle('bgrcmk')
-plt.rcParams['axes.facecolor'] = 'gray'
+plt.rcParams['axes.facecolor'] = 'lightgrey'
 fig = plt.figure()
-fig.patch.set_facecolor('orange')
+fig.patch.set_facecolor('gray')
 
 file = open("map.wkt", mode="r")
 polygons = file.read().splitlines()
