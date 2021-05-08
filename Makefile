@@ -1,44 +1,37 @@
 COMPILER := g++
-FLAGS := -O3
+
+FLAGS := -O3 -Wall -DNDEBUG
+LIBS := -lm -lpopt -lglut -lGLU -lGL
+
 SRC := src
 OBJ := obj
 SHARED_OBJ := shared
 BIN := bin
+
 EXECUTABLE := ${BIN}/polygonGenerator
 SHARED_LIBRARY := ${BIN}/polygonGenerator.so
-LIBS := -lm -lpopt
-OBJS := ${OBJ}/WKT_writer.o ${OBJ}/Algorithms.o ${OBJ}/Driver.o ${OBJ}/Polygon.o ${OBJ}/SpacePartition.o 
-SHARED_OBJS = ${SHARED_OBJ}/WKT_writer.o ${SHARED_OBJ}/Algorithms.o
+
+SRCS := $(wildcard $(SRC)/*.cpp)
+OBJS := $(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SRCS))
+SHARED_OBJS = $(patsubst $(SRC)/%.cpp, $(SHARED_OBJ)/%.o, $(SRCS))
 
 $(shell mkdir -p ${BIN} ${OBJ} ${SHARED_OBJ})
-
-ifeq ($(shared), 1)
-	FLAGS := ${FLAGS} -shared --compiler-options="-fPIC -pie"
-endif
-
-ifeq ($(debug), 1)
-	FLAGS := ${FLAGS} -g
-endif
 
 polygonGenerator: ${OBJS}
 	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator"
 
+debug: FLAGS := -g -Wall
+debug: ${OBJS}
+	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator"
+
+polygonGenerator_SharedLibrary: FLAGS := ${FLAGS} -shared --compiler-options="-fPIC -pie"
 polygonGenerator_SharedLibrary: ${SHARED_OBJS}
 	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!!"
 
-%/WKT_writer.o: ${SRC}/WKT_writer.cpp
-	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
+${OBJ}/%.o: ${SRC}/%.cpp
+	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS} 
 
-%/Algorithms.o: ${SRC}/Algorithms.cpp
-	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
-
-%/Driver.o: ${SRC}/Driver.cpp
-	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
-
-%/Polygon.o: ${SRC}/Polygon.cpp
-	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
-
-%/SpacePartition.o: ${SRC}/SpacePartition.cpp
+${SHARED_OBJ}/%.o: ${SRC}/%.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS}
 
 clean:

@@ -29,19 +29,19 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
     double delta = upperBound - lowerBound;
     double sum = 0;
 
-    for(int i = 0; i < p->numVertices; i++){
+    for(unsigned i = 0; i < p->numVertices; i++){
         angleSteps[i] = lowerBound + uniformDistribution(generator) * (delta);
         sum += angleSteps[i];
     }
 
     // Normalizing the steps so that the first and last points are the same
     double k = sum / (2*PI);
-    for(int i = 0; i < p->numVertices; i++) angleSteps[i] /= k;
+    for(unsigned i = 0; i < p->numVertices; i++) angleSteps[i] /= k;
 
     // Generating the points
     double diameter = 2*averageRadius, radial_distance;
     double angle = uniformDistribution(generator) * 2*PI;
-    for(int i = 0; i < p->numVertices; i++){
+    for(unsigned i = 0; i < p->numVertices; i++){
         radial_distance = clip(normalDistribution(generator), 0, diameter);
         p->coordinates.push_back(pair<double, double>(x + radial_distance*cos(angle), y + radial_distance*sin(angle)));
         angle += angleSteps[i];

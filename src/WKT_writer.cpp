@@ -1,10 +1,11 @@
-#include <fstream>
-#include"Polygon.hpp"
+#include<fstream>
 #include<iostream>
 #include<iomanip>
+#include"Polygon.hpp"
+
 using namespace std;
   
-void write(Polygon *polygon, unsigned num, char *filename){
+void write(Polygon *polygons, unsigned num, char *filename){
     ofstream fout;
     //default value of file name is map.wkt
     if(filename == NULL){
@@ -13,14 +14,14 @@ void write(Polygon *polygon, unsigned num, char *filename){
     else{
         fout.open(filename);
     }
-    //traverse through the polygon class object and write to the file
+    //traverse through the polygons class object and write to the file
     //iterate through all the polygons
     for(unsigned int j = 0; j < num; j++){
         fout << "POLYGON ((";
-        //iterate through all the co-ordinates in the polygon
-        for(int i = 0; i < polygon[j].numVertices; i++) fout << fixed  << polygon[j].coordinates[i].first << ' ' << fixed << polygon[j].coordinates[i].second << ", ";
+        //iterate through all the co-ordinates in the polygons
+        for(unsigned i = 0; i < polygons[j].numVertices; i++) fout << fixed  << polygons[j].coordinates[i].first << ' ' << fixed << polygons[j].coordinates[i].second << ", ";
         //write the first point as the last point also
-        fout << polygon[j].coordinates[0].first << ' ' << polygon[j].coordinates[0].second << "))\n";
+        fout << polygons[j].coordinates[0].first << ' ' << polygons[j].coordinates[0].second << "))\n";
     }
     fout.seekp(0, ios::end);
     cout << "Done\nFiles size = " << fout.tellp() << " B\n";
