@@ -1,6 +1,7 @@
 #include <fstream>
 #include"Polygon.hpp"
-#include <iostream>
+#include<iostream>
+#include<iomanip>
 using namespace std;
   
 void write(Polygon *polygon, unsigned num, char *filename){
@@ -17,9 +18,11 @@ void write(Polygon *polygon, unsigned num, char *filename){
     for(unsigned int j = 0; j < num; j++){
         fout << "POLYGON ((";
         //iterate through all the co-ordinates in the polygon
-        for(int i = 0; i < polygon[j].numVertices; i++) fout << polygon[j].coordinates[i].first << ' ' << polygon[j].coordinates[i].second << ", ";
+        for(int i = 0; i < polygon[j].numVertices; i++) fout << fixed  << polygon[j].coordinates[i].first << ' ' << fixed << polygon[j].coordinates[i].second << ", ";
         //write the first point as the last point also
         fout << polygon[j].coordinates[0].first << ' ' << polygon[j].coordinates[0].second << "))\n";
     }
+    fout.seekp(0, ios::end);
+    cout << "Done\nFiles size = " << fout.tellp() << " B\n";
     fout.close();  
 }

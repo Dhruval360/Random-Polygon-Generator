@@ -1,7 +1,15 @@
 #include<utility>
 #include<vector>
+#include<chrono>
 
 using namespace std;
+
+#define start_timer(start) auto start = chrono::high_resolution_clock::now();  
+
+#define end_timer(start, var)\
+  double time_taken =  chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start).count();\
+  time_taken *= 1e-9;\
+  var = time_taken;  
 
 class Polygon{
     public:
