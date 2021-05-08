@@ -1,7 +1,6 @@
-#include<random>
 #include<stdio.h>
+#include<random>
 #include<popt.h>
-#include<time.h>
 #include"Polygon.hpp"
 
 using namespace std;
@@ -12,9 +11,7 @@ bool plot = true, metrics = true;
 
 default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for number of vertices
-uniform_real_distribution<double> distribution2(-50, 50); // Distributi
-uniform_real_distribution<double> distribution3(50, 500);
-uniform_real_distribution<double> distribution4(0.0, 1.0);
+
 
 int main(int argc, const char** argv){ 
     static struct poptOption options[] = { 
@@ -33,7 +30,7 @@ int main(int argc, const char** argv){
     Polygon *p = new Polygon[number_of_polygons];
     for(unsigned i = 0; i < number_of_polygons; i++){
         p[i] = Polygon(distribution(generator));
-        p[i].Generator1(distribution2(generator), distribution2(generator), distribution3(generator), distribution4(generator), distribution4(generator));
+        p[i].Generator1(verbose);
     } 
     write(p, number_of_polygons);
     return 0;

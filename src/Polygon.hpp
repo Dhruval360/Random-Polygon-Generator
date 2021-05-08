@@ -1,12 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
 #include<utility>
 #include<vector>
-using namespace std;
-class Polygon;
 
-void polygonGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p);
-void write(Polygon *p, unsigned num);
+using namespace std;
 
 double randf();
 void random_points(Polygon *ps, int count, double min, double max);
@@ -19,22 +14,16 @@ void space_partition(Polygon *ps, int count, int min, int max);
 class Polygon{
     public:
         unsigned int numVertices;
-        //pair<double, double> *coordinates;
         vector<pair<double, double>> coordinates;
 
         Polygon(){}
 
-        Polygon(unsigned int numVertices){
-            this->numVertices = numVertices;
-        }
+        Polygon(unsigned int numVertices);
 
-        ~Polygon(){ }
-
-        void Generator1(double x, double y, double averageRadius, double irregularity, double spike){
-            polygonGenerator(x, y, averageRadius, irregularity, spike, this);
-        };
-        void Generator2(int count, int min, int max){
-            space_partition(this, count, min, max);
-        }
+        void Generator1(bool verbose);
+        void Generator2();
         void Generator3();
 };
+
+void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
+void write(Polygon *p, unsigned num);
