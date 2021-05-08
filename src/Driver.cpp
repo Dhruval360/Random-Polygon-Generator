@@ -7,7 +7,8 @@ using namespace std;
 //default values of parameters
 int number_of_polygons = 1, verbose = false;
 char *algorithm = NULL, *filename = NULL;
-bool plot = true, metrics = true;
+bool graph = true, profiling = false;
+double timer;
 
 default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for number of vertices
@@ -17,9 +18,9 @@ int main(int argc, const char** argv){
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygon is generated", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output", "NUM" },
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons. Available algorithms: polar, spacePartition, chandappa", "STR" }, // Name the algorithms
-        { "plot", 'p', POPT_ARG_SHORT, &plot, 0, "Set p=1 to plot the generated polygons", "NUM" },
-        { "metrics", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for timing the program", "NUM"},
-        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the name of the file to which the polygons are to be stored in. Default : map.wkt", "STR"},
+        { "graph", 'g', POPT_ARG_SHORT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
+        { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
+        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "enter name", "STR"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -52,13 +53,22 @@ int main(int argc, const char** argv){
     // Creating an array of polygons
     Polygon *polygon = new Polygon[number_of_polygons]; 
     
+    start_timer(total);
+
     for(unsigned i = 0; i < number_of_polygons; i++){
         polygon[i] = Polygon(distribution(generator));
         if(!strcasecmp(algorithm, "polar")) polygon[i].Generator1(verbose);
         else if(!strcasecmp(algorithm, "spacePartition")) polygon[i].Generator2(verbose);
         else polygon[i].Generator3(verbose);
+        if(profiling) printf("| Time taken for generation = %lf s\n", timer);
+        else if(verbose) printf("\n");
     } 
+
+    end_timer(total, timer);
+    printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
+    
     // Writing the polygons to the file in WKT format
-    write(polygon, number_of_polygons, filename);
+    printf("Writing the polygons to the file... \n");
+    write(polygon, number_of_polygons, filename);    
     return 0;
 }

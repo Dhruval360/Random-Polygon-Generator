@@ -48,6 +48,6 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
     }
     if(verbose){
         printf("Number of vertices = %3u ", p->numVertices);
-        printf("Center = (%11.6lf, %11.6lf), averageRadius = %.6lf, irregularity = %8.6lf, spike = %.6lf\n", x, y, averageRadius, irregularity, spike);
+        printf("Center = (%11.6lf, %11.6lf), averageRadius = %10.6lf, irregularity = %8.6lf, spike = %10.6lf, ", x, y, averageRadius, irregularity, spike);
     }
 }
