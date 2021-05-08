@@ -33,3 +33,5 @@ void Polygon::Generator2(bool verbose){
     min+= min_max_interval(generator);
     max+= min_max_interval(generator);
 };
+
+void Polygon::Generator3(bool verbose){}

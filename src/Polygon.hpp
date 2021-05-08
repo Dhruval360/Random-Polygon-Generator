@@ -14,7 +14,7 @@ class Polygon{
 
         void Generator1(bool verbose);
         void Generator2(bool verbose);
-        void Generator3();
+        void Generator3(bool verbose);
 }; 
 
 //generates random number between 0 and 1
