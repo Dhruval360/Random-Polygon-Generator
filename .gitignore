@@ -6,3 +6,4 @@ shared/
 /src/*.gch
 /src/*.wkt
 .vscode/
+./*.wkt
