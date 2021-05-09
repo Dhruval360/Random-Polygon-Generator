@@ -4,6 +4,7 @@
 #include"Polygon.hpp"
 
 using namespace std;
+extern long fileSize;
   
 void writer(Polygon *polygons, unsigned num, char *filename){
     ofstream fout;
@@ -24,6 +25,6 @@ void writer(Polygon *polygons, unsigned num, char *filename){
         fout << polygons[j].coordinates[0].first << ' ' << polygons[j].coordinates[0].second << "))\n";
     }
     fout.seekp(0, ios::end);
-    cout << "Done\nFiles size = " << fout.tellp() << " B\n";
+    fileSize = fout.tellp();
     fout.close();  
 }
