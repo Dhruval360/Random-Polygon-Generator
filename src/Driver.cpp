@@ -2,8 +2,8 @@
 #include<random>
 #include<popt.h>
 #include<strings.h>
+#include<iostream>
 #include"Polygon.hpp"
-
 using namespace std;
 
 // Default values of parameters
@@ -17,8 +17,13 @@ Polygon *polygons;
 
 default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for number of vertices
+//chooses the distribution randomly
+//uniform_int_distribution<int> random_distribution_choice(1,7);
+//int choice = random_distribution_choice(generator);
 
 int main(int argc, const char** argv){ 
+    srand(time(0));
+    int choice = rand()%7 + 1;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output", "NUM" },
@@ -56,13 +61,11 @@ int main(int argc, const char** argv){
     }
     // Creating an array of polygons
     polygons = new Polygon[number_of_polygons]; 
-    
     start_timer(total);
-
     for(int i = 0; i < number_of_polygons; i++){
         polygons[i] = Polygon(distribution(generator));
         if(!strcasecmp(algorithm, "polar")) polygons[i].Generator1(verbose);
-        else if(!strcasecmp(algorithm, "spacePartition")) polygons[i].Generator2(verbose);
+        else if(!strcasecmp(algorithm, "spacePartition")) polygons[i].Generator2(verbose, choice);
         else polygons[i].Generator3(verbose);
         if(profiling) printf("| Time taken for generation = %lf s\n", timer);
         else if(verbose) printf("\n");

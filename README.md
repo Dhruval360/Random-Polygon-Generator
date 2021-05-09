@@ -1,4 +1,7 @@
 # Polygon Generator
+## Dependencies
+- [popt](http://ftp.rpm.org/mirror/popt/)
+- OpenGL
 ## Compiling and running
 Compile using the make utility:
 

@@ -21,7 +21,7 @@ class Polygon{
         Polygon(unsigned int numVertices);
 
         void Generator1(bool verbose);
-        void Generator2(bool verbose);
+        void Generator2(bool verbose, int choice);
         void Generator3(bool verbose);
 }; 
 

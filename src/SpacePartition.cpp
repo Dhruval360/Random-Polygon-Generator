@@ -1,10 +1,6 @@
 #include<iostream>
-#include<fstream>
-#include<random>
-#include<cstring>
-#include<utility>
 #include "Polygon.hpp"
-#define DEBUG 1
+#define DEBUG 0
 using namespace std;
 
 //generates random number between 0 and 1
@@ -16,11 +12,11 @@ static pair<double,double> random_point_segment(const pair<double,double> &start
 //this function returns a value based on which side the test point is w.r.t the line
 static bool to_left(const pair<double,double> &start_point, const pair<double,double> &end_point, const pair<double,double> &test_point);
 //exchanges contents of the said indices in the vector
-static void swap(Polygon *polygon, int first_index, int second_index);
+static void swap(Polygon *polygon, unsigned int first_index, unsigned int second_index);
 //recursive function to solve the problem by the means of divide and conquer
-static void recursive_partioning(Polygon *polygon, int begin, int end);
-//helper function for partitioning
-static void partition_logic(Polygon *polygon, int &temp_lr, int &temp_rl, int &begin, int &end, pair<double, double> start_point, pair<double, double> end_point, int flag);
+static void recursive_partioning(Polygon *polygon, unsigned int begin, unsigned int end);
+//splits the vector into two parts (left and right) based on the random end_point generated
+static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned int &temp_rl, unsigned int &begin, unsigned int &end, pair<double, double> start_point, pair<double, double> end_point, int flag);
 
 //implementation of the space partition algorithm to generate random polygons
 void space_partition(Polygon *polygon, int min, int max, bool verbose){
@@ -32,14 +28,17 @@ void space_partition(Polygon *polygon, int min, int max, bool verbose){
 	pair<double, double> start_point = polygon->coordinates[0], end_point = polygon->coordinates[end_index];
 	//exchange the 2nd element with the randomly chosen last element
 	swap(polygon, 1, end_index);
-	int begin = 0, end = polygon->numVertices;
-	//
-	int temp_lr = 2, temp_rl = polygon->numVertices - 1;
+	//choose the begin and end of the vector that is to be split. (initially it is the entire vector)
+	unsigned int begin = 0, end = polygon->numVertices;
+	//traversal indices from left and right are initialised
+	unsigned int temp_lr = 2, temp_rl = polygon->numVertices - 1;
 	int flag = 1;
+	//split the vector two left sub vector and right subvector
 	partition_logic(polygon, temp_lr, temp_rl, begin, end, start_point, end_point, flag);
-	//call the recursive functions to solve for the left and right part of the problem
-	recursive_partioning(polygon, 0, temp_rl);
-	recursive_partioning(polygon, temp_rl, polygon->numVertices);
+	//solve for the left sub vector 
+	recursive_partioning(polygon, begin, temp_rl);
+	//solve for the right sub vector 
+	recursive_partioning(polygon, temp_rl, end);
 	if(verbose){
 		cout << "Number of vertices : " << polygon->numVertices << " || ";
 		cout << "Lower bound : " << min << " || ";
@@ -48,33 +47,40 @@ void space_partition(Polygon *polygon, int min, int max, bool verbose){
 }
 
 //recursive function to solve the problem by the means of divide and conquer
-void recursive_partioning(Polygon *polygon, int begin, int end){
+void recursive_partioning(Polygon *polygon, unsigned int begin, unsigned int end){
 	if(end > begin + 1){
+		//create start and end points of this sub vector
 		pair<double,double> start_point = polygon->coordinates[begin];
 		pair<double,double> end_point = (end == polygon->numVertices) ? polygon->coordinates[0] : polygon->coordinates[end];
 		pair<double,double> random_start_point = random_point_segment(start_point, end_point);
 		int random_index = (rand()%(end - begin - 1)) + begin + 1;
 		pair<double,double> random_end_point = polygon->coordinates[random_index];
 		swap(polygon, begin + 1, random_index);
-		int temp_lr = begin + 2, temp_rl = end - 1;
+		//traversal indices from left and right are initialised
+		unsigned int temp_lr = begin + 2, temp_rl = end - 1;
 		bool flag = to_left(random_start_point, random_end_point, polygon->coordinates[begin]);
+		//split this sub vector further into two sub vectors
 		partition_logic(polygon, temp_lr, temp_rl, begin, end, random_start_point, random_end_point, flag);
-		//call the recursive functions to solve for the left and right part of the problem
+		//solve for the left sub vector 
 		recursive_partioning(polygon, begin, temp_rl);
+		//solve for the right sub vector 
 		recursive_partioning(polygon, temp_rl, end);
 	}
 }
 
-//helper function for partitioning
-static void partition_logic(Polygon *polygon, int &temp_lr, int &temp_rl, int &begin, int &end, 
+//splits the vector into two parts (left and right) based on the random end_point generated
+static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned int &temp_rl, unsigned int &begin, unsigned int &end, 
 	pair<double, double> start_point, pair<double, double> end_point, int flag){
+	//as long as left_to_right index is less than right_to_left index
 	while(temp_lr <= temp_rl){
 		if(DEBUG){
-			cout << "temp_lr = " << temp_lr << " temp_rl = " << temp_rl << endl;
+			cout << "Before => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << endl;
 		}
+		//find a point from the left side of the vector such that it CANNOT be traversed in a CW manner
 		while(temp_lr < end && to_left(start_point, end_point, polygon->coordinates[temp_lr]) == flag){
 			temp_lr++;
 		}
+		//find a point from the right side of the vector such that it CANNOT be traversed in a CW manner
 		while(temp_rl > begin + 1 && to_left(start_point, end_point, polygon->coordinates[temp_rl]) != flag){
 			temp_rl--;
 		}
@@ -83,12 +89,15 @@ static void partition_logic(Polygon *polygon, int &temp_lr, int &temp_rl, int &b
 			temp_lr++;
 			temp_rl--;
 		}
+		if(DEBUG){
+			cout << "After => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << endl;
+		}
 	}
 	swap(polygon, begin + 1, temp_rl);
 }
 
 //exchanges contents of the said indices in the vector
-void swap(Polygon *polygon, int first_index, int second_index){
+void swap(Polygon *polygon, unsigned int first_index, unsigned int second_index){
 	if(DEBUG){
 		cout << "Before swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second 
 		<< " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << endl;
