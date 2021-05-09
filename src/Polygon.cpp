@@ -7,6 +7,13 @@ using namespace std;
 extern double timer; // Used for storing the calculated time taken
 extern float Scale;
 extern unsigned number_of_polygons;
+extern short graph;
+
+static int GraphingScaleSetter(unsigned scale){
+    Scale = scale;
+    if(graph) printf("Graph scale = %f\n", Scale);
+    return Scale;
+}
 
 Polygon::Polygon(unsigned int numVertices){
     static default_random_engine generator(clock());
@@ -19,7 +26,7 @@ Polygon::Polygon(unsigned int numVertices){
 }
 
 void Polygon::Generator1(bool verbose){
-    static int _ = printf("Graph scale = %f\n", Scale = 1000);
+    static int _ = GraphingScaleSetter(1000);
     static default_random_engine generator(clock());
     static uniform_real_distribution<double> circleCentresDistribution(-500, 500); 
     static uniform_real_distribution<double> avgRadiusDistribution(50, 500);
@@ -32,7 +39,7 @@ void Polygon::Generator1(bool verbose){
 };
 
 void Polygon::Generator2(bool verbose, int choice){
-    static int scale = printf("Graph scale = %f\n", Scale = 10);
+    static int scale = GraphingScaleSetter(10);
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-500, 500);
     static binomial_distribution<int> binomial(9,0.5);
@@ -44,7 +51,7 @@ void Polygon::Generator2(bool verbose, int choice){
     start_timer(start);
     switch(choice){
     case 1:
-    static int a = printf("Graph scale = %f\n", Scale = 500);
+    static int a = GraphingScaleSetter(500);
     min = uniform(generator); max = uniform(generator);
     if(min > max){
         int temp = min;
@@ -57,7 +64,7 @@ void Polygon::Generator2(bool verbose, int choice){
     }
     break;
     case 2:
-    static int b = printf("Graph scale = %f\n", Scale = 10);
+    static int b = GraphingScaleSetter(10);
     min = binomial(generator); max = binomial(generator);
     if(min > max){
         int temp = min;
@@ -70,7 +77,7 @@ void Polygon::Generator2(bool verbose, int choice){
     }
     break;
     case 3:
-    static int c = printf("Graph scale = %f\n", Scale = 70);
+    static int c = GraphingScaleSetter(70);
     min = geometric(generator) - geometric(generator)*0.5; max = geometric(generator) - geometric(generator)*0.5;
     if(min > max){
         int temp = min;
@@ -83,7 +90,7 @@ void Polygon::Generator2(bool verbose, int choice){
     }
     break;
     case 4:
-    static int d = printf("Graph scale = %f\n", Scale = 10);
+    static int d = GraphingScaleSetter(10);
     min = poisson(generator); max = poisson(generator);
     if(min > max){
         int temp = min;
@@ -96,7 +103,7 @@ void Polygon::Generator2(bool verbose, int choice){
     }
     break;
     case 5:
-    static int e = printf("Graph scale = %f\n", Scale = 1);
+    static int e = GraphingScaleSetter(1);
     min = normal(generator); max = normal(generator);
     if(min > max){
         int temp = min;
@@ -109,7 +116,7 @@ void Polygon::Generator2(bool verbose, int choice){
     }
     break;
     case 6:
-    static int f = printf("Graph scale = %f\n", Scale = 4);
+    static int f = GraphingScaleSetter(4);
     min = discrete(generator); max = discrete(generator);
     if(min > max){
         int temp = min;

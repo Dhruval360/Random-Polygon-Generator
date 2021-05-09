@@ -15,6 +15,7 @@ bool profiling = false;
 short graph = 0, dist_analysis = 0, metrics = 0;
 
 double timer;
+long fileSize;
 
 Polygon *polygons;
 
@@ -35,7 +36,7 @@ int main(int argc, const char** argv){
         { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
         { "distribution", 'd', POPT_ARG_SHORT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the map", "NUM"},
-        { "distribution", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for the analysis of the size and time metrics", "NUM"},
+        { "metrics", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for the analysis of the size and time metrics", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -74,15 +75,17 @@ int main(int argc, const char** argv){
         if(!strcasecmp(algorithm, "polar")) polygons[i].Generator1(verbose);
         else if(!strcasecmp(algorithm, "spacePartition")) polygons[i].Generator2(verbose, choice);
         else polygons[i].Generator3(verbose);
-        if(profiling) printf("| Time taken for generation = %lf s\n", timer);
-        else if(verbose) printf("\n");
+        if(verbose) printf("| Time taken for generation = %lf s\n", timer);
     }
 
     end_timer(total, timer);
-    printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
     
     // Writing the polygons to the file in WKT format
-    printf("Writing the polygons to the file... \n");
+    if(!profiling){
+        printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
+        printf("Writing the polygons to the file... \n");
+    } 
+
     if(graph){
         pthread_t graphicsThread;
         int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
@@ -90,7 +93,10 @@ int main(int argc, const char** argv){
         writer(polygons, number_of_polygons, filename);  
         pthread_join(graphicsThread, NULL);
     } 
-    else writer(polygons, number_of_polygons, filename);    
+    else writer(polygons, number_of_polygons, filename);   
+
+    if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
+    else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
     
     if(dist_analysis) execlp("python", "python", "distribution.py", (char*) NULL);
     
