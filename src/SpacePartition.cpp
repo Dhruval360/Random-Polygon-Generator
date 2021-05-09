@@ -125,7 +125,7 @@ pair<double,double> random_point_segment(const pair<double,double> &start_point,
 
 //generates a random set of points from which a random polygon is constructed
 void random_points(Polygon *polygon, double min, double max){
-	for (int i = 0; i < polygon->numVertices; i++){
+	for (unsigned i = 0; i < polygon->numVertices; i++){
 		polygon->coordinates.push_back(pair<double,double>(min + (max - min) * random_num(), min + (max - min) * random_num()));
 		if(DEBUG){
 			cout << "Random point " << polygon->coordinates[i].first << " " << polygon->coordinates[i].second << endl;

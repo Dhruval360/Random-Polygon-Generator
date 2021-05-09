@@ -3,7 +3,6 @@ obj/
 shared/
 /src/a.out
 /src/temp
-/src/*.gch
 /src/*.wkt
 .vscode/
 *.wkt

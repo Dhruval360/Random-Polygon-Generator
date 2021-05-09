@@ -1,5 +1,6 @@
 #include<random>
 #include"Polygon.hpp"
+
 using namespace std;
 
 extern double timer; // Used for storing the calculated time taken
