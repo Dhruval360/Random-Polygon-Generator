@@ -5,6 +5,7 @@ using namespace std;
 
 extern double timer; // Used for storing the calculated time taken
 extern float Scale;
+extern unsigned number_of_polygons;
 
 Polygon::Polygon(unsigned int numVertices){
     static default_random_engine generator(clock());
@@ -30,6 +31,7 @@ void Polygon::Generator1(bool verbose){
 };
 
 void Polygon::Generator2(bool verbose){
+    static int _ = printf("Graph scale = %f\n", Scale = number_of_polygons);
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> min_max_interval(-50, 50);
     /*int min = min_max_interval(generator), max = min_max_interval(generator);

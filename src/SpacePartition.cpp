@@ -4,7 +4,7 @@
 #include<cstring>
 #include<utility>
 #include "Polygon.hpp"
-#define DEBUG 1
+#define DEBUG 0
 using namespace std;
 
 //generates random number between 0 and 1
