@@ -4,13 +4,20 @@
 using namespace std;
 
 extern double timer; // Used for storing the calculated time taken
+extern float Scale;
 
 Polygon::Polygon(unsigned int numVertices){
+    static default_random_engine generator(clock());
+    static uniform_real_distribution<float> ColorDistribution(0.25, 0.8);
     this->numVertices = numVertices;
     this->coordinates.reserve(numVertices);
+    this->color[0] = ColorDistribution(generator);
+    this->color[1] = ColorDistribution(generator);
+    this->color[2] = ColorDistribution(generator);
 }
 
 void Polygon::Generator1(bool verbose){
+    static int _ = printf("Graph scale = %f\n", Scale = 1000);
     static default_random_engine generator(clock());
     static uniform_real_distribution<double> circleCentresDistribution(-500, 500); 
     static uniform_real_distribution<double> avgRadiusDistribution(50, 500);

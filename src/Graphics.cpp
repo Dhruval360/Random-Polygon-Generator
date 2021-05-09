@@ -3,14 +3,12 @@
 #include<random>
 #include"Polygon.hpp"
 
-#define Scale 1000 // The default coordinate system in openGL is -1 to +1 (the entire screen height and width will be 2 units in length)
+float Scale; // The default coordinate system in openGL is -1 to +1 (the entire screen height and width will be 2 units in length)
 
 extern Polygon *polygons;
 extern unsigned number_of_polygons;
 
 void Plotter() {
-    static default_random_engine generator(clock());
-    static uniform_real_distribution<float> ColorDistribution(0.25, 0.8);
     glPointSize(1.0);
     glClearColor(0.0, 0.0, 0.0, 1.0); 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -18,7 +16,7 @@ void Plotter() {
 
     for(unsigned j = 0; j < number_of_polygons; j++) {
         glBegin(GL_LINE_LOOP);
-        glColor3f(ColorDistribution(generator), ColorDistribution(generator), ColorDistribution(generator));
+        glColor3f(polygons[j].color[0], polygons[j].color[1], polygons[j].color[2]);
         for(unsigned i = 0; i < polygons[j].numVertices; i++) glVertex2f(polygons[j].coordinates[i].first/Scale, polygons[j].coordinates[i].second/Scale); 
         glVertex2f(polygons[j].coordinates[0].first/Scale, polygons[j].coordinates[0].second/Scale);
         glEnd(); 

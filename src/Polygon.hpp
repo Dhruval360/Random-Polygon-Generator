@@ -14,6 +14,7 @@ using namespace std;
 class Polygon{
     public:
         unsigned int numVertices;
+        float color[3]; // Holds the rgb color values for the polygon's edges
         vector<pair<double, double>> coordinates;
 
         Polygon(){}
