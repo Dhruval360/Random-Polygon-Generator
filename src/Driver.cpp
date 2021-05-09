@@ -76,7 +76,13 @@ int main(int argc, const char** argv){
     
     // Writing the polygons to the file in WKT format
     printf("Writing the polygons to the file... \n");
-    writer(polygons, number_of_polygons, filename);    
-    if(graph) GraphicsInit();
+    if(graph){
+        pthread_t graphicsThread;
+        int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
+        if(ret) fprintf(stderr, "The error value returned by pthread_create() is %d\n", ret);
+        writer(polygons, number_of_polygons, filename);  
+        pthread_join(graphicsThread, NULL);
+    } 
+    else writer(polygons, number_of_polygons, filename);    
     return 0;
 }

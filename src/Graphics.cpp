@@ -1,5 +1,6 @@
 #include<GL/freeglut.h>
 #include<GL/gl.h>
+#include <pthread.h>
 #include<random>
 #include"Polygon.hpp"
 
@@ -31,7 +32,7 @@ void Plotter() {
     }
 }
 
-void GraphicsInit() {
+void* GraphicsInit(void *arg) {
     // Initialize GLUT and process user parameters
     int argc = 1;
     char *argv[1] = {(char*)"Something"};
@@ -42,4 +43,5 @@ void GraphicsInit() {
     glutCreateWindow("OpenGL - Polygon Plotter");
     glutDisplayFunc(Plotter);
     glutMainLoop();
+    return NULL;
 }
