@@ -1,0 +1,11 @@
+num_polygons,time,size,algorithm
+100, 0.017646, 481344, spacePartition
+200, 0.036609, 952656, spacePartition
+300, 0.054927, 1416273, spacePartition
+400, 0.063048, 1870827, spacePartition
+500, 0.091982, 2397068, spacePartition
+100, 0.004932, 573363, polar
+200, 0.001825, 1107639, polar
+300, 0.002869, 1872334, polar
+400, 0.003821, 2449680, polar
+500, 0.004503, 3007448, polar
