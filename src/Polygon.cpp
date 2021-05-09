@@ -32,56 +32,91 @@ void Polygon::Generator1(bool verbose){
 };
 
 void Polygon::Generator2(bool verbose, int choice){
-    static int _ = printf("Graph scale = %f\n", Scale = number_of_polygons);
+    static int scale = printf("Graph scale = %f\n", Scale = 10);
     static default_random_engine generator(clock());
-    static uniform_int_distribution<int> uniform(-1000, 1000);
-    static bernoulli_distribution bernoulli(3);
+    static uniform_int_distribution<int> uniform(-500, 500);
     static binomial_distribution<int> binomial(9,0.5);
-    static geometric_distribution<int> geometric(0.3);
+    static geometric_distribution<int> geometric(0.1);
     static poisson_distribution<int> poisson(3);
-    static normal_distribution<double> normal(3,2);
-    static discrete_distribution<int> discrete(3,2);
+    static normal_distribution<double> normal(0,1);
+    static discrete_distribution<int> discrete(5,10);
     static int min, max;
     start_timer(start);
     switch(choice){
     case 1:
-    min = uniform(generator); max = uniform(generator);space_partition(this, min, max, verbose);
+    static int a = printf("Graph scale = %f\n", Scale = 500);
+    min = uniform(generator); max = uniform(generator);
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Uniform Distribution" << endl;
     }
     break;
     case 2:
-    min = bernoulli(generator); max = bernoulli(generator);space_partition(this, min, max, verbose);
-    if(verbose){
-        cout<< "Bernoulli Distribution" << endl;
+    static int b = printf("Graph scale = %f\n", Scale = 10);
+    min = binomial(generator); max = binomial(generator);
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
     }
-    break;
-    case 3:
-    min = binomial(generator); max = binomial(generator);space_partition(this, min, max, verbose);
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Binomial Distribution" << endl;
     }
     break;
-    case 4:
-    min = geometric(generator); max = geometric(generator);space_partition(this, min, max, verbose);
+    case 3:
+    static int c = printf("Graph scale = %f\n", Scale = 70);
+    min = geometric(generator) - geometric(generator)*0.5; max = geometric(generator) - geometric(generator)*0.5;
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Geometric Distribution" << endl;
     }
     break;
-    case 5:
-    min = poisson(generator); max = poisson(generator);space_partition(this, min, max, verbose);
+    case 4:
+    static int d = printf("Graph scale = %f\n", Scale = 10);
+    min = poisson(generator); max = poisson(generator);
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Poisson Distribution" << endl;
     }
     break;
-    case 6:
-    min = normal(generator); max = normal(generator);space_partition(this, min, max, verbose);
+    case 5:
+    static int e = printf("Graph scale = %f\n", Scale = 1);
+    min = normal(generator); max = normal(generator);
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Normal Distribution" << endl;
     }
     break;
-    case 7:
-    min = discrete(generator); max = discrete(generator);space_partition(this, min, max, verbose);
+    case 6:
+    static int f = printf("Graph scale = %f\n", Scale = 4);
+    min = discrete(generator); max = discrete(generator);
+    if(min > max){
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+    space_partition(this, min, max, verbose);
     if(verbose){
         cout<< "Discrete Distribution" << endl;
     }

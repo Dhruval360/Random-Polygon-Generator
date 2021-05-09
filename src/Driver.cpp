@@ -4,6 +4,7 @@
 #include<pthread.h>
 #include<omp.h>
 #include<random>
+#include<unistd.h>
 #include"Polygon.hpp"
 using namespace std;
 
@@ -11,7 +12,7 @@ using namespace std;
 int number_of_polygons = 1, verbose = false;
 char *algorithm = NULL, *filename = NULL;
 bool profiling = false;
-short graph = 0;
+short graph = 0, dist_analysis = 0, metrics = 0;
 
 double timer;
 
@@ -25,7 +26,7 @@ uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for nu
 
 int main(int argc, const char** argv){ 
     srand(time(0));
-    int choice = rand()%7 + 1;
+    int choice = 2;//rand()%6 + 1;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
         { "verbose", 'v',POPT_ARG_SHORT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
@@ -33,6 +34,8 @@ int main(int argc, const char** argv){
         { "graph", 'g', POPT_ARG_SHORT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
         { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
+        { "distribution", 'd', POPT_ARG_SHORT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the map", "NUM"},
+        { "distribution", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for the analysis of the size and time metrics", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -88,5 +91,9 @@ int main(int argc, const char** argv){
         pthread_join(graphicsThread, NULL);
     } 
     else writer(polygons, number_of_polygons, filename);    
+    
+    if(dist_analysis) execlp("python", "python", "distribution.py", (char*) NULL);
+    
+    if(metrics) execlp("python", "python", "metrics.py", (char*) NULL);
     return 0;
 }
