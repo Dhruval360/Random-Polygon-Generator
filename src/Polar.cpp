@@ -9,7 +9,7 @@
 
 using namespace std;
 
-double clip(double x, double min, double max){
+static double clip(double x, double min, double max){
     x = x < min ? min : x;
     x = x > max ? max : x;
     return x;

@@ -11,7 +11,8 @@ using namespace std;
 // Default values of parameters
 int number_of_polygons = 1, verbose = false;
 char *algorithm = NULL, *filename = NULL;
-bool graph = false, profiling = false;
+bool profiling = false;
+short graph = 0;
 
 double timer;
 
@@ -23,7 +24,7 @@ uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for nu
 int main(int argc, const char** argv){ 
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
-        { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
+        { "verbose", 'v',POPT_ARG_SHORT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* chandappa", "STR" }, // Name the algorithms
         { "graph", 'g', POPT_ARG_SHORT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
         { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
