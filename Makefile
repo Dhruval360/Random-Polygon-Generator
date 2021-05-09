@@ -1,7 +1,7 @@
 COMPILER := g++
 
 FLAGS := -O3 -Wall -DNDEBUG
-LIBS := -lm -lpopt -lglut -lGLU -lGL
+LIBS := -lm -lpopt -lglut -lGLU -lGL -fopenmp -lpthread
 
 SRC := src
 OBJ := obj

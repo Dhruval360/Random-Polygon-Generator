@@ -14,6 +14,7 @@ using namespace std;
 class Polygon{
     public:
         unsigned int numVertices;
+        float color[3]; // Holds the rgb color values for the polygon's edges
         vector<pair<double, double>> coordinates;
 
         Polygon(){}
@@ -29,5 +30,5 @@ class Polygon{
 void space_partition(Polygon *polygon, int min, int max, bool verbose);
 
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
-void write(Polygon *p, unsigned num, char *filename); 
-void GraphicsInit();
+void writer(Polygon *p, unsigned num, char *filename); 
+void* GraphicsInit(void *arg);

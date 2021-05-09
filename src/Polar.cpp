@@ -9,7 +9,7 @@
 
 using namespace std;
 
-double clip(double x, double min, double max){
+static double clip(double x, double min, double max){
     x = x < min ? min : x;
     x = x > max ? max : x;
     return x;
@@ -36,6 +36,7 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
 
     // Normalizing the steps so that the first and last points are the same
     double k = sum / (2*PI);
+
     for(unsigned i = 0; i < p->numVertices; i++) angleSteps[i] /= k;
 
     // Generating the points
@@ -47,7 +48,6 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
         angle += angleSteps[i];
     }
     if(verbose){
-        printf("Number of vertices = %3u ", p->numVertices);
-        printf("Center = (%11.6lf, %11.6lf), averageRadius = %10.6lf, irregularity = %8.6lf, spike = %10.6lf, ", x, y, averageRadius, irregularity, spike);
+        printf("Number of vertices = %3u Center = (%11.6lf, %11.6lf), averageRadius = %10.6lf, irregularity = %8.6lf, spike = %10.6lf, ",  p->numVertices, x, y, averageRadius, irregularity, spike);
     }
 }

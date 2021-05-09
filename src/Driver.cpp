@@ -1,15 +1,17 @@
 #include<stdio.h>
-#include<random>
 #include<popt.h>
 #include<strings.h>
-#include<iostream>
+#include<pthread.h>
+#include<omp.h>
+#include<random>
 #include"Polygon.hpp"
 using namespace std;
 
 // Default values of parameters
 int number_of_polygons = 1, verbose = false;
 char *algorithm = NULL, *filename = NULL;
-bool graph = true, profiling = false;
+bool profiling = false;
+short graph = 0;
 
 double timer;
 
@@ -26,7 +28,7 @@ int main(int argc, const char** argv){
     int choice = rand()%7 + 1;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
-        { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output", "NUM" },
+        { "verbose", 'v',POPT_ARG_SHORT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* chandappa", "STR" }, // Name the algorithms
         { "graph", 'g', POPT_ARG_SHORT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
         { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
@@ -59,9 +61,11 @@ int main(int argc, const char** argv){
         fprintf(stderr, "polygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
         exit(1);
     }
-    // Creating an array of polygons
-    polygons = new Polygon[number_of_polygons]; 
+    
+    polygons = new Polygon[number_of_polygons];  // Creating an array of polygons
     start_timer(total);
+
+    #pragma omp parallel for 
     for(int i = 0; i < number_of_polygons; i++){
         polygons[i] = Polygon(distribution(generator));
         if(!strcasecmp(algorithm, "polar")) polygons[i].Generator1(verbose);
@@ -69,14 +73,20 @@ int main(int argc, const char** argv){
         else polygons[i].Generator3(verbose);
         if(profiling) printf("| Time taken for generation = %lf s\n", timer);
         else if(verbose) printf("\n");
-    } 
+    }
 
     end_timer(total, timer);
     printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
     
     // Writing the polygons to the file in WKT format
     printf("Writing the polygons to the file... \n");
-    write(polygons, number_of_polygons, filename);    
-    if(graph) GraphicsInit();
+    if(graph){
+        pthread_t graphicsThread;
+        int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
+        if(ret) fprintf(stderr, "The error value returned by pthread_create() is %d\n", ret);
+        writer(polygons, number_of_polygons, filename);  
+        pthread_join(graphicsThread, NULL);
+    } 
+    else writer(polygons, number_of_polygons, filename);    
     return 0;
 }
