@@ -1,6 +1,6 @@
 COMPILER := g++
 
-FLAGS := -O3 -Wall -DNDEBUG
+FLAGS := -O3 -DNDEBUG
 LIBS := -lm -lpopt -lglut -lGLU -lGL -fopenmp -lpthread
 
 SRC := src

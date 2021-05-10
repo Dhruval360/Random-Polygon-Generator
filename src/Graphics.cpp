@@ -37,8 +37,9 @@ void* GraphicsInit(void *arg) {
     int argc = 1;
     char *argv[1] = {(char*)"Something"};
     glutInit(&argc, argv);
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glutInitDisplayMode(GLUT_SINGLE);
-    //glutInitWindowSize(1000, 1000);
+    glutInitWindowSize(1000, 1000);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("OpenGL - Polygon Plotter");
     glutDisplayFunc(Plotter);
