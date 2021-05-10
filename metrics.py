@@ -5,7 +5,7 @@ df = pd.read_csv("metrics.csv")
 
 df_sp = df.loc[df["algorithm"] == " spacePartition"]
 df_pol = df.loc[df["algorithm"] == " polar"]
-#df_ch = df.loc[df["algorithm"] == " polar"]
+df_nv = df.loc[df["algorithm"] == " naivePoly"]
 
 #space partition
 axes[0].plot(df_sp['num_polygons'], df_sp['size'], color="blue", label = "Space Partition")
@@ -13,9 +13,9 @@ axes[1].plot(df_sp['num_polygons'], df_sp['time'], color="blue", label = "Space 
 #polar
 axes[0].plot(df_pol['num_polygons'], df_pol['size'], color="red", label = "Polar")
 axes[1].plot(df_pol['num_polygons'], df_pol['time'], color="red", label = "Polar")
-#ch
-#axes[0].plot(df_pol['num_polygons'], df_pol['size'], color="red")
-#axes[1].plot(df_pol['num_polygons'], df_pol['time'], color="red")
+#naive polygon
+axes[0].plot(df_nv['num_polygons'], df_nv['size'], color="green")
+axes[1].plot(df_nv['num_polygons'], df_nv['time'], color="green")
 
 axes[0].legend(loc='upper left')
 axes[1].legend(loc='upper left')

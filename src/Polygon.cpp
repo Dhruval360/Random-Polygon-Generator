@@ -132,10 +132,6 @@ void Polygon::Generator2(bool verbose, int choice){
         break;
     }
     end_timer(start, timer);
-    /*static int min = 0;
-    static int max = 100;
-    min+= min_max_interval(generator);
-    max+= min_max_interval(generator);*/
 };
 
 void Polygon::Generator3(bool verbose){}
