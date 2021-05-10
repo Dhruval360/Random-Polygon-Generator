@@ -24,9 +24,9 @@ int main(int argc, const char** argv){
     srand(time(0));
     int choice = rand()%6 + 1;
     static struct poptOption options[] = { 
-        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
+        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. Default : n=1", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
-        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* naivePoly", "STR" }, // Name the algorithms
+        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a=polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" }, // Name the algorithms
         { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
@@ -99,5 +99,6 @@ int main(int argc, const char** argv){
         printf("Plotting the distribution of the generated polygons...\n");
         execlp("python3", "python3", "Distribution.py", (char*) NULL);
     } 
+    system("./Profiler.sh 2");
     return 0;
 }
