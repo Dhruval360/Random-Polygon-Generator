@@ -6,3 +6,4 @@ shared/
 /src/*.wkt
 .vscode/
 *.wkt
+metrics.csv
