@@ -19,17 +19,14 @@ Polygon *polygons;
 
 default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for number of vertices
-//chooses the distribution randomly
-//uniform_int_distribution<int> random_distribution_choice(1,7);
-//int choice = random_distribution_choice(generator);
 
 int main(int argc, const char** argv){ 
     srand(time(0));
-    int choice = 2;//rand()%6 + 1;
+    int choice = rand()%6 + 1;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
-        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* chandappa", "STR" }, // Name the algorithms
+        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* naivePoly", "STR" }, // Name the algorithms
         { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
@@ -58,7 +55,7 @@ int main(int argc, const char** argv){
         fprintf(stderr, "polygonGenerator: Choose an algorithm.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
         exit(1);
     } 
-    else if(strcasecmp(algorithm, "polar") && strcasecmp(algorithm, "spacePartition") && strcasecmp(algorithm, "chandappa")){
+    else if(strcasecmp(algorithm, "polar") && strcasecmp(algorithm, "spacePartition") && strcasecmp(algorithm, "naivePoly")){
         fprintf(stderr, "polygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
         exit(1);
     }

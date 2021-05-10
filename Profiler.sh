@@ -1,5 +1,4 @@
 iterations=$1
-echo "Profiling all the algorithms for $1 iterations"
 echo "num_polygons,time,size,algorithm" > metrics.csv
 for i in $(seq 1 $iterations); do 
     numPolygons=$((100*$i))
