@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<popt.h>
-#include<strings.h>
+#include<string.h>
 #include<pthread.h>
 #include<omp.h>
 #include<random>
@@ -9,10 +9,8 @@
 using namespace std;
 
 // Default values of parameters
-int number_of_polygons = 1, verbose = false;
+int number_of_polygons = 1, verbose = 0, profiling = 0, graph = 0, dist_analysis = 0;
 char *algorithm = NULL, *filename = NULL;
-bool profiling = false;
-short graph = 0, dist_analysis = 0, metrics = 0;
 
 double timer;
 long fileSize;
@@ -27,13 +25,12 @@ int main(int argc, const char** argv){
     int choice = rand()%6 + 1;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. By default, 1 polygons is generated", "NUM" },
-        { "verbose", 'v',POPT_ARG_SHORT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
+        { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Choose the algorithm used to generate the polygons.\n\t\t\t\t   Available algorithms:\n\t\t\t\t\t* polar\n\t\t\t\t\t* spacePartition\n\t\t\t\t\t* naivePoly", "STR" }, // Name the algorithms
-        { "graph", 'g', POPT_ARG_SHORT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
-        { "profiling", 'p', POPT_ARG_SHORT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
+        { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g=1 to graph the generated polygons", "NUM" },
+        { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
-        { "distribution", 'd', POPT_ARG_SHORT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the map", "NUM"},
-        { "metrics", 'm', POPT_ARG_SHORT, &metrics, 0, "Set m=1 for the analysis of the size and time metrics", "NUM"},
+        { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -82,21 +79,25 @@ int main(int argc, const char** argv){
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
         printf("Writing the polygons to the file... \n");
     } 
-
+    
     if(graph){
         pthread_t graphicsThread;
         int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
-        if(ret) fprintf(stderr, "The error value returned by pthread_create() is %d\n", ret);
+        if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
         writer(polygons, number_of_polygons, filename);  
+        if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
+        else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
         pthread_join(graphicsThread, NULL);
     } 
-    else writer(polygons, number_of_polygons, filename);   
+    else{
+        writer(polygons, number_of_polygons, filename);
+        if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
+        else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
+    }    
 
-    if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
-    else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
-    
-    if(dist_analysis) execlp("python", "python", "distribution.py", (char*) NULL);
-    
-    if(metrics) execlp("python", "python", "metrics.py", (char*) NULL);
+    if(dist_analysis){
+        printf("Plotting the distribution of the generated polygons...\n");
+        execlp("python3", "python3", "Distribution.py", (char*) NULL);
+    } 
     return 0;
 }
