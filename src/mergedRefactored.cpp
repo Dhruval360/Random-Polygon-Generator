@@ -14,7 +14,6 @@
 #include "Polygon.hpp"
 using namespace std;
 
-#define inf 9999
 #define col 0
 #define cw 1
 #define ccw 2
@@ -46,8 +45,15 @@ vector <doublePoint> allPoints;
 vector <doublePoint> polyPoints;
 //do we need verbose?
 bool isVerbose = false;
+//infinity value
+double inf = INFINITY;
 
 //####HELPER FUNCTIONS#########
+
+//comparoator to insert into set
+bool cmpPoints(const doublePoint &a,const doublePoint &b){
+	return ((a.x < b.x) || (a.y <b.y));
+}
 
 void randDoubleGen(int n){
 	//random device that initiates a random engine
@@ -56,13 +62,19 @@ void randDoubleGen(int n){
 	mt19937 random_engine(rd());
 	//the distribution used
 	uniform_real_distribution<double> unif(0,100);
+	//temp set to store non duplicate points only
+	set <doublePoint,bool(*)(const doublePoint&,const doublePoint&)> temp(&cmpPoints);
 	for(int i = 0;i<n;i++){
 		double x = unif(random_engine);
 		double y = unif(random_engine);
 		doublePoint p;
 		p.x = x;
 		p.y = y;
-		allPoints.push_back(p);
+		//allPoints.push_back(p);
+		temp.insert(p);
+	}
+	for(auto pt : temp){
+		allPoints.push_back(pt);
 	}
 }
 
@@ -78,11 +90,47 @@ bool vertexNegComparator(doublePoint a,doublePoint b){
 	return (a.x != b.x || a.y != b.y);
 }
 
-float point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
-    return abs ((p.y - p1.y) * (p2.x - p1.x) -
-               (p2.y - p1.y) * (p.x - p1.x));
-}
+//double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
+    //return abs ((p.y - p1.y) * (p2.x - p1.x) -
+               //(p2.y - p1.y) * (p.x - p1.x));
+//}
 
+double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
+	//line segment starting point to the point vector
+	double A = p.x-p1.x;
+	double B = p.y - p1.y;
+	//line segment vector
+	double C = p2.x - p1.x;
+	double D = p2.y - p1.y;
+
+	//dot product of point vec and line segment
+	double dot = (A*C)+(B*D);
+	//length of line segment
+	double len_seg = (C*C)+(D*D);
+
+	//cases
+	double param = -1;
+	if(len_seg !=0) //non zero len line segment
+	{
+		param = ((double)dot/(double)len_seg);
+	}
+	
+	double xx,yy;
+	if(param<0){
+		xx = p1.x;
+		yy = p1.y;
+	}else if(param >1){
+		xx = p2.x;
+		yy = p2.y;
+	}else{
+		xx = p1.x + (param*C);
+		yy = p1.y + (param*D);
+	}
+
+	double dx = p.x-xx;
+	double dy = p.y-yy;
+	return sqrt((dx*dx)+(dy*dy));
+}
 //function to find orientation
 //consider points a,b,c.If slope of A->C is GREATER than slope of A->B,then A,B,c are in ccw dir
 bool isccw(doublePoint a,doublePoint b,doublePoint c){
@@ -112,7 +160,8 @@ bool isIntersectingEdge(vector <Edge> edges,Edge e){
 			if(vertexNegComparator( e.startVertex ,iterE.endVertex) &&
 				vertexNegComparator( e.endVertex,iterE.endVertex)){
 				//check for orientation of edge points
-				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,e.startVertex,e.endVertex))
+				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,
+					e.startVertex,e.endVertex))
 					return true;
 			}
 		}
@@ -190,7 +239,7 @@ void edgePrinter(Edge e){
 //ccw ie LEFT or else collinear if 0
 int orientationOfPoints(doublePoint p,doublePoint q,doublePoint r){
 	//find diff between slope
-	double resM = (q.y-p.y)*(r.x-q.x) - (q.x-p.x)*(r.y-q.y);
+	double resM = (((q.y-p.y)*(r.x-q.x)) - ((q.x-p.x)*(r.y-q.y)));
 	//cout << "Orientation:"<<resM<<endl;
 	if(resM == 0) return col; //collinear
 	if(resM>0) return cw;
@@ -199,7 +248,7 @@ int orientationOfPoints(doublePoint p,doublePoint q,doublePoint r){
 
 //return (euclidsDistance)^2 of the points p1 and p2
 double euclidsDist(doublePoint p1,doublePoint p2){
-	return (p2.x-p1.x)*(p2.x-p1.x)+(p2.y-p1.y)*(p2.y-p1.y);
+	return ((p2.x-p1.x)*(p2.x-p1.x))+((p2.y-p1.y)*(p2.y-p1.y));
 }
 
 void oriPrinter(int x){
@@ -455,7 +504,7 @@ void generatePolygon(){
 	//while there are interior points remaining
 	while(interiorPoints.size()> 0){
 		//initially the distance is infinite
-		float minDist = inf;
+		double minDist = inf;
 		//edge to be removed
 		Edge toRemEdge;
 		//the nearest point
@@ -466,14 +515,16 @@ void generatePolygon(){
 			for(auto ip : interiorPoints){
 				//find distance between line(edge under consideration) and 
 				//point(interior point under consideration)
-				float currDist = point2lineDist(ip,e.startVertex,e.endVertex);
+				double currDist = point2lineDist(ip,e.startVertex,e.endVertex);
+				//cout << "Curr Dist " << currDist<<endl;
 				//cout<<"Dist of edge ";edgePrinter(e);//cout<<" To point ";
 				pointPrinter(ip);//cout<<" is ";//cout<<currDist;//cout<<endl;
-				if(currDist < minDist && isValidEdge(edges,e,ip)){
-					//this can be the minDist between point and edge
-					minDist = currDist;
-					toRemEdge = e;
-					nearestPoint = ip;
+				if(currDist < minDist)
+					if(isValidEdge(edges,e,ip)){
+						//this can be the minDist between point and edge
+						minDist = currDist;
+						toRemEdge = e;
+						nearestPoint = ip;
 				}
 			}
 		}
@@ -523,7 +574,9 @@ void generatePolygon(){
 
 	//write to wkt file
 	//bool didWrite = writeWKT(polyPoints);
-	//if(didWrite) cout<<"Written\n";
+	//if(didWrite) {cout<<"Written\n";
+	//	cout<<"Number of points written : "<<polyPoints.size()<<endl;
+	//}
 	//else cout <<"Failed to write\n";
 }
 
@@ -553,14 +606,18 @@ void simplePolygon(Polygon* polygon,bool verbose){
 	int n = 5;
 	cout <<"Num of Polygons needed?\n";
 	cin >> n;
-	cout <<"Verbose Needed?\n";
-	cin >> verbose;
 	for(int i = 0;i<n;i++){
 		int x = 50;
-		cout <<"Number of points needed?\n";
+		bool doProceede = false;
+		while(!doProceede){
+			cout <<"Number of points needed?\n";
+			cin >> x;
+			if(x>=3) doProceede = true;
+		}
 		//scanf("%d",&verbose);
 		cin.clear();
-		cin >> verbose;
+		cout <<"Verbose Needed?\n";
+		cin >> isVerbose;
 		//itialize all points
 		//allPoints = {{0, 0}, {1, -4}, {-1,-5}, {-5,-3},{-3,-1},{-1,-3},
 		//{-2,-2},{-1,-1},{-2,-1},{-1,1}};
