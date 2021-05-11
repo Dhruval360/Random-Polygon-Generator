@@ -10,7 +10,7 @@
 using namespace std;
 
 // Default values of parameters
-int number_of_polygons = 1, verbose = 0, profiling = 0, graph = 0, dist_analysis = 0;
+int number_of_polygons = 1, verbose = 0, profiling = 0, graph = 0, dist_analysis = 0, metrics = 0;
 char *algorithm = NULL, *filename = NULL;
 
 double timer;
@@ -32,6 +32,7 @@ int main(int argc, const char** argv){
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
         { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons", "NUM"},
+        { "metrics", 'm', POPT_ARG_INT, &metrics, 0, "Set m = number of iterations for profiler to execute. Default : m=1", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -114,5 +115,11 @@ int main(int argc, const char** argv){
         execlp("python3", "python3", "Distribution.py", (char*) NULL);
     }
 
+    if(metrics != 0){
+        for(int i = 0; i < metrics; i++){
+            //call all three algorithms 
+            //save to csv 
+        }
+    }
     return 0;
 }

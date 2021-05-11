@@ -58,7 +58,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            //if(verbose)printf("Uniform Distribution, ");
+            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
             static int b = GraphingScaleSetter(10);
@@ -68,7 +68,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            //if(verbose)printf("Binomial Distribution, ");
+            if(verbose)printf("Binomial Distribution, ");
             space_partition(this, min, max, verbose);
             break;
         case 3:
@@ -80,7 +80,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            //if(verbose)printf("Geometric Distribution, ");
+            if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
             static int d = GraphingScaleSetter(10);
@@ -91,7 +91,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            //if(verbose)printf("Poisson Distribution, ");
+            if(verbose)printf("Poisson Distribution, ");
             break;
         case 5:
             static int e = GraphingScaleSetter(1);
@@ -102,7 +102,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            //if(verbose)printf("Normal Distribution, ");
+            if(verbose)printf("Normal Distribution, ");
             break;
         case 6:
             static int f = GraphingScaleSetter(4);
@@ -113,7 +113,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            //if(verbose)printf("Discrete Distribution, ");
+            if(verbose)printf("Discrete Distribution, ");
             break;
         default:
             break;

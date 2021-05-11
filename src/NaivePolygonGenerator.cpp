@@ -12,7 +12,7 @@
 #include<random>
 #include<string>
 #include"Polygon.hpp"
-
+#define inf INFINITY
 using namespace std;
 extern double timer;
 
@@ -20,72 +20,57 @@ extern double timer;
 #define cw  1
 #define ccw 2
 
-typedef struct pair{
-    double x; //x and y coor
-    double y;
-}doublePoint;
-
 typedef struct edge{
-	doublePoint startVertex;
-	doublePoint endVertex;
+	pair<double,double> startVertex;
+	pair<double,double> endVertex;
 }Edge;
 
-typedef struct polygon{
-	vector <doublePoint>* vertices;
-	vector <Edge>* edges;
-}myPolygon;
-
 /************************************ Globals ************************************/
-doublePoint p; // Anchor point to polar sort the rem points
-static vector <doublePoint> resHull; // The resultant CONVEX HULL
-static vector <doublePoint> allPoints; // All points needed to be included in POLYGON - Supplied as random points
-static vector <doublePoint> polyPoints; // The result points
-
-double inf = INFINITY;
+pair<double,double> p; // Anchor point to polar sort the rem points
 
 /******************************* Helper Functions *******************************/
 // Comparator to insert into set
-bool cmpPoints(const doublePoint &a,const doublePoint &b){
-	return ((a.x < b.x) || (a.y <b.y));
+bool cmpPoints(const pair<double,double> &a,const pair<double,double> &b){
+	return ((a.first < b.first) || (a.second < b.second));
 }
 
-void randDoubleGen(int n){
+void randDoubleGen(Polygon *polygon, vector <pair<double,double>> &resHull, vector <pair<double,double>> &allPoints){
 	random_device rd; // Random device that initiates a random engine
 	mt19937 random_engine(rd()); // The random engine
 	uniform_real_distribution<double> unif(-1000,1000); // The distribution used
-	set <doublePoint,bool(*)(const doublePoint&,const doublePoint&)> temp(&cmpPoints); // A set to store non duplicate points only
-	for(int i = 0; (int)temp.size() < n; i++){
+	set <pair<double,double>,bool(*)(const pair<double,double>&,const pair<double,double>&)> temp(&cmpPoints); // A set to store non duplicate points only
+	for(int i = 0; (int)temp.size() < polygon->numVertices; i++){
 		double x = unif(random_engine);
 		double y = unif(random_engine);
-		doublePoint p;
-		p.x = x;
-		p.y = y;
+		pair<double,double> p;
+		p.first = x;
+		p.second = y;
 		temp.insert(p);
 	}
 	for(auto pt : temp)	allPoints.push_back(pt);
 }
 
-void pointPrinter(doublePoint pt){
-    //cout << '(' << "X:" << pt.x << ','<< "y:" <<pt.y << ')' << ',' << endl;
+void pointPrinter(pair<double,double> pt){
+    //cout << '(' << "X:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << endl;
 }
 
-bool vertexComparator(doublePoint a,doublePoint b){
-	return (a.x == b.x && a.y == b.y);
+bool vertexComparator(pair<double,double> a,pair<double,double> b){
+	return (a.first == b.first && a.second == b.second);
 }
 
-bool vertexNegComparator(doublePoint a,doublePoint b){
-	return (a.x != b.x || a.y != b.y);
+bool vertexNegComparator(pair<double,double> a,pair<double,double> b){
+	return (a.first != b.first || a.second != b.second);
 }
 
 
-double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
+double point2lineDist(pair<double,double> p,pair<double,double> p1,pair<double,double> p2){
 	// Line segment starting point to the point vector
-	double A = p.x-p1.x;
-	double B = p.y - p1.y;
+	double A = p.first-p1.first;
+	double B = p.second - p1.second;
 	
 	// Line segment vector
-	double C = p2.x - p1.x;
-	double D = p2.y - p1.y;
+	double C = p2.first - p1.first;
+	double D = p2.second - p1.second;
 
 	double dot = (A*C)+(B*D); // Dot product of point vec and line segment
 	double len_seg = (C*C)+(D*D); // Length of line segment
@@ -96,36 +81,36 @@ double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
 	
 	double xx,yy;
 	if(param<0){
-		xx = p1.x;
-		yy = p1.y;
+		xx = p1.first;
+		yy = p1.second;
 	}
 	else if(param >1){
-		xx = p2.x;
-		yy = p2.y;
+		xx = p2.first;
+		yy = p2.second;
 	}
 	else{
-		xx = p1.x + (param*C);
-		yy = p1.y + (param*D);
+		xx = p1.first + (param*C);
+		yy = p1.second + (param*D);
 	}
 
-	double dx = p.x-xx;
-	double dy = p.y-yy;
+	double dx = p.first-xx;
+	double dy = p.second-yy;
 	return sqrt((dx*dx)+(dy*dy));
 }
 
 // Function to find orientation
 // Consider points a,b,c.If slope of A->C is GREATER than slope of A->B,then A,B,c are in ccw dir
-bool isccw(doublePoint a,doublePoint b,doublePoint c){
-	return (c.y-a.y)*(b.x-a.x) > (b.y-a.y)*(c.x-a.x);
+bool isccw(pair<double,double> a,pair<double,double> b,pair<double,double> c){
+	return (c.second-a.second)*(b.first-a.first) > (b.second-a.second)*(c.first-a.first);
 }
 
 //consder the 4 points A,B,C,D.If segment CD intersects segment AB,then ACD and BCD
 //will have opposite orientation ie one will be having clockwise orientation and the other will
 //be having anticlockwise orientation.
 //similarly triangle ABD and ABC will have opposite orientation
-bool isIntersectingUtil(doublePoint a,doublePoint b,doublePoint c,doublePoint d){
-	//float m1 = (float)(b.y-a.y)/(float)(b.x-a.x);
-	//float m2 = (float)(d.y-c.y)/(float)(d.x-c.x);
+bool isIntersectingUtil(pair<double,double> a,pair<double,double> b,pair<double,double> c,pair<double,double> d){
+	//float m1 = (float)(b.second-a.second)/(float)(b.first-a.first);
+	//float m2 = (float)(d.second-c.second)/(float)(d.first-c.first);
 	////printf("\nThe slopes are %lf and %lf\n",round(m1),round(m2));
 	//if(round(m1)==round(m2)) return true;
 	return (isccw(a,c,d) != isccw(b,c,d) && isccw(a,b,d) != isccw(a,b,c));
@@ -142,9 +127,7 @@ bool isIntersectingEdge(vector <Edge> edges,Edge e){
 			if(vertexNegComparator( e.startVertex ,iterE.endVertex) &&
 				vertexNegComparator( e.endVertex,iterE.endVertex)){
 				//check for orientation of edge points
-				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,
-					e.startVertex,e.endVertex))
-					return true;
+				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,e.startVertex,e.endVertex)) return true;
 			}
 		}
 	}
@@ -153,7 +136,7 @@ bool isIntersectingEdge(vector <Edge> edges,Edge e){
 
 //function to check if the 2 edges we are creating will be valid or not
 //the edges are valid if they do not intersect the polygon
-bool isValidEdge(vector <Edge> edges, Edge e,doublePoint p){
+bool isValidEdge(vector <Edge> edges, Edge e,pair<double,double> p){
 	//create an edge from e.start to the point
 	Edge e1;
 	e1.startVertex = e.startVertex;
@@ -183,7 +166,7 @@ int indexInEdgesVec(vector <Edge> arr,Edge k){
     return -1;
 }
 
-int indexInPointsVec(vector <doublePoint> arr,doublePoint k){
+int indexInPointsVec(vector <pair<double,double>> arr,pair<double,double> k){
 	for(int i = 0;i<(int)arr.size();i++){
 		if(vertexComparator(arr.at(i),k)){
 			return i;
@@ -205,8 +188,8 @@ Edge myFind(vector <Edge> edges,int i,bool* status){
 	return edges[0];
 }
 
-//void pointPrinter(doublePoint pt){
-    ////cout << '(' << "x:" << pt.x << ','<< "y:" <<pt.y << ')' << ',' << " ";
+//void pointPrinter(pair<double,double> pt){
+    ////cout << '(' << "x:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << " ";
 //}
 
 void edgePrinter(Edge e){
@@ -219,9 +202,9 @@ void edgePrinter(Edge e){
 //orientation of 3 pints depends on their slope
 //if diff of slopes is po,thenthere is RIGHT turn ie cw else if neg then
 //ccw ie LEFT or else collinear if 0
-int orientationOfPoints(doublePoint p,doublePoint q,doublePoint r){
+int orientationOfPoints(pair<double,double> p,pair<double,double> q,pair<double,double> r){
 	//find diff between slope
-	double resM = (((q.y-p.y)*(r.x-q.x)) - ((q.x-p.x)*(r.y-q.y)));
+	double resM = (((q.second-p.second)*(r.first-q.first)) - ((q.first-p.first)*(r.second-q.second)));
 	//cout << "Orientation:"<<resM<<endl;
 	if(resM == 0) return col; //collinear
 	if(resM>0) return cw;
@@ -229,8 +212,8 @@ int orientationOfPoints(doublePoint p,doublePoint q,doublePoint r){
 }
 
 //return (euclidsDistance)^2 of the points p1 and p2
-double euclidsDist(doublePoint p1,doublePoint p2){
-	return ((p2.x-p1.x)*(p2.x-p1.x))+((p2.y-p1.y)*(p2.y-p1.y));
+double euclidsDist(pair<double,double> p1,pair<double,double> p2){
+	return ((p2.first-p1.first)*(p2.first-p1.first))+((p2.second-p1.second)*(p2.second-p1.second));
 }
 
 void oriPrinter(int x){
@@ -246,10 +229,10 @@ void oriPrinter(int x){
 }
 
 //sorting based on polar angles from the anchor point
-//int polAngSorter(doublePoint p1,doublePoint p2){
+//int polAngSorter(pair<double,double> p1,pair<double,double> p2){
 int polAngSorter(const void* vp1,const void* vp2){
-	doublePoint p1 = *((doublePoint*)vp1);
-	doublePoint p2 = *((doublePoint*)vp2);
+	pair<double,double> p1 = *((pair<double,double>*)vp1);
+	pair<double,double> p2 = *((pair<double,double>*)vp2);
 	int ori = orientationOfPoints(p,p1,p2);
 	switch(ori){
 		//if they are collinear then use euclids distance
@@ -271,21 +254,21 @@ int polAngSorter(const void* vp1,const void* vp2){
 }
 
 //get the element just below the top
-doublePoint justBelowTop(stack <doublePoint>* stk){
-	doublePoint theTop = stk->top();
+pair<double,double> justBelowTop(stack <pair<double,double>>* stk){
+	pair<double,double> theTop = stk->top();
 	stk->pop();
-	doublePoint retVal = stk->top();
+	pair<double,double> retVal = stk->top();
 	stk->push(theTop);
 	return retVal;
 }
 
 //function to write to text file
-bool writeWKT(vector <doublePoint> allPoints){
+bool writeWKT(vector <pair<double,double>> allPoints){
 	string txt = "";
 	for(int i = 0;i< (int)allPoints.size();i++){
-		txt += to_string(allPoints[i].x);
+		txt += to_string(allPoints[i].first);
 		txt += " ";
-		txt += to_string(allPoints[i].y);
+		txt += to_string(allPoints[i].second);
 		if(i != (int)allPoints.size()-1){
 			txt += ", ";
 		}
@@ -302,19 +285,19 @@ bool writeWKT(vector <doublePoint> allPoints){
 	return true;
 }
 
-void convexHull(vector <doublePoint> points){
+void generateconvexHull(vector <pair<double,double>> points, vector <pair<double,double>> &resHull){
 	//finding the bottom most point out of all the points
-	doublePoint min_point = points.at(0);
+	pair<double,double> min_point = points.at(0);
 	int min_index = 0;
 	int i = 0;
 	for(auto pt : points){
 		//check which is more bottom
-		if(pt.y<min_point.y){
+		if(pt.second<min_point.second){
 			min_point = pt;
 			min_index = i;
 		}
 		//if y coord is same the check for x coordinate
-		else if(pt.y == min_point.y && pt.x < min_point.x){
+		else if(pt.second == min_point.second && pt.first < min_point.first){
 			min_point = pt;
 			min_index = i;
 		}
@@ -336,7 +319,7 @@ void convexHull(vector <doublePoint> points){
 	p = points[0];
 	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
 	//sort(points.begin()+1,points.end(),polAngSorter);
-	qsort(&points[1],points.size()-1,sizeof(doublePoint),polAngSorter);
+	qsort(&points[1],points.size()-1,sizeof(pair<double,double>),polAngSorter);
 	////cout << "Smallest polar angle point from ";pointPrinter(p);
 	//cout << "After sorting\n";
 	for(int i = 0;i<(int)points.size();i++){
@@ -376,7 +359,7 @@ void convexHull(vector <doublePoint> points){
 
 	//create the stack to store the points
 	//push the first three points p0,p1,p2
-	stack <doublePoint> stk;
+	stack <pair<double,double>> stk;
 	//cout << "Pushing.....\n";
 	stk.push(points[0]);
 	pointPrinter(points[0]);
@@ -398,8 +381,8 @@ void convexHull(vector <doublePoint> points){
 		//of the stack with the curr iter point,if its to thee right ie 
 		//cw(CONCAVE),then violates convex hull rule
 		/*while(stk.size()>1){
-			doublePoint theTop = stk.top();
-			doublePoint secondTop = justBelowTop(&stk);
+			pair<double,double> theTop = stk.top();
+			pair<double,double> secondTop = justBelowTop(&stk);
 			//check the ori of p,p1,p2 ie b/w segments p,p1 and p1,p2
 			if(orientationOfPoints(secondTop,theTop,points[i]) != ccw){
 				//if not ccw,then concave,hence rem point
@@ -407,9 +390,7 @@ void convexHull(vector <doublePoint> points){
 			}
 		}*/
 		pointPrinter(points[i]);
-		while(stk.size()>1 && 
-			orientationOfPoints(justBelowTop(&stk),stk.top(),points[i]) != ccw)
-				stk.pop();
+		while(stk.size()>1 && orientationOfPoints(justBelowTop(&stk),stk.top(),points[i]) != ccw) stk.pop();
 		//push the next point under consideration
 		stk.push(points[i]);
 	}
@@ -419,32 +400,27 @@ void convexHull(vector <doublePoint> points){
 	//stack has all the points of the HULL
 	//cout<<"Result : \n";
 	while(!stk.empty()){
-		doublePoint temp = stk.top();
+		pair<double,double> temp = stk.top();
 		pointPrinter(temp);
 		resHull.push_back(temp);
 		stk.pop();
 	}
 }
 
-void generateConvexHull(){
-	/*vector <doublePoint> points = {{0, 3}, {1, 1}, {2, 2}, {4, 4},
-                      {0, 0}, {1, 2}, {3, 1}, {3, 3}};*/
-    convexHull(allPoints);
-}
-
-void generatePolygon(){
+void generatePolygon(Polygon *polygon){
+	static vector <pair<double,double>> resHull; // The resultant CONVEX HULL
+	static vector <pair<double,double>> allPoints; // All points needed to be included in POLYGON - Supplied as random points
+	static vector <pair<double,double>> polyPoints; // The result points
+	randDoubleGen(polygon, resHull, allPoints);
+	generateconvexHull(allPoints, resHull);
 	//points in the convex Hull
-	//vector <doublePoint> resHull = {{-5,-3},{-1,1},{0,0},{1,-4},{-1,-5}};
-    //vector <doublePoint> resHull = {{0,0},{0,3},{3,1},{4,4}};              
+	//vector <pair<double,double>> resHull = {{-5,-3},{-1,1},{0,0},{1,-4},{-1,-5}};
+    //vector <pair<double,double>> resHull = {{0,0},{0,3},{3,1},{4,4}};              
 	//resHull = util(allPoints);
 	//in real,get from utils function
 
 	//vertices of the convex hull
-	myPolygon* poly = (myPolygon*)malloc(sizeof(myPolygon));
-	poly->vertices = &resHull;//convex hull vertices only
 	vector <Edge> edges;
-	poly->edges = &edges; //edges of the convex hull only
-
 	//creating edges of poly from convex hull vertices
 	for (int i = 0; i < (int)(resHull.size()-1); ++i){
 		Edge e1;
@@ -460,11 +436,11 @@ void generatePolygon(){
 
 	//interior points are those points that are not part of the convex hull vertices
 	//interior points are correctly generated
-	vector <doublePoint> interiorPoints;
+	vector <pair<double,double>> interiorPoints;
 	for(auto v : allPoints){
 		bool isPresent = false;
 		for(auto cv : resHull){
-			if(cv.x == v.x && cv.y == v.y) isPresent = true;
+			if(cv.first == v.first && cv.second == v.second) isPresent = true;
 		}
 		if(!isPresent){
 			interiorPoints.push_back(v);
@@ -490,7 +466,7 @@ void generatePolygon(){
 		//edge to be removed
 		Edge toRemEdge;
 		//the nearest point
-		doublePoint nearestPoint;
+		pair<double,double> nearestPoint;
 		//iterate over all edges
 		for(auto e : edges){
 			//iterate over all interior points for each edge
@@ -535,7 +511,7 @@ void generatePolygon(){
 		auto j = edges.begin()+(i+1);
 		/*
 		Edge z;
-		doublePoint p;
+		pair<double,double> p;
 		z.startVertex = p;
 		z.endVertex = p; 
 		edges.resize(edges.size() + 1, z);
@@ -555,24 +531,16 @@ void generatePolygon(){
 		polyPoints.push_back(e.startVertex);
 		edgePrinter(e);
 	}
-	free(poly);
+	polygon->coordinates = polyPoints;
+	allPoints.clear();
+	polyPoints.clear();
+	resHull.clear();
 }
 
 /********************************* The Algorithm *********************************/
 void naivePolygon(Polygon* polygon,bool verbose){
 	start_timer(start);
-	randDoubleGen(polygon->numVertices);
-	generateConvexHull(); // Generate the convex hull
-	generatePolygon();    // Generate the polygon with ordered points
-	
-	// Push in the polygon ordered slides
-	for(unsigned i = 0;i<polygon->numVertices;i++){
-		polygon->coordinates.push_back({polyPoints[i].x,
-		polyPoints[i].y});
-	}
-	allPoints.clear();
-	polyPoints.clear();
-	resHull.clear();
+	generatePolygon(polygon);    // Generate the polygon with ordered points
 	end_timer(start, timer);
 	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n",  polygon->numVertices, timer);
 }
