@@ -12,6 +12,7 @@
 #include<random>
 #include<string>
 #include"Polygon.hpp"
+#define DEBUG 0
 #define inf INFINITY
 using namespace std;
 extern double timer;
@@ -188,10 +189,6 @@ Edge myFind(vector <Edge> edges,int i,bool* status){
 	return edges[0];
 }
 
-//void pointPrinter(pair<double,double> pt){
-    ////cout << '(' << "x:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << " ";
-//}
-
 void edgePrinter(Edge e){
 	//cout << "From ";
 	pointPrinter(e.startVertex);
@@ -320,8 +317,7 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
 	//sort(points.begin()+1,points.end(),polAngSorter);
 	qsort(&points[1],points.size()-1,sizeof(pair<double,double>),polAngSorter);
-	////cout << "Smallest polar angle point from ";pointPrinter(p);
-	//cout << "After sorting\n";
+
 	for(int i = 0;i<(int)points.size();i++){
 		pointPrinter(points[i]);
 	}

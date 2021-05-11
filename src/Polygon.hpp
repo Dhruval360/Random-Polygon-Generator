@@ -21,9 +21,9 @@ class Polygon{
 
         Polygon(unsigned int numVertices);
 
-        void Generator1(bool verbose);
+        void Generator1(bool verbose, int choice);
         void Generator2(bool verbose, int choice);
-        void Generator3(bool verbose);
+        void Generator3(bool verbose, int choice);
 }; 
 
 
