@@ -10,7 +10,7 @@
 using namespace std;
 
 // Default values of parameters
-int number_of_polygons = 1, verbose = 0, profiling = 0, graph = 0, dist_analysis = 0, metrics = 0;
+int number_of_polygons = 1, verbose = 0, profiling = 0, graph = 0, dist_analysis = 0;
 char *algorithm = NULL, *filename = NULL;
 
 double timer;
@@ -32,7 +32,6 @@ int main(int argc, const char** argv){
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for timing the program", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the polygons is to be written to. Default : map.wkt", "STR"},
         { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons", "NUM"},
-        { "metrics", 'm', POPT_ARG_INT, &metrics, 0, "Set m = number of iterations for profiler to execute. Default : m=1", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -64,14 +63,27 @@ int main(int argc, const char** argv){
     
     polygons = new Polygon[number_of_polygons];  // Creating an array of polygons
     start_timer(total);
-
-    #pragma omp parallel for 
-    for(int i = 0; i < number_of_polygons; i++){
-        polygons[i] = Polygon(distribution(generator));
-        if(!strcasecmp(algorithm, "polar")) polygons[i].Generator1(verbose);
-        else if(!strcasecmp(algorithm, "spacePartition")) polygons[i].Generator2(verbose, choice);
-        else polygons[i].Generator3(verbose);
-        if(verbose) printf("| Time taken for generation = %lf s\n", timer);
+ 
+    if(!strcasecmp(algorithm, "polar")){
+        #pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator1(verbose);
+        }
+    }
+    else if(!strcasecmp(algorithm, "spacePartition")){
+        #pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator2(verbose, choice);
+        }
+    }
+    else{
+        //#pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator3(verbose);
+        }
     }
 
     end_timer(total, timer);
@@ -102,16 +114,5 @@ int main(int argc, const char** argv){
         execlp("python3", "python3", "Distribution.py", (char*) NULL);
     }
 
-    if(metrics != 0){
-        string iter = to_string(metrics);
-        string cmd = "./Profiler.sh " + iter + " -m 0";
-        int size = cmd.length();
-        char cmd_a[size];
-        strcpy(cmd_a, cmd.c_str());
-        int return_value = system(cmd_a);
-        if(return_value == -1){
-            printf("Error! Cannot find the shell script\n");
-        }
-    }
     return 0;
 }

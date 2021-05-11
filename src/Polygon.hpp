@@ -26,9 +26,9 @@ class Polygon{
         void Generator3(bool verbose);
 }; 
 
-//implementation of the space partition algorithm to generate random polygons
-void space_partition(Polygon *polygon, int min, int max, bool verbose);
 
+void space_partition(Polygon *polygon, int min, int max, bool verbose);
+void naivePolygon(Polygon *polygon, bool verbose);
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
 void writer(Polygon *p, unsigned num, char *filename); 
 void* GraphicsInit(void *arg);
