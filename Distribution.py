@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
 from statistics import mean
-import scipy.stats
+import pandas as pd
+import seaborn as sns
 import sys
 
 cycol = cycle('bgrcmk')
@@ -37,11 +38,8 @@ for polygon in polygons:
     y_avg_list.append(y_avg)
 
 distance_from_origin(x_avg_list, y_avg_list)
-_, bins, _ = plt.hist(distance, 20, density=1, alpha=0.5)
-mu, sigma = scipy.stats.norm.fit(distance)
-best_fit_line = scipy.stats.norm.pdf(bins, mu, sigma)
+sns.distplot(pd.Series(distance))
 plt.xlabel("Distance from origin")
 plt.ylabel("Frequency density")
 plt.title("Distribution of the polygons")
-plt.plot(bins, best_fit_line)
 plt.show()
