@@ -67,7 +67,14 @@ int main(int argc, const char** argv){
     }
     
     polygons = new Polygon[number_of_polygons];  // Creating an array of polygons
+    
     start_timer(total);
+
+    if(verbose){
+        if(graph) printf("Graph scale = %f\n", Scale);
+        printf("Distribution used = %d\n", choice); // Print distribution name instead
+    }
+
     if(!strcasecmp(algorithm, "polar")){
         #pragma omp parallel for
         for(int i = 0; i < number_of_polygons; i++){
