@@ -7,6 +7,8 @@
     #define PI 3.14159265358979323846
 #endif
 
+extern double timer;
+
 using namespace std;
 
 static double clip(double x, double min, double max){
@@ -16,6 +18,7 @@ static double clip(double x, double min, double max){
 } 
 
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose){
+    start_timer(start);
     double angleSteps[p->numVertices];
     static default_random_engine generator(clock());
     static uniform_real_distribution<double> uniformDistribution(0.0, 1.0);
@@ -47,7 +50,6 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
         p->coordinates.push_back(pair<double, double>(x + radial_distance*cos(angle), y + radial_distance*sin(angle)));
         angle += angleSteps[i];
     }
-    if(verbose){
-        printf("Number of vertices = %3u Center = (%11.6lf, %11.6lf), averageRadius = %10.6lf, irregularity = %8.6lf, spike = %10.6lf, ",  p->numVertices, x, y, averageRadius, irregularity, spike);
-    }
+    end_timer(start, timer);
+    if(verbose) printf("Number of vertices = %3u Center = (%11.6lf, %11.6lf), averageRadius = %10.6lf, irregularity = %8.6lf, spike = %10.6lf | Time taken for generation = %lf s\n",  p->numVertices, x, y, averageRadius, irregularity, spike, timer);
 }

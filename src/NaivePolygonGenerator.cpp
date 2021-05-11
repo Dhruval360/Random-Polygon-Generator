@@ -1,21 +1,23 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include <math.h>
-#include <bits/stdc++.h>
-#include <stdbool.h>
-#include <type_traits>
-#include <iostream>
-#include <set>
-#include <stack>
-#include <algorithm>
-#include <random>
-#include <string>
-#include "Polygon.hpp"
+#include<stdlib.h>
+#include<stdio.h>
+#include<vector>
+#include<math.h>
+#include<bits/stdc++.h>
+#include<stdbool.h>
+#include<type_traits>
+#include<iostream>
+#include<set>
+#include<stack>
+#include<algorithm>
+#include<random>
+#include<string>
+#include"Polygon.hpp"
+
 using namespace std;
+extern double timer;
 
 #define col 0
-#define cw 1
+#define cw  1
 #define ccw 2
 
 typedef struct pair{
@@ -33,49 +35,34 @@ typedef struct polygon{
 	vector <Edge>* edges;
 }myPolygon;
 
-//######GLOBAL Variables#######
+/************************************ Globals ************************************/
+doublePoint p; // Anchor point to polar sort the rem points
+static vector <doublePoint> resHull; // The resultant CONVEX HULL
+static vector <doublePoint> allPoints; // All points needed to be included in POLYGON - Supplied as random points
+static vector <doublePoint> polyPoints; // The result points
 
-//anchor point to polar sort the rem points
-doublePoint p;
-//the resultant CONVEX HULL
-vector <doublePoint> resHull;
-//all points needed to included in POLYGON - Supplied as random points
-vector <doublePoint> allPoints;
-//the result points
-vector <doublePoint> polyPoints;
-//do we need verbose?
-bool isVerbose = false;
-//infinity value
 double inf = INFINITY;
 
-//####HELPER FUNCTIONS#########
-
-//comparoator to insert into set
+/******************************* Helper Functions *******************************/
+// Comparator to insert into set
 bool cmpPoints(const doublePoint &a,const doublePoint &b){
 	return ((a.x < b.x) || (a.y <b.y));
 }
 
 void randDoubleGen(int n){
-	//random device that initiates a random engine
-	random_device rd;
-	//the random engine
-	mt19937 random_engine(rd());
-	//the distribution used
-	uniform_real_distribution<double> unif(0,100);
-	//temp set to store non duplicate points only
-	set <doublePoint,bool(*)(const doublePoint&,const doublePoint&)> temp(&cmpPoints);
-	for(int i = 0;i<n;i++){
+	random_device rd; // Random device that initiates a random engine
+	mt19937 random_engine(rd()); // The random engine
+	uniform_real_distribution<double> unif(-1000,1000); // The distribution used
+	set <doublePoint,bool(*)(const doublePoint&,const doublePoint&)> temp(&cmpPoints); // A set to store non duplicate points only
+	for(int i = 0; (int)temp.size() < n; i++){
 		double x = unif(random_engine);
 		double y = unif(random_engine);
 		doublePoint p;
 		p.x = x;
 		p.y = y;
-		//allPoints.push_back(p);
 		temp.insert(p);
 	}
-	for(auto pt : temp){
-		allPoints.push_back(pt);
-	}
+	for(auto pt : temp)	allPoints.push_back(pt);
 }
 
 void pointPrinter(doublePoint pt){
@@ -90,39 +77,33 @@ bool vertexNegComparator(doublePoint a,doublePoint b){
 	return (a.x != b.x || a.y != b.y);
 }
 
-//double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
-    //return abs ((p.y - p1.y) * (p2.x - p1.x) -
-               //(p2.y - p1.y) * (p.x - p1.x));
-//}
 
 double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
-	//line segment starting point to the point vector
+	// Line segment starting point to the point vector
 	double A = p.x-p1.x;
 	double B = p.y - p1.y;
-	//line segment vector
+	
+	// Line segment vector
 	double C = p2.x - p1.x;
 	double D = p2.y - p1.y;
 
-	//dot product of point vec and line segment
-	double dot = (A*C)+(B*D);
-	//length of line segment
-	double len_seg = (C*C)+(D*D);
+	double dot = (A*C)+(B*D); // Dot product of point vec and line segment
+	double len_seg = (C*C)+(D*D); // Length of line segment
 
-	//cases
+	// Cases
 	double param = -1;
-	if(len_seg !=0) //non zero len line segment
-	{
-		param = ((double)dot/(double)len_seg);
-	}
+	if(len_seg !=0) param = ((double)dot/(double)len_seg); // Non zero len line segment
 	
 	double xx,yy;
 	if(param<0){
 		xx = p1.x;
 		yy = p1.y;
-	}else if(param >1){
+	}
+	else if(param >1){
 		xx = p2.x;
 		yy = p2.y;
-	}else{
+	}
+	else{
 		xx = p1.x + (param*C);
 		yy = p1.y + (param*D);
 	}
@@ -131,8 +112,9 @@ double point2lineDist(doublePoint p,doublePoint p1,doublePoint p2){
 	double dy = p.y-yy;
 	return sqrt((dx*dx)+(dy*dy));
 }
-//function to find orientation
-//consider points a,b,c.If slope of A->C is GREATER than slope of A->B,then A,B,c are in ccw dir
+
+// Function to find orientation
+// Consider points a,b,c.If slope of A->C is GREATER than slope of A->B,then A,B,c are in ccw dir
 bool isccw(doublePoint a,doublePoint b,doublePoint c){
 	return (c.y-a.y)*(b.x-a.x) > (b.y-a.y)*(c.x-a.x);
 }
@@ -551,8 +533,14 @@ void generatePolygon(){
 			//auto j = myFind(edges,i+1,&isFindSuccess);
 		*/
 		auto j = edges.begin()+(i+1);
+		/*
+		Edge z;
+		doublePoint p;
+		z.startVertex = p;
+		z.endVertex = p; 
+		edges.resize(edges.size() + 1, z);
+		*/
 		edges.insert(j,f);
-		if(isVerbose) cout << "#";
 		//add the point to the current vertices of the polygon ie to the resHull
 		//resHull.insert(resHull.begin()+ i,nearestPoint);
 		//remove the point from the interior points array
@@ -563,71 +551,28 @@ void generatePolygon(){
 			}
 		}
 	}
-
-	//print out all the edges of the complete polygon
-	//cout << "The final Edges of the entire polygon are : \n";
 	for(auto e : edges){
 		polyPoints.push_back(e.startVertex);
 		edgePrinter(e);
-		//cout << endl;
 	}
-
-	//write to wkt file
-	//bool didWrite = writeWKT(polyPoints);
-	//if(didWrite) {cout<<"Written\n";
-	//	cout<<"Number of points written : "<<polyPoints.size()<<endl;
-	//}
-	//else cout <<"Failed to write\n";
+	free(poly);
 }
 
-//###################THE ALGORITHM####################
-void simplePolygon(Polygon* polygon,bool verbose){
-	static default_random_engine generator(clock());
-    static uniform_real_distribution<double> randomCoordinates(-500, 500);
-	//populate the random points vector
-	for(unsigned i = 0;i<polygon->numVertices;i++){
-		allPoints.push_back({randomCoordinates(generator), randomCoordinates(generator)});
-	}
-	isVerbose = verbose;
-	//generate the convex hull
-	generateConvexHull();
-	//generate the polygon with ordered points
-	generatePolygon();
-	//clear the initial coordinates
-	polygon->coordinates.clear();
-	//push in the polygon ordered slides
+/********************************* The Algorithm *********************************/
+void naivePolygon(Polygon* polygon,bool verbose){
+	start_timer(start);
+	randDoubleGen(polygon->numVertices);
+	generateConvexHull(); // Generate the convex hull
+	generatePolygon();    // Generate the polygon with ordered points
+	
+	// Push in the polygon ordered slides
 	for(unsigned i = 0;i<polygon->numVertices;i++){
 		polygon->coordinates.push_back({polyPoints[i].x,
 		polyPoints[i].y});
 	}
+	allPoints.clear();
+	polyPoints.clear();
+	resHull.clear();
+	end_timer(start, timer);
+	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n",  polygon->numVertices, timer);
 }
-
-/*int main(){
-	int n = 5;
-	cout <<"Num of Polygons needed?\n";
-	cin >> n;
-	for(int i = 0;i<n;i++){
-		int x = 50;
-		bool doProceede = false;
-		while(!doProceede){
-			cout <<"Number of points needed?\n";
-			cin >> x;
-			if(x>=3) doProceede = true;
-		}
-		//scanf("%d",&verbose);
-		cin.clear();
-		cout <<"Verbose Needed?\n";
-		cin >> isVerbose;
-		//itialize all points
-		//allPoints = {{0, 0}, {1, -4}, {-1,-5}, {-5,-3},{-3,-1},{-1,-3},
-		//{-2,-2},{-1,-1},{-2,-1},{-1,1}};
-		randDoubleGen(x);
-
-		//generate the convex hull
-		generateConvexHull();
-
-		//generate the polygons
-		generatePolygon();
-	}
-	return 0;
-}*/

@@ -63,14 +63,27 @@ int main(int argc, const char** argv){
     
     polygons = new Polygon[number_of_polygons];  // Creating an array of polygons
     start_timer(total);
-
-    #pragma omp parallel for 
-    for(int i = 0; i < number_of_polygons; i++){
-        polygons[i] = Polygon(distribution(generator));
-        if(!strcasecmp(algorithm, "polar")) polygons[i].Generator1(verbose);
-        else if(!strcasecmp(algorithm, "spacePartition")) polygons[i].Generator2(verbose, choice);
-        else polygons[i].Generator3(verbose);
-        if(verbose) printf("| Time taken for generation = %lf s\n", timer);
+ 
+    if(!strcasecmp(algorithm, "polar")){
+        #pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator1(verbose);
+        }
+    }
+    else if(!strcasecmp(algorithm, "spacePartition")){
+        #pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator2(verbose, choice);
+        }
+    }
+    else{
+        //#pragma omp parallel for
+        for(int i = 0; i < number_of_polygons; i++){
+            polygons[i] = Polygon(distribution(generator));
+            polygons[i].Generator3(verbose);
+        }
     }
 
     end_timer(total, timer);
