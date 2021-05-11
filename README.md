@@ -4,7 +4,7 @@
 ## Distribution Plots
 
 ## Metrics Analysis
-<img src = "metrics.png">
+<img src = "/Images/metrics.png">
 
 ## Dependencies
 - [popt](http://ftp.rpm.org/mirror/popt/)
