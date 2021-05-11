@@ -39,7 +39,6 @@ void Polygon::Generator1(bool verbose){
 };
 
 void Polygon::Generator2(bool verbose, int choice){
-    static int scale = GraphingScaleSetter(10);
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-500, 500);
     static binomial_distribution<int> binomial(9,0.5);

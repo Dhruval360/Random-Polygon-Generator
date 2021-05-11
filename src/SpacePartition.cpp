@@ -1,10 +1,12 @@
 #include<iostream>
+#include<random>
 #include "Polygon.hpp"
 #define DEBUG 0
 using namespace std;
 
 //generates random number between 0 and 1
-static double random_num();
+static default_random_engine generator(clock());
+static uniform_real_distribution<double> random_ratio(0, 1);
 //initialises the coordinate vector with num_vertices number of random points
 static void random_points(Polygon *polygon, double min, double max);
 //return a random point on the given line segment
@@ -125,24 +127,19 @@ bool to_left(const pair<double,double> &start_point, const pair<double,double> &
 
 //returns a random point on the line segment
 pair<double,double> random_point_segment(const pair<double,double> &start_point, const pair<double,double> &end_point){
-	double random_ratio = random_num();
+	double random_ratio_ = random_ratio(generator);
 	pair<double,double> random_point;
-	random_point.first = start_point.first + (end_point.first - start_point.first) * random_ratio;
-	random_point.second = start_point.second + (end_point.second - start_point.second) * random_ratio;  
+	random_point.first = start_point.first + (end_point.first - start_point.first) * random_ratio_;
+	random_point.second = start_point.second + (end_point.second - start_point.second) * random_ratio_;  
 	return random_point;
 }
 
 //generates a random set of points from which a random polygon is constructed
 void random_points(Polygon *polygon, double min, double max){
 	for (unsigned i = 0; i < polygon->numVertices; i++){
-		polygon->coordinates.push_back(pair<double,double>(min + (max - min) * random_num(), min + (max - min) * random_num()));
+		polygon->coordinates.push_back(pair<double,double>(min + (max - min) * random_ratio(generator), min + (max - min) * random_ratio(generator)));
 		if(DEBUG){
 			cout << "Random point " << polygon->coordinates[i].first << " " << polygon->coordinates[i].second << endl;
 		}
 	}
-}
-
-//generates a random number between 0 and 1
-double random_num(){
-	return rand()/(double)RAND_MAX;
 }
