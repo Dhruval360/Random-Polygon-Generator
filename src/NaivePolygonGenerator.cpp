@@ -16,6 +16,7 @@
 #define inf INFINITY
 using namespace std;
 extern double timer;
+extern float Scale;
 
 #define col 0
 #define cw  1
@@ -38,7 +39,7 @@ bool cmpPoints(const pair<double,double> &a,const pair<double,double> &b){
 void randDoubleGen(Polygon *polygon, vector <pair<double,double>> &resHull, vector <pair<double,double>> &allPoints){
 	random_device rd; // Random device that initiates a random engine
 	mt19937 random_engine(rd()); // The random engine
-	uniform_real_distribution<double> unif(-1000,1000); // The distribution used
+	uniform_real_distribution<double> unif(-Scale, Scale); // The distribution from which the polygon's vertices are obtained from
 	set <pair<double,double>,bool(*)(const pair<double,double>&,const pair<double,double>&)> temp(&cmpPoints); // A set to store non duplicate points only
 	for(int i = 0; (int)temp.size() < polygon->numVertices; i++){
 		double x = unif(random_engine);
