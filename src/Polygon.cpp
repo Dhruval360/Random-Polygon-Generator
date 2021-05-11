@@ -134,4 +134,6 @@ void Polygon::Generator2(bool verbose, int choice){
     end_timer(start, timer);
 };
 
-void Polygon::Generator3(bool verbose){}
+void Polygon::Generator3(bool verbose){
+    simplePolygon(this, verbose);
+}

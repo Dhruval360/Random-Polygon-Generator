@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include "Polygon.hpp"
 using namespace std;
 
 #define inf 9999
@@ -142,7 +143,7 @@ bool edgeComparator(Edge e1,Edge e2){
 
 //function to find index of entity in the vector
 int indexInEdgesVec(vector <Edge> arr,Edge k){
-	for(int i = 0;i<arr.size();i++){
+	for(int i = 0;i<(int)arr.size();i++){
 		if(edgeComparator(arr.at(i),k)){
 			return i;
 		}
@@ -152,7 +153,7 @@ int indexInEdgesVec(vector <Edge> arr,Edge k){
 }
 
 int indexInPointsVec(vector <doublePoint> arr,doublePoint k){
-	for(int i = 0;i<arr.size();i++){
+	for(int i = 0;i<(int)arr.size();i++){
 		if(vertexComparator(arr.at(i),k)){
 			return i;
 		}
@@ -162,7 +163,7 @@ int indexInPointsVec(vector <doublePoint> arr,doublePoint k){
 }
 
 Edge myFind(vector <Edge> edges,int i,bool* status){
-	for(int i = 0;i<edges.size();i++){
+	for(int i = 0;i<(int)edges.size();i++){
 		if(edgeComparator(edges[i],edges[i])){
 			*status = true;
 			return edges[i];
@@ -250,11 +251,11 @@ doublePoint justBelowTop(stack <doublePoint>* stk){
 //function to write to text file
 bool writeWKT(vector <doublePoint> allPoints){
 	string txt = "";
-	for(int i = 0;i< allPoints.size();i++){
+	for(int i = 0;i< (int)allPoints.size();i++){
 		txt += to_string(allPoints[i].x);
 		txt += " ";
 		txt += to_string(allPoints[i].y);
-		if(i != allPoints.size()-1){
+		if(i != (int)allPoints.size()-1){
 			txt += ", ";
 		}
 	}
@@ -294,7 +295,7 @@ void convexHull(vector <doublePoint> points){
 	//swap the pos of bottom most point with the first index
 	iter_swap(points.begin()+0,points.begin()+min_index);
 	//cout <<"After swapping : \n";
-	for(int i = 0;i<points.size();i++){
+	for(int i = 0;i<(int)points.size();i++){
 		pointPrinter(points[i]);
 	}
 
@@ -307,7 +308,7 @@ void convexHull(vector <doublePoint> points){
 	qsort(&points[1],points.size()-1,sizeof(doublePoint),polAngSorter);
 	////cout << "Smallest polar angle point from ";pointPrinter(p);
 	//cout << "After sorting\n";
-	for(int i = 0;i<points.size();i++){
+	for(int i = 0;i<(int)points.size();i++){
 		pointPrinter(points[i]);
 	}
 	//pointPrinter(points[1]);
@@ -317,11 +318,11 @@ void convexHull(vector <doublePoint> points){
 	//the polar angles where same we consdered their dist from p0 as the 
 	//factor for sorting.Hence the farthest point with similar polar
 	//angles is located at the end
-	for(int i = 1;i<points.size();i++){
+	for(int i = 1;i<(int)points.size();i++){
 		//iter through the sub vector to find same polar angle points
 		int j = i;
 		//count the indexes with same polar angles
-		while(j< (points.size()-1) && 
+		while(j< (int)(points.size()-1) && 
 			orientationOfPoints(p,points[j],points[j+1]) == col){
 			j++;
 		}
@@ -335,7 +336,7 @@ void convexHull(vector <doublePoint> points){
 	}
 
 	//cout << "After removing duplicates : \n";
-	for(int i = 0;i<points.size();i++){
+	for(int i = 0;i<(int)points.size();i++){
 		pointPrinter(points[i]);
 	}
 
@@ -360,7 +361,7 @@ void convexHull(vector <doublePoint> points){
 	*/
 
 	//now start analysing the points from p3
-	for(int i = 3;i<points.size();i++){
+	for(int i = 3;i<(int)points.size();i++){
 		//cout << "Inside For loop \n";
 		//check the orientation ie angle formed from the point at the top 
 		//of the stack with the curr iter point,if its to thee right ie 
@@ -382,7 +383,7 @@ void convexHull(vector <doublePoint> points){
 		stk.push(points[i]);
 	}
 	//cout<<"stk size:"<<stk.size()<<endl;
-	//cout<<"points arr size "<<points.size()<<endl;
+	//cout<<"points arr size "<<(int)points.size()<<endl;
 
 	//stack has all the points of the HULL
 	//cout<<"Result : \n";
@@ -414,7 +415,7 @@ void generatePolygon(){
 	poly->edges = &edges; //edges of the convex hull only
 
 	//creating edges of poly from convex hull vertices
-	for (int i = 0; i < (resHull.size()-1); ++i){
+	for (int i = 0; i < (int)(resHull.size()-1); ++i){
 		Edge e1;
 		e1.startVertex = resHull[i];
 		e1.endVertex = resHull[i+1];
@@ -527,12 +528,12 @@ void generatePolygon(){
 }
 
 //###################THE ALGORITHM####################
-void algorithm3(Polygon* polygon,double min,double max,bool verbose){
-	random_points(polygon,min,max);
+void simplePolygon(Polygon* polygon,bool verbose){
+	static default_random_engine generator(clock());
+    static uniform_real_distribution<double> randomCoordinates(-500, 500);
 	//populate the random points vector
-	for(int i = 0;i<polygon->numVertices;i++){
-		allPoints.push_back({polygon->coordinates[i].first,
-		polygon->coordinates[i].second})
+	for(unsigned i = 0;i<polygon->numVertices;i++){
+		allPoints.push_back({randomCoordinates(generator), randomCoordinates(generator)});
 	}
 	isVerbose = verbose;
 	//generate the convex hull
@@ -542,7 +543,7 @@ void algorithm3(Polygon* polygon,double min,double max,bool verbose){
 	//clear the initial coordinates
 	polygon->coordinates.clear();
 	//push in the polygon ordered slides
-	for(int i = 0;i<polygon->numVertices;i++){
+	for(unsigned i = 0;i<polygon->numVertices;i++){
 		polygon->coordinates.push_back({polyPoints[i].x,
 		polyPoints[i].y});
 	}
