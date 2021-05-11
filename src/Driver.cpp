@@ -25,7 +25,7 @@ uniform_int_distribution<unsigned> distribution(10, 500); // Distribution for nu
 
 int main(int argc, const char** argv){ 
     srand(time(0));
-    int choice = 1;//rand()%5 + 1;
+    int choice = rand()%5 + 1;
     Scale = 1000;
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. Default : n=1", "NUM" },

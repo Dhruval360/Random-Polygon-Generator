@@ -79,6 +79,7 @@ void Polygon::Generator1(bool verbose, int choice){
 
 void Polygon::Generator2(bool verbose, int choice){
     static int min, max;
+    Scale=1;
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-500, 500);
     static binomial_distribution<int> binomial(9,0.5);
@@ -109,7 +110,7 @@ void Polygon::Generator2(bool verbose, int choice){
             if(verbose)printf("Binomial Distribution, ");
             break;
         case 3:
-            static int c = GraphingScaleSetter(70);
+            static int c = GraphingScaleSetter(50);
             min = geometric(generator) - geometric(generator)*0.5; max = geometric(generator) - geometric(generator)*0.5;
             if(min > max){
                 int temp = min;
@@ -120,7 +121,7 @@ void Polygon::Generator2(bool verbose, int choice){
             if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
-            static int d = GraphingScaleSetter(10);
+            static int d = GraphingScaleSetter(100);
             min = poisson(generator); max = poisson(generator);
             if(min > max){
                 int temp = min;
