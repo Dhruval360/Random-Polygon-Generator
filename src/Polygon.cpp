@@ -41,35 +41,35 @@ void Polygon::Generator1(bool verbose, int choice){
             x = uniform(generator); y = uniform(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            //if(verbose)printf("Uniform Distribution, ");
+            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
             x = binomial(generator) - binomial(generator); 
             y = binomial(generator) - binomial(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            //if(verbose)printf("Binomial Distribution, ");
+            if(verbose)printf("Binomial Distribution, ");
             break;
         case 3:
             //static int c = GraphingScaleSetter(70);
             x = geometric(generator) - geometric(generator)*0.5; y = geometric(generator) - geometric(generator)*0.5;
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            //if(verbose)printf("Geometric Distribution, ");
+            if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
             //static int d = GraphingScaleSetter(10);
             x = poisson(generator); y = poisson(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            //if(verbose)printf("Poisson Distribution, ");
+            if(verbose)printf("Poisson Distribution, ");
             break;
         case 5:
             //static int e = GraphingScaleSetter(1);
             x = normal(generator); y = normal(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            //if(verbose)printf("Normal Distribution, ");
+            if(verbose)printf("Normal Distribution, ");
             break;
         default:
             break;
