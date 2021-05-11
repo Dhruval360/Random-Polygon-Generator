@@ -87,7 +87,7 @@ void Polygon::Generator2(bool verbose, int choice){
     static normal_distribution<double> normal(0,1);
     switch(choice){
         case 1:
-            static int a = GraphingScaleSetter(500);
+            static int a = GraphingScaleSetter(0.500);
             min = uniform(generator); max = uniform(generator);
             if(min > max){
                 int temp = min;
