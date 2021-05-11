@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
 from statistics import mean
-import pandas as pd
-import seaborn as sns
 import sys
+import seaborn as sns
+import pandas as pd
 
 cycol = cycle('bgrcmk')
 plt.rcParams['axes.facecolor'] = 'lightgrey'
@@ -38,8 +38,8 @@ for polygon in polygons:
     y_avg_list.append(y_avg)
 
 distance_from_origin(x_avg_list, y_avg_list)
-sns.distplot(pd.Series(distance))
 plt.xlabel("Distance from origin")
 plt.ylabel("Frequency density")
 plt.title("Distribution of the polygons")
+sns.distplot(pd.Series(distance))
 plt.show()
