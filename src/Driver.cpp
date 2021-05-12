@@ -27,7 +27,7 @@ uniform_int_distribution<unsigned> distribution(10, 500);
 
 int main(int argc, const char** argv){ 
     srand(time(0));
-    int choice = rand()%5 + 1;
+    int choice = 5;//rand()%5 + 1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. [Default : n = 1]", "NUM" },
@@ -103,7 +103,7 @@ int main(int argc, const char** argv){
     if(!profiling){
         if(verbose){
             const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
-            printf("\nSampling Distribution = %s\n", distributions[choice - 1]);
+            printf("\nSampling from = %s\n", distributions[choice - 1]);
         }  
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
         printf("Writing the polygons to the file... \n");
@@ -126,8 +126,10 @@ int main(int argc, const char** argv){
     // Distribution plot for generated map of polygons
     if(dist_analysis){
         printf("Plotting the distribution of the generated polygons...\n");
-        if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL); // Read from user input file if filename not null
-        else execlp("python3", "python3", "Distribution.py", (char*) NULL); // Read from default output file, map.wkt if filename is null
+        //read from user input file if filename not null
+        if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL);
+        //read from default output file map.wkt if filename is null
+        else execlp("python3", "python3", "Distribution.py", (char*) NULL);
     }
     return 0;
 }
