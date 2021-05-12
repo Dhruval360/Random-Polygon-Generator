@@ -74,7 +74,6 @@ void Polygon::Generator1(bool verbose, int choice){
 
 void Polygon::Generator2(bool verbose, int choice){
     static int min, max;
-    //Scale = 1;
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-Scale, Scale);
     static binomial_distribution<int> binomial(Scale, 0.5);

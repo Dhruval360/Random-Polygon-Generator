@@ -35,9 +35,9 @@ int main(int argc, const char** argv){
         { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a= polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" }, // Name the algorithms
         { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g=1 to graph the generated polygons onto a single canvas (using OpenGL)", "NUM" },
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for profiling mode", "NUM"},
-        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
+        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Set f= filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
         { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
-        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set the canvas size within which all the polygons will be generated. Default : c=1000", "NUM"},
+        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set c= length of canvas within which all the polygons will be generated. Default : c=1000", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -98,33 +98,14 @@ int main(int argc, const char** argv){
     }
 
     end_timer(total, timer);
-    //Prints the distribution used for sampling
-    if(verbose){
-        switch(choice){
-        case 1:
-            printf("Sampling from Uniform Distribution, ");
-            break;
-        case 2:
-            printf("Sampling from Binomial Distribution, ");
-            break;
-        case 3:
-            printf("Sampling from Geometric Distribution, ");
-            break;
-        case 4:
-            printf("Sampling from Poisson Distribution, ");
-            break;
-        case 5:
-            printf("Sampling from Normal Distribution, ");
-            break;
-        default:
-            break;
-        }
-    }
+
     // Writing the polygons to the file in WKT format
     if(!profiling){
-        const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
+        //Prints the distribution used for sampling
+        const char *distributions[25] = {"Sampling from Uniform Distribution", "Sampling from Binomial Distribution", 
+        "Sampling from Geometric Distribution", "Sampling from Poisson Distribution", "Sampling from Normal Distribution"};
+        if(verbose) printf("\n%s\n", distributions[choice - 1]); 
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
-        if(verbose) printf("\nSampling Distribution = %s\n", distributions[choice - 1]); 
         printf("Writing the polygons to the file... \n");
     } 
     

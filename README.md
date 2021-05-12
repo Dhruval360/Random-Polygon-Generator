@@ -1,9 +1,9 @@
 # Polygon Generator
-## Maps
+## Sample Maps
 
-## Distribution Plots
+## Samples of Distribution Plots
 
-## Metrics Analysis
+## Sample of Metrics Analysis
 <img src = "/Images/metrics.png">
 
 ## Dependencies
@@ -21,9 +21,7 @@ Run the program using:
 $ ./bin/polygonGenerator -?
 ```
 
-Run the Profiler using:
+Run the Profiler using (The argument "5" can be replaced with the desired number of iterations):
 ```bash
 $ ./Profiler.sh 5
 ```
-
-Note: The argument "5" can be replaced with the desired number of iterations
