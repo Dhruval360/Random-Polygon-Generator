@@ -32,26 +32,6 @@ typedef struct edge{
 static pair<double,double> p; // Anchor point to polar sort the rem points
 
 /******************************* Helper Functions *******************************/
-// Comparator to insert into set
-bool cmpPoints(const pair<double,double> &a,const pair<double,double> &b){
-	return ((a.first < b.first) || (a.second < b.second));
-}
-
-void randDoubleGen(unsigned numVertices, vector <pair<double,double>> &resHull, vector <pair<double,double>> &allPoints){
-	random_device rd; // Random device that initiates a random engine
-	mt19937 random_engine(rd()); // The random engine
-	uniform_real_distribution<double> unif(-Scale, Scale); // The distribution from which the polygon's vertices are obtained from
-	set <pair<double,double>,bool(*)(const pair<double,double>&,const pair<double,double>&)> temp(&cmpPoints); // A set to store non duplicate points only
-	for(unsigned i = 0; (unsigned)temp.size() < numVertices; i++){
-		double x = unif(random_engine);
-		double y = unif(random_engine);
-		pair<double,double> p;
-		p.first = x;
-		p.second = y;
-		temp.insert(p);
-	}
-	for(auto pt : temp)	allPoints.push_back(pt);
-}
 
 #ifdef DEBUG
 	void pointPrinter(pair<double,double> pt){
@@ -263,16 +243,16 @@ pair<double,double> justBelowTop(stack <pair<double,double>>* stk){
 	return retVal;
 }
 
-void generateconvexHull(vector <pair<double,double>> points, vector <pair<double,double>> &resHull){
+void generateconvexHull(Polygon *polygon, vector <pair<double,double>> &resHull){
 	// Finding the bottom most point out of all the points
-	pair<double,double> min_point = points.at(0);
+	pair<double,double> min_point = polygon->coordinates.at(0);
 	int min_index = 0;
-	for(int i = 1;i<points.size();i++){
-		auto pt = points.at(i);
+	for(int i = 1;i<polygon->coordinates.size();i++){
+		auto pt = polygon->coordinates.at(i);
 		//check which is more bottom and if y coord is 
 		//same the check for x coordinate
-		if(pt.y<min_point.y || pt.y == min_point.y && 
-			pt.x < min_point.x){
+		if(pt.second<min_point.second || pt.second == min_point.second && 
+			pt.first < min_point.first){
 			min_point = pt;
 			min_index = i;
 		}
@@ -283,7 +263,7 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	#endif
 
 	// Swap the pos of bottom most point with the first index
-	iter_swap(points.begin()+0,points.begin()+min_index);
+	iter_swap(polygon->coordinates.begin()+0,polygon->coordinates.begin()+min_index);
 	
 	#ifdef DEBUG
 		cout << "After swapping : \n";
@@ -291,10 +271,10 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	#endif
 	// Sort the remaining n-1 points with respect to this anchor point
 	// i.e the first point based on the POLAR angle in anti clock wise direction because its a convex hull
-	p = points[0];
+	p = polygon->coordinates[0];
 	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
 	//sort(points.begin()+1,points.end(),polAngSorter);
-	qsort(&points[1],points.size()-1, sizeof(pair<double,double>), polAngSorter);
+	qsort(&polygon->coordinates[1],polygon->coordinates.size()-1, sizeof(pair<double,double>), polAngSorter);
 
 	#ifdef DEBUG
 		for(int i = 0;i<(int)points.size();i++) pointPrinter(points[i]);
@@ -302,38 +282,38 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	// Now remove all the points with same polar angle from anchor point except for the farthest point
 	// The array is already sorted based on polar angles and also when the polar angles where same we consdered their dist from p0 as the  factor for sorting.
 	// Hence the farthest point with similar polar angles is located at the end
-	int n = points.size();
+	int n = polygon->coordinates.size();
 	for(int i = 1;i<n;i++){
 		//iter through the sub vector to find same polar angle points
 		//count the indexes with same polar angles
 		int k = i;
-		while(i< (points.size()-1) && 
-			orientationOfPoints(p,points[i],points[i+1]) == col){
+		while(i< (polygon->coordinates.size()-1) && 
+			orientationOfPoints(p,polygon->coordinates[i],polygon->coordinates[i+1]) == col){
 			i++;
 		}
-		points.erase(points.begin()+k,points.begin()+i);
+		polygon->coordinates.erase(polygon->coordinates.begin()+k,polygon->coordinates.begin()+i);
 	}
 
 	#ifdef DEBUG
 		cout << "After removing duplicates : \n";
-		for(int i = 0;i<(int)points.size();i++)	pointPrinter(points[i]);
+		for(int i = 0;i<(int)polygon->coordinates.size();i++)	pointPrinter(polygon->coordinates[i]);
 	#endif
 
 	// If the new vec has LT 3 points,then no convex hull formed
-	if(points.size()<3) return ;
+	if(polygon->coordinates.size()<3) return ;
 
 	// Create the stack to store the points
 	// Push the first three points p0,p1,p2
 	stack <pair<double,double>> stk;
 	#ifdef DEBUG
 		cout << "Pushing.....\n";
-		pointPrinter(points[0]);
-		pointPrinter(points[1]);
-		pointPrinter(points[2]);
+		pointPrinter(polygon->coordinates[0]);
+		pointPrinter(polygon->coordinates[1]);
+		pointPrinter(polygon->coordinates[2]);
 	#endif
-	stk.push(points[0]);
-	stk.push(points[1]);
-	stk.push(points[2]);
+	stk.push(polygon->coordinates[0]);
+	stk.push(polygon->coordinates[1]);
+	stk.push(polygon->coordinates[2]);
 	/*
 	|p2|
 	|p1|
@@ -342,18 +322,18 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	*/
 
 	// Now start analysing the points from p3
-	for(int i = 3; i<(int)points.size(); i++){
+	for(int i = 3; i<(int)polygon->coordinates.size(); i++){
 		// Check the orientation i.e angle formed from the point at the top of the stack with the curr iter point.
 		// If its to the right i.e cw(CONCAVE), then violates convex hull rule
 		#ifdef DEBUG
-			pointPrinter(points[i]);
+			pointPrinter(polygon->coordinates[i]);
 		#endif
-		while(stk.size()>1 && orientationOfPoints(justBelowTop(&stk), stk.top(), points[i]) != ccw) stk.pop();
-		stk.push(points[i]); // Push the next point under consideration
+		while(stk.size()>1 && orientationOfPoints(justBelowTop(&stk), stk.top(), polygon->coordinates[i]) != ccw) stk.pop();
+		stk.push(polygon->coordinates[i]); // Push the next point under consideration
 	}
 	#ifdef DEBUG
 			cout << "stk size:" << stk.size() <<' \n';
-			cout << "points arr size " << points.size() << '\n';
+			cout << "points arr size " << polygon->coordinates.size() << '\n';
 			cout << "Result : \n";
 	#endif
 	
@@ -372,13 +352,8 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 
 void generatePolygon(Polygon *polygon){
 	vector <pair<double,double>> resHull; // The resultant CONVEX HULL
-	vector <pair<double,double>> allPoints; // All points needed to be included in POLYGON - Supplied as random points
-	vector <pair<double,double>> polyPoints; // The result points
 	resHull.reserve(polygon->numVertices);
-	allPoints.reserve(polygon->numVertices);
-	polyPoints.reserve(polygon->numVertices);
-	randDoubleGen(polygon->numVertices, resHull, allPoints);
-	generateconvexHull(allPoints, resHull);
+	generateconvexHull(polygon, resHull);
 	// Points in the convex Hull
 	// vector <pair<double,double>> resHull = {{-5,-3},{-1,1},{0,0},{1,-4},{-1,-5}};
     // vector <pair<double,double>> resHull = {{0,0},{0,3},{3,1},{4,4}};              
@@ -403,7 +378,7 @@ void generatePolygon(Polygon *polygon){
 	// Interior points are those points that are not part of the convex hull vertices
 	// Interior points are correctly generated
 	vector <pair<double,double>> interiorPoints;
-	for(auto v : allPoints){
+	for(auto v : polygon->coordinates){
 		bool isPresent = false;
 		for(auto cv : resHull)
 			if(cv.first == v.first && cv.second == v.second) isPresent = true;

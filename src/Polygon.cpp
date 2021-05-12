@@ -1,7 +1,7 @@
 #include<random>
 #include<stdio.h>
 #include"Polygon.hpp"
-
+#include<set>
 using namespace std;
 
 extern double timer; // Used for storing the calculated time taken
@@ -14,7 +14,10 @@ static double clip(double x, double min, double max){
     x = x > max ? max : x;
     return x;
 } 
-
+// Comparator to insert into set
+bool cmpPoints(const pair<double,double> &a,const pair<double,double> &b){
+	return ((a.first < b.first) || (a.second < b.second));
+}
 Polygon::Polygon(unsigned int numVertices){
     static default_random_engine generator(clock());
     static uniform_real_distribution<float> ColorDistribution(0.25, 0.8);
@@ -136,5 +139,71 @@ void Polygon::Generator2(bool verbose, int choice){
 };
 
 void Polygon::Generator3(bool verbose, int choice){
+    double x,y;
+    set <pair<double,double>,bool(*)(const pair<double,double>&,const pair<double,double>&)> temp(&cmpPoints); // A set to store non duplicate points only
+    static default_random_engine generator(clock());
+    static uniform_int_distribution<int> uniform(-Scale, Scale);
+    static binomial_distribution<int> binomial(Scale, 0.5);
+    static geometric_distribution<int> geometric(Scale/10000);
+    static poisson_distribution<int> poisson(Scale/10);
+    static normal_distribution<double> normal(0, Scale/2);
+    switch(choice){
+        case 1:
+            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+                x = uniform(generator); 
+                y = uniform(generator);
+                pair<double,double> p;
+                p.first = x;
+                p.second = y;
+                temp.insert(p);
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            break;
+        case 2:
+            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+                x = binomial(generator) - binomial(generator); 
+                y = binomial(generator) - binomial(generator);
+                pair<double,double> p;
+                p.first = x;
+                p.second = y;
+                temp.insert(p);
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            break;
+        case 3:
+            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+                x = geometric(generator) - geometric(generator)*0.5; 
+                y = geometric(generator) - geometric(generator)*0.5;
+                pair<double,double> p;
+                p.first = x;
+                p.second = y;
+                temp.insert(p);
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            break;
+        case 4:
+            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+                x = poisson(generator) - poisson(generator); 
+                y = poisson(generator) - poisson(generator); 
+                pair<double,double> p;
+                p.first = x;
+                p.second = y;
+                temp.insert(p);
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            break;
+        case 5:
+            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+                x = normal(generator); y = normal(generator);
+                pair<double,double> p;
+                p.first = x;
+                p.second = y;
+                temp.insert(p);
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            break;
+        default:
+            break;
+    }
     naivePolygon(this, verbose);
 }
