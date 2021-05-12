@@ -25,7 +25,7 @@ Install the dependencies:
 
 ```bash
 $ sudo apt install libpopt-dev freeglut3-dev
-$ python3 -m pip install -r requirements.txt
+$ python3 -m pip install -r Requirements.txt
 ```
 Compile using the make utility:
 
