@@ -2,9 +2,9 @@
 #include<popt.h>
 #include<string.h>
 #include<pthread.h>
+#include<unistd.h>
 #include<omp.h>
 #include<random>
-#include<unistd.h>
 #include<string>
 #include"Polygon.hpp"
 
@@ -30,14 +30,14 @@ int main(int argc, const char** argv){
     int choice = rand()%5 + 1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
-        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. Default : n=1", "NUM" },
+        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. [Default : n = 1]", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v = 1 for verbose output (will slow down the program by some time)", "NUM" },
-        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a = polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" }, // Name the algorithms
+        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a = polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" },
         { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g = 1 to graph the generated polygons onto a single canvas (using OpenGL)", "NUM" },
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p = 1 for profiling mode", "NUM"},
-        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Set f = filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
+        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the generated polygons are to be written to in WKT format. [Default : map.wkt]", "STR"},
         { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d = 1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
-        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set c = length of canvas within which all the polygons will be generated. Default : c=1000", "NUM"},
+        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set the canvas size within which all the polygons will be generated. [Default : c = 1000]", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -90,7 +90,7 @@ int main(int argc, const char** argv){
         }
     }
     else{
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator3(verbose, choice);
@@ -98,13 +98,13 @@ int main(int argc, const char** argv){
     }
 
     end_timer(total, timer);
-
+    
     // Writing the polygons to the file in WKT format
     if(!profiling){
-        //Prints the distribution used for sampling
-        const char *distributions[25] = {"Sampling from Uniform Distribution", "Sampling from Binomial Distribution", 
-        "Sampling from Geometric Distribution", "Sampling from Poisson Distribution", "Sampling from Normal Distribution"};
-        if(verbose) printf("\n%s\n", distributions[choice - 1]); 
+        if(verbose){
+            const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
+            printf("\nSampling Distribution = %s\n", distributions[choice - 1]);
+        }  
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
         printf("Writing the polygons to the file... \n");
     } 
@@ -123,13 +123,11 @@ int main(int argc, const char** argv){
         if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
         else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
     }    
-    //Distribution plot for generated map of polygons
+    // Distribution plot for generated map of polygons
     if(dist_analysis){
         printf("Plotting the distribution of the generated polygons...\n");
-        //read from user input file if filename not null
-        if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL);
-        //read from default output file map.wkt if filename is null
-        else execlp("python3", "python3", "Distribution.py", (char*) NULL);
+        if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL); // Read from user input file if filename not null
+        else execlp("python3", "python3", "Distribution.py", (char*) NULL); // Read from default output file, map.wkt if filename is null
     }
     return 0;
 }
