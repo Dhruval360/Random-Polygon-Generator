@@ -24,9 +24,9 @@ debug: FLAGS := -g -Wall
 debug: ${OBJS}
 	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator"
 
-polygonGenerator_SharedLibrary: FLAGS := ${FLAGS} -shared --compiler-options="-fPIC -pie"
+polygonGenerator_SharedLibrary: FLAGS := ${FLAGS} -shared -fPIC -pie
 polygonGenerator_SharedLibrary: ${SHARED_OBJS}
-	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!!"
+	${COMPILER} ${FLAGS} -o ${SHARED_LIBRARY} $^ ${LIBS} && echo "Compiled Successfully!!"
 
 ${OBJ}/%.o: ${SRC}/%.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS} 
