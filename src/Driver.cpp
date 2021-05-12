@@ -30,14 +30,14 @@ int main(int argc, const char** argv){
     int choice = rand()%5 + 1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
-        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n= number of polygons that needs to be generated. Default : n=1", "NUM" },
-        { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
-        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a= polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" }, // Name the algorithms
-        { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g=1 to graph the generated polygons onto a single canvas (using OpenGL)", "NUM" },
-        { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for profiling mode", "NUM"},
-        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Set f= filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
-        { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
-        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set c= length of canvas within which all the polygons will be generated. Default : c=1000", "NUM"},
+        { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. Default : n=1", "NUM" },
+        { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v = 1 for verbose output (will slow down the program by some time)", "NUM" },
+        { "algorithm", 'a',POPT_ARG_STRING, &algorithm, 0, "Set a = polar or spacePartition or naivePoly to select the algorithm used to generate the polygons", "STR" }, // Name the algorithms
+        { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g = 1 to graph the generated polygons onto a single canvas (using OpenGL)", "NUM" },
+        { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p = 1 for profiling mode", "NUM"},
+        { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Set f = filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
+        { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d = 1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
+        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set c = length of canvas within which all the polygons will be generated. Default : c=1000", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
