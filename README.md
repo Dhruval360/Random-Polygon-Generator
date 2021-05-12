@@ -45,9 +45,75 @@ $ ./Profiler.sh 5
 ```
 Here, the 5 represents the number of iterations the Profilers runs the program. In any iteration `i`, `100i` polygons are generated using each of the three algorithms.
 
+## Sample of Metrics Analysis
+![](Images/metrics.png)
+
 ## Sample Maps
+
+<table>
+  <tr>
+    <td>Polar Algorithm</td>
+    <td>Space Partition Algorithm</td>
+    <td>Naive Polygon Algorithm</td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_g_1.png"></td>
+    <td valign="top"><img src="Images/s_g_1.png"></td>
+    <td valign="top"><img src="Images/n_g_1.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_g_2.png"></td>
+    <td valign="top"><img src="Images/s_g_2.png"></td>
+    <td valign="top"><img src="Images/n_g_2.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_g_3.png"></td>
+    <td valign="top"><img src="Images/s_g_3.png"></td>
+    <td valign="top"><img src="Images/n_g_3.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_g_4.png"></td>
+    <td valign="top"><img src="Images/s_g_4.png"></td>
+    <td valign="top"><img src="Images/n_g_4.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_g_5.png"></td>
+    <td valign="top"><img src="Images/s_g_5.png"></td>
+    <td valign="top"><img src="Images/n_g_5.png"></td>
+  </tr>
+ </table>
 
 ## Samples of Distribution Plots
 
-## Sample of Metrics Analysis
-<img src = "Images/metrics.png">
+<table>
+  <tr>
+    <td>Polar Algorithm</td>
+    <td>Space Partition Algorithm</td>
+    <td>Naive Polygon Algorithm</td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_d_1.png"></td>
+    <td valign="top"><img src="Images/s_d_1.png"></td>
+    <td valign="top"><img src="Images/n_d_1.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_d_2.png"></td>
+    <td valign="top"><img src="Images/s_d_2.png"></td>
+    <td valign="top"><img src="Images/n_d_2.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_d_3.png"></td>
+    <td valign="top"><img src="Images/s_d_3.png"></td>
+    <td valign="top"><img src="Images/n_d_3.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_d_4.png"></td>
+    <td valign="top"><img src="Images/s_d_4.png"></td>
+    <td valign="top"><img src="Images/n_d_4.png"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="Images/p_d_5.png"></td>
+    <td valign="top"><img src="Images/s_d_5.png"></td>
+    <td valign="top"><img src="Images/n_d_5.png"></td>
+  </tr>
+ </table>
