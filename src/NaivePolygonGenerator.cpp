@@ -220,7 +220,7 @@ void generateconvexHull(Polygon *polygon, vector <pair<double,double>> &resHull)
 	
 	#ifdef DEBUG
 		cout << "After swapping : \n";
-		for(unsigned i = 0; i < (unsigned)points.size(); i++) pointPrinter(points[i]);
+		for(unsigned i = 0; i < (unsigned)polygon->coordinates.size(); i++) pointPrinter(polygon->coordinates[i]);
 	#endif
 	// Sort the remaining n-1 points with respect to this anchor point
 	// i.e the first point based on the POLAR angle in anti clock wise direction because its a convex hull
@@ -229,7 +229,7 @@ void generateconvexHull(Polygon *polygon, vector <pair<double,double>> &resHull)
 	qsort_r(&polygon->coordinates[1],polygon->coordinates.size()-1, sizeof(pair<double,double>), polAngSorter, &p);
 
 	#ifdef DEBUG
-		for(unsigned i = 0; i < (unsigned)points.size(); i++) pointPrinter(points[i]);
+		for(unsigned i = 0; i < (unsigned)polygon->coordinates.size(); i++) pointPrinter(polygon->coordinates[i]);
 	#endif
 	// Now remove all the points with same polar angle from anchor point except for the farthest point
 	// The array is already sorted based on polar angles and also when the polar angles where same we consdered their dist from p0 as the  factor for sorting.
@@ -275,7 +275,7 @@ void generateconvexHull(Polygon *polygon, vector <pair<double,double>> &resHull)
 		stk.push(polygon->coordinates[i]); // Push the next point under consideration
 	}
 	#ifdef DEBUG
-			cout << "stk size:" << stk.size() <<' \n';
+			cout << "stk size:" << stk.size() << '\n';
 			cout << "points arr size " << polygon->coordinates.size() << '\n';
 			cout << "Result : \n";
 	#endif

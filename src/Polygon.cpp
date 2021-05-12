@@ -96,7 +96,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            space_partition(this, min, max, verbose);
+            spacePartition(this, min, max, verbose);
             break;
         case 2:
             min = binomial(generator) - binomial(generator); 
@@ -106,7 +106,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            space_partition(this, clip(15*min), clip(15*max), verbose);
+            spacePartition(this, clip(15*min), clip(15*max), verbose);
             break;
         case 3:
             min = geometric(generator) - geometric(generator)*0.5; 
@@ -116,7 +116,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            space_partition(this, clip(55*min), clip(55*max), verbose);
+            spacePartition(this, clip(55*min), clip(55*max), verbose);
             break;
         case 4:
             min = poisson(generator) - poisson(generator); 
@@ -126,7 +126,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            space_partition(this, clip(50*min), clip(50*max), verbose);
+            spacePartition(this, clip(50*min), clip(50*max), verbose);
             break;
         case 5:
             min = normal(generator); max = normal(generator);
@@ -135,7 +135,7 @@ void Polygon::Generator2(bool verbose, int choice){
                 min = max;
                 max = temp;
             }
-            space_partition(this, clip(min), clip(max), verbose);
+            spacePartition(this, clip(min), clip(max), verbose);
             break;
         default:
             break;

@@ -1,11 +1,9 @@
-#include<stdio.h>
 #include<popt.h>
 #include<string.h>
 #include<pthread.h>
 #include<unistd.h>
 #include<omp.h>
 #include<random>
-#include<string>
 #include"Polygon.hpp"
 
 using namespace std;
@@ -17,13 +15,13 @@ char *algorithm = NULL, *filename = NULL;
 double timer;
 long fileSize;
 
-extern float Scale;
+extern float Scale; // Canvas size
 
 Polygon *polygons;
 
 // Distribution for number of vertices in the polygon
 default_random_engine generator(clock());
-uniform_int_distribution<unsigned> distribution(10, 500);
+uniform_int_distribution<unsigned> distribution(10, 500); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
 
 int main(int argc, const char** argv){ 
     srand(time(0));
@@ -99,12 +97,11 @@ int main(int argc, const char** argv){
 
     end_timer(total, timer);
     
-    // Writing the polygons to the file in WKT format
+    if(verbose){
+        const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
+        printf("\nSampling from = %s\n", distributions[choice - 1]);
+    }  
     if(!profiling){
-        if(verbose){
-            const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
-            printf("\nSampling from = %s\n", distributions[choice - 1]);
-        }  
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
         printf("Writing the polygons to the file... \n");
     } 
@@ -113,22 +110,22 @@ int main(int argc, const char** argv){
         pthread_t graphicsThread;
         int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
         if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
-        writer(polygons, number_of_polygons, filename);  
+        writer(polygons, number_of_polygons, filename);  // Writing the polygons to the file in WKT format
         if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
         else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
         pthread_join(graphicsThread, NULL);
     } 
     else{
-        writer(polygons, number_of_polygons, filename);
+        writer(polygons, number_of_polygons, filename); // Writing the polygons to the file in WKT format
         if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
         else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
-    }    
+    }  
+
     // Distribution plot for generated map of polygons
     if(dist_analysis){
         printf("Plotting the distribution of the generated polygons...\n");
-        //read from user input file if filename not null
+        // Read from user input file if filename not null. Else, read from default output file map.wkt
         if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL);
-        //read from default output file map.wkt if filename is null
         else execlp("python3", "python3", "Distribution.py", (char*) NULL);
     }
     return 0;
