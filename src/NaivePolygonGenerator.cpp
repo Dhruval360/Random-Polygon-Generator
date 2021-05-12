@@ -267,19 +267,15 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	// Finding the bottom most point out of all the points
 	pair<double,double> min_point = points.at(0);
 	int min_index = 0;
-	int i = 0;
-	for(auto pt : points){
-		// Check which is more bottom
-		if(pt.second<min_point.second){
+	for(int i = 1;i<points.size();i++){
+		auto pt = points.at(i);
+		//check which is more bottom and if y coord is 
+		//same the check for x coordinate
+		if(pt.y<min_point.y || pt.y == min_point.y && 
+			pt.x < min_point.x){
 			min_point = pt;
 			min_index = i;
 		}
-		// If y coord is same the check for x coordinate
-		else if(pt.second == min_point.second && pt.first < min_point.first){
-			min_point = pt;
-			min_index = i;
-		}
-		i++;
 	}
 	#ifdef DEBUG
 		cout<<"Bottom most point : \n";
@@ -306,21 +302,16 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	// Now remove all the points with same polar angle from anchor point except for the farthest point
 	// The array is already sorted based on polar angles and also when the polar angles where same we consdered their dist from p0 as the  factor for sorting.
 	// Hence the farthest point with similar polar angles is located at the end
-	for(int i = 1;i<(int)points.size();i++){ // Iterate through the sub vector to find same polar angle points
-		int j = i;
-		// Count the indices with same polar angles
-		while(j< (int)(points.size()-1) && 
-			orientationOfPoints(p,points[j],points[j+1]) == col){
-			j++;
+	int n = points.size();
+	for(int i = 1;i<n;i++){
+		//iter through the sub vector to find same polar angle points
+		//count the indexes with same polar angles
+		int k = i;
+		while(i< (points.size()-1) && 
+			orientationOfPoints(p,points[i],points[i+1]) == col){
+			i++;
 		}
-		if(i!=j){ // Erase from i to j if i!=j
-			#ifdef DEBUG
-				cout << "i "<< i << '\n';
-				cout << "j "<< j << '\n';
-				cout << j-i << " Dups found,removing them..\n";
-			#endif
-			points.erase(points.begin()+i,points.begin()+(j));
-		}
+		points.erase(points.begin()+k,points.begin()+i);
 	}
 
 	#ifdef DEBUG
