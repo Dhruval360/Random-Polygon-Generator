@@ -52,10 +52,6 @@ void randDoubleGen(Polygon *polygon, vector <pair<double,double>> &resHull, vect
 	for(auto pt : temp)	allPoints.push_back(pt);
 }
 
-void pointPrinter(pair<double,double> pt){
-    //cout << '(' << "X:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << endl;
-}
-
 bool vertexComparator(pair<double,double> a,pair<double,double> b){
 	return (a.first == b.first && a.second == b.second);
 }
@@ -190,13 +186,6 @@ Edge myFind(vector <Edge> edges,int i,bool* status){
 	return edges[0];
 }
 
-void edgePrinter(Edge e){
-	//cout << "From ";
-	pointPrinter(e.startVertex);
-	//cout << "To ";
-	pointPrinter(e.endVertex);
-}
-
 //orientation of 3 pints depends on their slope
 //if diff of slopes is po,thenthere is RIGHT turn ie cw else if neg then
 //ccw ie LEFT or else collinear if 0
@@ -301,15 +290,9 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 		}
 		i++;
 	}
-	//cout<<"Bottom most point : \n";
-	pointPrinter(min_point);
 
 	//swap the pos of bottom most point with the first index
 	iter_swap(points.begin()+0,points.begin()+min_index);
-	//cout <<"After swapping : \n";
-	for(int i = 0;i<(int)points.size();i++){
-		pointPrinter(points[i]);
-	}
 
 	//sort the remaining n-1 points with respect to this anchor point
 	//ie the first point based on the POLAR angle in anti clock wise 
@@ -318,11 +301,6 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
 	//sort(points.begin()+1,points.end(),polAngSorter);
 	qsort(&points[1],points.size()-1,sizeof(pair<double,double>),polAngSorter);
-
-	for(int i = 0;i<(int)points.size();i++){
-		pointPrinter(points[i]);
-	}
-	//pointPrinter(points[1]);
 	//now remove all the points with same polar angle from anchor point
 	//except for the farthest point
 	//the array is already sorted based on polar angles and also when 
@@ -346,11 +324,6 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 		}
 	}
 
-	//cout << "After removing duplicates : \n";
-	for(int i = 0;i<(int)points.size();i++){
-		pointPrinter(points[i]);
-	}
-
 	//if the new vec has LT 3 points,then no convex hull formed
 	if(points.size()<3) return ;
 
@@ -359,11 +332,8 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	stack <pair<double,double>> stk;
 	//cout << "Pushing.....\n";
 	stk.push(points[0]);
-	pointPrinter(points[0]);
 	stk.push(points[1]);
-	pointPrinter(points[1]);
 	stk.push(points[2]);
-	pointPrinter(points[2]);
 	/*
 	|p2|
 	|p1|
@@ -386,7 +356,6 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 				stk.pop();
 			}
 		}*/
-		pointPrinter(points[i]);
 		while(stk.size()>1 && orientationOfPoints(justBelowTop(&stk),stk.top(),points[i]) != ccw) stk.pop();
 		//push the next point under consideration
 		stk.push(points[i]);
@@ -398,7 +367,6 @@ void generateconvexHull(vector <pair<double,double>> points, vector <pair<double
 	//cout<<"Result : \n";
 	while(!stk.empty()){
 		pair<double,double> temp = stk.top();
-		pointPrinter(temp);
 		resHull.push_back(temp);
 		stk.pop();
 	}
@@ -444,18 +412,6 @@ void generatePolygon(Polygon *polygon){
 		}
 	}
 
-	/*//cout << "Interior Points : ";
-	for(auto pt : interiorPoints){
-		pointPrinter(pt);
-	}
-	//cout << endl;*/
-
-	//cout << "The edges of convex Hull are : \n";
-	for(auto e : edges){
-		edgePrinter(e);
-		//cout << endl;
-	}
-
 	//while there are interior points remaining
 	while(interiorPoints.size()> 0){
 		//initially the distance is infinite
@@ -471,9 +427,6 @@ void generatePolygon(Polygon *polygon){
 				//find distance between line(edge under consideration) and 
 				//point(interior point under consideration)
 				double currDist = point2lineDist(ip,e.startVertex,e.endVertex);
-				//cout << "Curr Dist " << currDist<<endl;
-				//cout<<"Dist of edge ";edgePrinter(e);//cout<<" To point ";
-				pointPrinter(ip);//cout<<" is ";//cout<<currDist;//cout<<endl;
 				if(currDist < minDist)
 					if(isValidEdge(edges,e,ip)){
 						//this can be the minDist between point and edge
@@ -483,10 +436,6 @@ void generatePolygon(Polygon *polygon){
 				}
 			}
 		}
-		//cout <<"Choosen : \n";
-		//cout<<"Dist of edge ";edgePrinter(toRemEdge);//cout<<" To point ";
-		pointPrinter(nearestPoint);//cout<<" is ";//cout<<minDist;//cout<<endl;
-		//cout<<"End\n";
 		//by here we would have the closest point to edge data
 		//the index of the toRemEdge in edges array
 		int i = indexInEdgesVec(edges,toRemEdge);
@@ -526,7 +475,6 @@ void generatePolygon(Polygon *polygon){
 	}
 	for(auto e : edges){
 		polyPoints.push_back(e.startVertex);
-		edgePrinter(e);
 	}
 	polygon->coordinates = polyPoints;
 	allPoints.clear();

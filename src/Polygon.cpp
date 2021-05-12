@@ -41,35 +41,27 @@ void Polygon::Generator1(bool verbose, int choice){
             x = uniform(generator); y = uniform(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
             x = binomial(generator) - binomial(generator); 
             y = binomial(generator) - binomial(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Binomial Distribution, ");
             break;
         case 3:
-            //static int c = GraphingScaleSetter(70);
             x = geometric(generator) - geometric(generator)*0.5; y = geometric(generator) - geometric(generator)*0.5;
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
-            //static int d = GraphingScaleSetter(10);
             x = poisson(generator); y = poisson(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Poisson Distribution, ");
             break;
         case 5:
-            //static int e = GraphingScaleSetter(1);
             x = normal(generator); y = normal(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Normal Distribution, ");
             break;
         default:
             break;
@@ -95,7 +87,6 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
             static int b = GraphingScaleSetter(10);
@@ -106,7 +97,6 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Binomial Distribution, ");
             break;
         case 3:
             static int c = GraphingScaleSetter(50);
@@ -117,7 +107,6 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
             static int d = GraphingScaleSetter(100);
@@ -128,7 +117,6 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Poisson Distribution, ");
             break;
         case 5:
             static int e = GraphingScaleSetter(1);
@@ -139,7 +127,6 @@ void Polygon::Generator2(bool verbose, int choice){
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Normal Distribution, ");
             break;
         default:
             break;
