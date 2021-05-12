@@ -20,3 +20,10 @@ Run the program using:
 ```bash
 $ ./bin/polygonGenerator -?
 ```
+
+Run the Profiler using:
+```bash
+$ ./Profiler.sh 5
+```
+
+Note: The argument "5" can be replaced with the desired number of iterations

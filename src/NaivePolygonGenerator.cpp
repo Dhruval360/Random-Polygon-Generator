@@ -212,8 +212,6 @@ Edge myFind(vector <Edge> edges,int i,bool* status){
 	return edges[0];
 }
 
-
-
 // Orientation of 3 pints depends on their slope
 // If diff of slopes is positive, then there is RIGHT turn i.e cw else if negative then ccw i.e LEFT or else collinear if 0
 int orientationOfPoints(pair<double,double> p,pair<double,double> q,pair<double,double> r){
