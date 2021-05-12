@@ -1,9 +1,10 @@
 bin/
 obj/
 shared/
-/src/a.out
-/src/temp
-/src/*.wkt
+src/a.out
+src/temp
+src/*.wkt
 .vscode/
 *.wkt
-metrics.csv
+*.csv
+core

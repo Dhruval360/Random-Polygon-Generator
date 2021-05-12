@@ -1,8 +1,11 @@
 #include<iostream>
 #include<random>
 #include "Polygon.hpp"
-#define DEBUG 0
+
 using namespace std;
+
+//#define DEBUG // Uncomment to enable debug 
+
 extern double timer;
 
 //generates random number between 0 and 1
@@ -59,7 +62,9 @@ void recursive_partioning(Polygon *polygon, unsigned int begin, unsigned int end
 static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned int &temp_rl, unsigned int &begin, unsigned int &end, 
 	pair<double, double> start_point, pair<double, double> end_point, int flag){
 	while(temp_lr <= temp_rl){ // As long as left_to_right index is less than right_to_left index
-		if(DEBUG) cout << "Before => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << endl;
+		#ifdef DEBUG 
+			cout << "Before => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << '\n';
+		#endif
 		
 		// Find a point from the left side of the vector such that it CANNOT be traversed in a CW manner
 		while(temp_lr < end && to_left(start_point, end_point, polygon->coordinates[temp_lr]) == flag) temp_lr++;
@@ -72,30 +77,36 @@ static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned in
 			temp_lr++;
 			temp_rl--;
 		}
-		if(DEBUG) cout << "After => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << endl;	
+		#ifdef DEBUG 
+			cout << "After => temp_lr = " << temp_lr << " temp_rl = " << temp_rl << '\n';	
+		#endif
 	}
 	swap(polygon, begin + 1, temp_rl);
 }
 
 // Exchanges contents of the said indices in the vector
 void swap(Polygon *polygon, unsigned int first_index, unsigned int second_index){
-	if(DEBUG) cout << "Before swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << endl;
+	#ifdef DEBUG 
+		cout << "Before swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << '\n';
+	#endif
 	
 	// Using in-built swap function to swap the tuples
 	polygon->coordinates[second_index].swap(polygon->coordinates[first_index]);
-	if(DEBUG) cout << "After swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << endl;
+	#ifdef DEBUG 
+		cout << "After swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << '\n';
+	#endif
 }
 
 // This function returns a value based on which side the test point is w.r.t the line
 bool to_left(const pair<double,double> &start_point, const pair<double,double> &end_point, const pair<double,double> &test_point){
-	if(DEBUG){
+	#ifdef DEBUG
 		int ret = (end_point.first - start_point.first) * (test_point.second - start_point.second) <= (end_point.second - start_point.second) * (test_point.first - start_point.first);
-		cout << "Start point " << start_point.first << " " << start_point.second << endl;
-		cout << "End point " << end_point.first << " " << end_point.second << endl;
-		cout << "Test point " << test_point.first << " " << test_point.second << endl;
+		cout << "Start point " << start_point.first << " " << start_point.second << '\n';
+		cout << "End point " << end_point.first << " " << end_point.second << '\n';
+		cout << "Test point " << test_point.first << " " << test_point.second << '\n';
 		cout << "Distance " << (end_point.first - start_point.first) * (test_point.second - start_point.second) - (end_point.second - start_point.second) * (test_point.first - start_point.first) << " ";
-		cout << "Return value " << ret << endl;
-	}
+		cout << "Return value " << ret << '\n';
+	#endif
 	return (end_point.first - start_point.first) * (test_point.second - start_point.second) <= (end_point.second - start_point.second) * (test_point.first - start_point.first);
 }
 
@@ -112,8 +123,8 @@ pair<double,double> random_point_segment(const pair<double,double> &start_point,
 void random_points(Polygon *polygon, double min, double max){
 	for (unsigned i = 0; i < polygon->numVertices; i++){
 		polygon->coordinates.push_back(pair<double,double>(min + (max - min) * random_ratio(generator), min + (max - min) * random_ratio(generator)));
-		if(DEBUG){
-			cout << "Random point " << polygon->coordinates[i].first << " " << polygon->coordinates[i].second << endl;
-		}
+		#ifdef DEBUG
+			cout << "Random point " << polygon->coordinates[i].first << " " << polygon->coordinates[i].second << '\n';
+		#endif
 	}
 }

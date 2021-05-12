@@ -9,11 +9,11 @@ extern float Scale;
 extern unsigned number_of_polygons;
 extern short graph;
 
-static int GraphingScaleSetter(unsigned scale){
-    Scale = scale;
-    if(graph) printf("Graph scale = %f\n", Scale);
-    return Scale;
-}
+static double clip(double x, double min, double max){
+    x = x < min ? min : x;
+    x = x > max ? max : x;
+    return x;
+} 
 
 Polygon::Polygon(unsigned int numVertices){
     static default_random_engine generator(clock());
@@ -29,7 +29,7 @@ void Polygon::Generator1(bool verbose, int choice){
     static default_random_engine generator(clock());
     static uniform_real_distribution<double> uniform(-Scale/2, Scale/2);
     static binomial_distribution<int> binomial(Scale/2, 0.5);
-    static geometric_distribution<int> geometric(Scale/10000);
+    static geometric_distribution<int> geometric(Scale/10000); // Needs to be redone
     static poisson_distribution<int> poisson(Scale/10);
     static normal_distribution<double> normal(3*Scale/500, 2);
     static uniform_real_distribution<double> avgRadiusDistribution(Scale/20, Scale/2);
@@ -38,38 +38,34 @@ void Polygon::Generator1(bool verbose, int choice){
     double x,y;
     switch(choice){
         case 1:
-            x = uniform(generator); y = uniform(generator);
+            x = uniform(generator); 
+            y = uniform(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
             x = binomial(generator) - binomial(generator); 
             y = binomial(generator) - binomial(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Binomial Distribution, ");
             break;
         case 3:
-            //static int c = GraphingScaleSetter(70);
-            x = geometric(generator) - geometric(generator)*0.5; y = geometric(generator) - geometric(generator)*0.5;
-            polarGenerator(x , y, avgRadiusDistribution(generator), 
+            x = geometric(generator) - geometric(generator)*0.5; 
+            y = geometric(generator) - geometric(generator)*0.5;
+            polarGenerator(clip(x, -Scale/2, Scale/2) , clip(y, -Scale/2, Scale/2), avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Geometric Distribution, ");
             break;
         case 4:
-            //static int d = GraphingScaleSetter(10);
-            x = poisson(generator); y = poisson(generator);
+            x = poisson(generator); 
+            y = poisson(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Poisson Distribution, ");
             break;
         case 5:
-            //static int e = GraphingScaleSetter(1);
-            x = normal(generator); y = normal(generator);
+            x = normal(generator); 
+            y = normal(generator);
             polarGenerator(x , y, avgRadiusDistribution(generator), 
                      angleIrregularityDistribution(generator), spikeDistribution(generator), this, verbose);
-            if(verbose)printf("Normal Distribution, ");
             break;
         default:
             break;
@@ -78,68 +74,62 @@ void Polygon::Generator1(bool verbose, int choice){
 
 void Polygon::Generator2(bool verbose, int choice){
     static int min, max;
-    Scale=1;
+    //Scale = 1;
     static default_random_engine generator(clock());
-    static uniform_int_distribution<int> uniform(-500, 500);
-    static binomial_distribution<int> binomial(9,0.5);
-    static geometric_distribution<int> geometric(0.1);
-    static poisson_distribution<int> poisson(3);
-    static normal_distribution<double> normal(0,1);
+    static uniform_int_distribution<int> uniform(-Scale, Scale);
+    static binomial_distribution<int> binomial(Scale, 0.5);
+    static geometric_distribution<int> geometric(Scale/10000);
+    static poisson_distribution<int> poisson(Scale/10);
+    static normal_distribution<double> normal(0, Scale/2);
     switch(choice){
         case 1:
-            static int a = GraphingScaleSetter(0.500);
-            min = uniform(generator); max = uniform(generator);
+            min = uniform(generator); 
+            max = uniform(generator);
             if(min > max){
                 int temp = min;
                 min = max;
                 max = temp;
             }
             space_partition(this, min, max, verbose);
-            if(verbose)printf("Uniform Distribution, ");
             break;
         case 2:
-            static int b = GraphingScaleSetter(10);
-            min = binomial(generator); max = binomial(generator);
+            min = binomial(generator) - binomial(generator); 
+            max = binomial(generator) - binomial(generator);
             if(min > max){
                 int temp = min;
                 min = max;
                 max = temp;
             }
-            space_partition(this, min, max, verbose);
-            if(verbose)printf("Binomial Distribution, ");
+            space_partition(this, clip(15*min, -Scale, Scale), clip(15*max, -Scale, Scale), verbose);
             break;
         case 3:
-            static int c = GraphingScaleSetter(50);
-            min = geometric(generator) - geometric(generator)*0.5; max = geometric(generator) - geometric(generator)*0.5;
+            min = geometric(generator) - geometric(generator)*0.5; 
+            max = geometric(generator) - geometric(generator)*0.5;
             if(min > max){
                 int temp = min;
                 min = max;
                 max = temp;
             }
-            space_partition(this, min, max, verbose);
-            if(verbose)printf("Geometric Distribution, ");
+            space_partition(this, clip(55*min, -Scale, Scale), clip(55*max, -Scale, Scale), verbose);
             break;
         case 4:
-            static int d = GraphingScaleSetter(100);
-            min = poisson(generator); max = poisson(generator);
+            min = poisson(generator) - poisson(generator); 
+            max = poisson(generator) - poisson(generator); 
             if(min > max){
                 int temp = min;
                 min = max;
                 max = temp;
             }
-            space_partition(this, min, max, verbose);
-            if(verbose)printf("Poisson Distribution, ");
+            space_partition(this, clip(50*min, -Scale, Scale), clip(50*max, -Scale, Scale), verbose);
             break;
         case 5:
-            static int e = GraphingScaleSetter(1);
             min = normal(generator); max = normal(generator);
             if(min > max){
                 int temp = min;
                 min = max;
                 max = temp;
             }
-            space_partition(this, min, max, verbose);
-            if(verbose)printf("Normal Distribution, ");
+            space_partition(this, clip(min, -Scale, Scale), clip(max, -Scale, Scale), verbose);
             break;
         default:
             break;
@@ -147,6 +137,5 @@ void Polygon::Generator2(bool verbose, int choice){
 };
 
 void Polygon::Generator3(bool verbose, int choice){
-    //static int _ = GraphingScaleSetter(1000);
     naivePolygon(this, verbose);
 }

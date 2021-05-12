@@ -7,6 +7,7 @@
 #include<unistd.h>
 #include<string>
 #include"Polygon.hpp"
+
 using namespace std;
 
 // Default values of parameters
@@ -19,14 +20,15 @@ long fileSize;
 extern float Scale;
 
 Polygon *polygons;
-// Distribution for number of vertices
+
+// Distribution for number of vertices in the polygon
 default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10, 500);
 
 int main(int argc, const char** argv){ 
     srand(time(0));
     int choice = rand()%5 + 1;
-    Scale = 1000;
+    Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Number of polygons that need to be generated. Default : n=1", "NUM" },
         { "verbose", 'v',POPT_ARG_INT, &verbose, 0, "Set v=1 for verbose output (will slow down the program by some time)", "NUM" },
@@ -35,6 +37,7 @@ int main(int argc, const char** argv){
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p=1 for profiling mode", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the generated polygons are to be written to in WKT format. Default : map.wkt", "STR"},
         { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d=1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
+        { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set the canvas size within which all the polygons will be generated. Default : c=1000", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
     };
@@ -66,12 +69,11 @@ int main(int argc, const char** argv){
     
     polygons = new Polygon[number_of_polygons];  // Creating an array of polygons
     
-    start_timer(total);
+    if(profiling) verbose = false;
 
-    if(verbose){
-        if(graph) printf("Graph scale = %f\n", Scale);
-        printf("Distribution used = %d\n", choice); // Print distribution name instead
-    }
+    if(!profiling && graph) printf("Graph scale = %f\n", Scale);
+
+    start_timer(total);
 
     if(!strcasecmp(algorithm, "polar")){
         #pragma omp parallel for
@@ -99,7 +101,9 @@ int main(int argc, const char** argv){
     
     // Writing the polygons to the file in WKT format
     if(!profiling){
+        const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
+        if(verbose) printf("\nSampling Distribution = %s\n", distributions[choice - 1]); 
         printf("Writing the polygons to the file... \n");
     } 
     
