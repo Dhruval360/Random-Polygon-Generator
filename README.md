@@ -13,13 +13,20 @@ The `Profiler.sh` file contains a shell script that can be used to profile our p
 
 The files `Distribution.py` and `Metrics.py` are used for graphing the Distribution of the generated polygons and visualising the metrics generated after profiling respectively.
 
-The `Images` folder contains some screenshots of the generated polygon maps.
+The `Images` folder contains few screenshots of the generated polygon maps.
 
 ## Dependencies
 - A C++ compiler like g++ or clang
 - popt.h (for command line input)
 - OpenGL (for visualising the generated polygons)
+- Python 3 interpreter with all the packages in `requirements.txt` installed
 ## Compiling and running
+Install the dependencies:
+
+```bash
+$ sudo apt install libpopt-dev freeglut3-dev
+$ python3 -m pip install -r requirements.txt
+```
 Compile using the make utility:
 
 ```bash
@@ -33,6 +40,7 @@ $ ./bin/polygonGenerator -?
 
 Run the Profiler using:
 ```bash
+$ chmod +x ./Profiler.sh
 $ ./Profiler.sh 5
 ```
 Here, the 5 represents the number of iterations the Profilers runs the program. In any iteration `i`, `100i` polygons are generated using each of the three algorithms.
