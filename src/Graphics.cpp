@@ -1,6 +1,6 @@
 #include<GL/freeglut.h>
 #include<GL/gl.h>
-#include <pthread.h>
+#include<pthread.h>
 #include<random>
 #include"Polygon.hpp"
 

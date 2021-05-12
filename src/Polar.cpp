@@ -3,13 +3,11 @@
 #include<random>
 #include"Polygon.hpp"
 
-#ifndef PI
-    #define PI 3.14159265358979323846
-#endif
+using namespace std;
+
+#define PI 3.14159265358979323846
 
 extern double timer;
-
-using namespace std;
 
 static double clip(double x, double min, double max){
     x = x < min ? min : x;
