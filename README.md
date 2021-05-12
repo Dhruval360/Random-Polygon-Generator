@@ -1,5 +1,7 @@
 # Polygon Generator
 ## Maps
+Sample outputs:
+[]
 
 ## Distribution Plots
 
@@ -16,7 +18,7 @@ Compile using the make utility:
 $ make polygonGenerator -j$(($(nproc)+1))
 ```
 
-Run the program using:
+Run the following command to print the help doc for the program:
 ```bash
 $ ./bin/polygonGenerator -?
 ```

@@ -181,11 +181,14 @@ bool edgeComparator(Edge e1,Edge e2){
 }
 
 // Function to find index of entity in the vector
-int indexInEdgesVec(vector <Edge> arr, Edge k){ // This needs to be redone
+int indexInEdgesVec(vector <Edge> arr, Edge k, vector <pair<double,double>> &allPoints){ // This needs to be redone
 	for(int i = 0; i < (int)arr.size(); i++)
 		if(edgeComparator(arr.at(i),k)) return i;
 	//#ifdef DEBUG
 		cout << "\nElement not found\n";
+		for(auto pair : allPoints){
+			cout << std::setprecision (15) << pair.first << ", " << std::setprecision (15) << pair.second << "\n";
+		}
 	//#endif
     return -1;
 }
@@ -460,7 +463,7 @@ void generatePolygon(Polygon *polygon){
 			cout<<"End\n";
 		#endif
 		// Here we would have the closest point to edge data and the index of the toRemEdge in edges array
-		int i = indexInEdgesVec(edges, toRemEdge);
+		int i = indexInEdgesVec(edges, toRemEdge, allPoints);
 		// Hence replace the "toRemEdge" with an edge from toRemEdge.start to nearestPoint
 		Edge e;
 		e.startVertex = toRemEdge.startVertex;
