@@ -99,13 +99,13 @@ int main(int argc, const char** argv){
     
     if(verbose){
         const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
-        printf("\nSampling from = %s\n", distributions[choice - 1]);
+        printf("\nSampling from %s\n", distributions[choice - 1]);
     }  
     if(!profiling){
         printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
         printf("Writing the polygons to the file... \n");
     } 
-    
+    // Plotting generated polygons onto a single canvas
     if(graph){
         pthread_t graphicsThread;
         int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
@@ -124,7 +124,7 @@ int main(int argc, const char** argv){
     // Distribution plot for generated map of polygons
     if(dist_analysis){
         printf("Plotting the distribution of the generated polygons...\n");
-        // Read from user input file if filename not null. Else, read from default output file map.wkt
+        // Read from user defined output file if filename not null. Otherwise, read from default output file map.wkt
         if(filename != NULL) execlp("python3", "python3", "Distribution.py", filename, (char*) NULL);
         else execlp("python3", "python3", "Distribution.py", (char*) NULL);
     }

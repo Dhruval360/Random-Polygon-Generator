@@ -2,18 +2,11 @@
 #include<math.h>
 #include<random>
 #include"Polygon.hpp"
+#define PI 3.14159265358979323846
 
 using namespace std;
 
-#define PI 3.14159265358979323846
-
 extern double timer;
-
-static double clip(double x, double min, double max){
-    x = x < min ? min : x;
-    x = x > max ? max : x;
-    return x;
-} 
 
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose){
     start_timer(start);

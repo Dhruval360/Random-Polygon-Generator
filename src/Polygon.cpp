@@ -11,7 +11,7 @@ extern float Scale;
 extern unsigned number_of_polygons;
 extern short graph;
 
-static double clip(double x, double min = -Scale, double max = Scale){
+double clip(double x, double min = -Scale, double max = Scale){
     x = x < min ? min : x;
     x = x > max ? max : x;
     return x;

@@ -1,5 +1,7 @@
 # Polygon Generator
-A Program to generate Random Polygons using three different algorithms, write them to a file in WKT format and visualise them using OpenGL.
+A Program to generate Random Polygons using three different algorithms, write them to a file in WKT format and visualise them using OpenGL.<br>
+#### Authors 
+[Chandradhar Rao](https://github.com/chandradharrao) , [Mihir M Kestur](https://github.com/mihirkestur) , [Dhruval PB](https://github.com/Dhruval360)
 ## Project Structure
 The `src` folder contains all the source code for this project. It consists of the following files:
 1. **Driver.cpp** which contains the main function

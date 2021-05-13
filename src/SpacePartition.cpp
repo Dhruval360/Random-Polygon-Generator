@@ -3,8 +3,8 @@
 #include"Polygon.hpp"
 
 using namespace std;
-
-//#define DEBUG // Uncomment to enable debug 
+// Uncomment to enable debug 
+//#define DEBUG 
 
 extern double timer;
 
