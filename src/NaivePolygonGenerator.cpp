@@ -82,7 +82,7 @@ double point2lineDist(pair<double,double> &p, pair<double,double> &p1, pair<doub
 	Consider points A, B, C. If slope of A->C is GREATER than slope of A->B, then A, B, C are in ccw dir
 */
 bool isccw(pair<double,double> &a,pair<double,double> &b, pair<double,double> &c){
-	return (c.second-a.second)*(b.first-a.first) > (b.second-a.second)*(c.first-a.first);
+	return (c.second-a.second)*(b.first-a.first) >= (b.second-a.second)*(c.first-a.first);
 }
 
 /*
