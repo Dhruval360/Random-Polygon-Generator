@@ -21,11 +21,12 @@ Polygon *polygons;
 
 // Distribution for number of vertices in the polygon
 default_random_engine generator(clock());
-uniform_int_distribution<unsigned> distribution(10, 500); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
+uniform_int_distribution<unsigned> distribution(500,700); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
 
 int main(int argc, const char** argv){ 
     srand(time(0));
     int choice = rand()%5 + 1;
+    //int choice = 1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. [Default : n = 1]", "NUM" },

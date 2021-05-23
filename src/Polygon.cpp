@@ -151,6 +151,7 @@ void Polygon::Generator3(bool verbose, int choice){
     static poisson_distribution<int> poisson(Scale/10);
     static normal_distribution<double> normal(0, Scale/2);
     double x, y;
+    choice = 1;
     switch(choice){
         case 1:
             for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){

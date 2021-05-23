@@ -8,3 +8,4 @@ src/*.wkt
 *.wkt
 *.csv
 core
+plotter.py
