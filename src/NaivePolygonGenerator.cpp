@@ -1,7 +1,7 @@
 #include<iostream>
 #include<stack>
 #include<math.h>
-#include <set>
+#include<set>
 #include"Polygon.hpp"
 
 //CONVEX HULL ALGORITHM IS WORKING LIKE A CHARM
@@ -101,15 +101,15 @@ bool isIntersectingUtil(pair<double,double> &a, pair<double,double> &b, pair<dou
 
 // Function to check if the edge e is intersecting with any of the edges of the polygon
 bool isIntersectingEdge(vector <Edge> &edges, Edge e){
-	//check fr all the edges of the polygon with the edge e for intersection
+	// Check for all the edges of the polygon with the edge e for intersection
 	for(auto iterE : edges){
-		//if edge to be checked and iterEdge share same end points,then they can lie on each
-		//at max but cannot intersect,hence check for that case
+		// If edge to be checked and iterEdge share same end points, then they can lie on each
+		// At max but cannot intersect, hence check for that case
 		if(vertexNegComparator(e.startVertex,iterE.startVertex) && 
 		vertexNegComparator(e.endVertex,iterE.startVertex)){
 			if(vertexNegComparator( e.startVertex ,iterE.endVertex) &&
 				vertexNegComparator( e.endVertex,iterE.endVertex)){
-				//check for orientation of edge points
+				// Check for orientation of edge points
 				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,e.startVertex,e.endVertex))
 					return true;
 			}

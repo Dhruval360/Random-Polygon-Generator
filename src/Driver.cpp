@@ -21,12 +21,11 @@ Polygon *polygons;
 
 // Distribution for number of vertices in the polygon
 default_random_engine generator(clock());
-uniform_int_distribution<unsigned> distribution(500,700); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
+uniform_int_distribution<unsigned> distribution(10, 500); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
 
 int main(int argc, const char** argv){ 
     srand(time(0));
     int choice = rand()%5 + 1;
-    //int choice = 1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. [Default : n = 1]", "NUM" },
@@ -35,7 +34,7 @@ int main(int argc, const char** argv){
         { "graph", 'g', POPT_ARG_INT, &graph, 0, "Set g = 1 to graph the generated polygons onto a single canvas (using OpenGL)", "NUM" },
         { "profiling", 'p', POPT_ARG_INT, &profiling, 0, "Set p = 1 for profiling mode", "NUM"},
         { "filename", 'f', POPT_ARG_STRING, &filename, 0, "Enter the filename to which the generated polygons are to be written to in WKT format. [Default : map.wkt]", "STR"},
-        { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d = 1 for the analysis of the distribution of the generated polygons onto a single canvas (using OpenGL)", "NUM"},
+        { "distribution", 'd', POPT_ARG_INT, &dist_analysis, 0, "Set d = 1 for obtaining an analysis of the distribution of the polygons generated", "NUM"},
         { "canvas_size", 'c', POPT_ARG_FLOAT, &Scale, 0, "Set the canvas size within which all the polygons will be generated. [Default : c = 1000]", "NUM"},
         POPT_AUTOHELP
         { NULL, 0, 0, NULL, 0, NULL, NULL }
