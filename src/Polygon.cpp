@@ -83,81 +83,52 @@ void Polygon::Generator2(bool verbose, int choice){
     static geometric_distribution<int> geometric(Scale/10000);
     static poisson_distribution<int> poisson(Scale/10);
     static normal_distribution<double> normal(0, Scale/2);
-    double min, max;
+    double x, y;
     switch(choice){
         case 1:
-            min = uniform(generator); 
-            max = uniform(generator);
-            if(min > max){
-                double temp = min;
-                min = max;
-                max = temp;
-            }
             while(temp.size() < this->numVertices){
-                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+                x = uniform(generator); 
+                y = uniform(generator);
+                temp.insert(make_pair(x, y));
             }
             for(auto pt : temp)	this->coordinates.push_back(pt);
-            spacePartition(this, min, max, verbose);
             break;
         case 2:
-            min = clip(15*(binomial(generator) - binomial(generator))); 
-            max = clip(15*(binomial(generator) - binomial(generator)));
-            if(min > max){
-                double temp = min;
-                min = max;
-                max = temp;
-            }
             while(temp.size() < this->numVertices){
-                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+                x = clip(15*(binomial(generator) - binomial(generator))); 
+                y = clip(15*(binomial(generator) - binomial(generator)));
+                temp.insert(make_pair(x, y));
             }
             for(auto pt : temp)	this->coordinates.push_back(pt);
-            spacePartition(this, min, max, verbose);
             break;
         case 3:
-            min = clip(55*(geometric(generator) - geometric(generator)*0.5)); 
-            max = clip(55*(geometric(generator) - geometric(generator)*0.5));
-            if(min > max){
-                double temp = min;
-                min = max;
-                max = temp;
-            }
             while(temp.size() < this->numVertices){
-                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+                x = clip(55*(geometric(generator) - geometric(generator)*0.5)); 
+                y = clip(55*(geometric(generator) - geometric(generator)*0.5));
+                temp.insert(make_pair(x, y));
             }
             for(auto pt : temp)	this->coordinates.push_back(pt);
-            spacePartition(this, min, max, verbose);
             break;
-        case 4:
-            min = clip(50*(poisson(generator) - poisson(generator))); 
-            max = clip(50*(poisson(generator) - poisson(generator))); 
-            if(min > max){
-                double temp = min;
-                min = max;
-                max = temp;
-            }
+        case 4: 
             while(temp.size() < this->numVertices){
-                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+                x = clip(50*(poisson(generator) - poisson(generator))); 
+                y = clip(50*(poisson(generator) - poisson(generator)));
+                temp.insert(make_pair(x, y));
             }
             for(auto pt : temp)	this->coordinates.push_back(pt);
-            spacePartition(this, min, max, verbose);
             break;
         case 5:
-            min = clip(normal(generator)); 
-            max = clip(normal(generator));
-            if(min > max){
-                double temp = min;
-                min = max;
-                max = temp;
-            }
             while(temp.size() < this->numVertices){
-                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+                x = clip(normal(generator)); 
+                y = clip(normal(generator));
+                temp.insert(make_pair(x, y));
             }
             for(auto pt : temp)	this->coordinates.push_back(pt);
-            spacePartition(this, min, max, verbose);
             break;
         default:
             break;
     }
+    spacePartition(this, verbose);
 };
 
 void Polygon::Generator3(bool verbose, int choice){
