@@ -75,7 +75,9 @@ void Polygon::Generator1(bool verbose, int choice){
 };
 
 void Polygon::Generator2(bool verbose, int choice){
+    set<pair<double, double>> temp; // A set to store non duplicate points only
     static default_random_engine generator(clock());
+    static uniform_real_distribution<double> random_ratio(0, 1);
     static uniform_int_distribution<int> uniform(-Scale, Scale);
     static binomial_distribution<int> binomial(Scale, 0.5);
     static geometric_distribution<int> geometric(Scale/10000);
@@ -87,50 +89,71 @@ void Polygon::Generator2(bool verbose, int choice){
             min = uniform(generator); 
             max = uniform(generator);
             if(min > max){
-                int temp = min;
+                double temp = min;
                 min = max;
                 max = temp;
             }
+            while(temp.size() < this->numVertices){
+                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
             spacePartition(this, min, max, verbose);
             break;
         case 2:
-            min = binomial(generator) - binomial(generator); 
-            max = binomial(generator) - binomial(generator);
+            min = clip(15*(binomial(generator) - binomial(generator))); 
+            max = clip(15*(binomial(generator) - binomial(generator)));
             if(min > max){
-                int temp = min;
+                double temp = min;
                 min = max;
                 max = temp;
             }
-            spacePartition(this, clip(15*min), clip(15*max), verbose);
+            while(temp.size() < this->numVertices){
+                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            spacePartition(this, min, max, verbose);
             break;
         case 3:
-            min = geometric(generator) - geometric(generator)*0.5; 
-            max = geometric(generator) - geometric(generator)*0.5;
+            min = clip(55*(geometric(generator) - geometric(generator)*0.5)); 
+            max = clip(55*(geometric(generator) - geometric(generator)*0.5));
             if(min > max){
-                int temp = min;
+                double temp = min;
                 min = max;
                 max = temp;
             }
-            spacePartition(this, clip(55*min), clip(55*max), verbose);
+            while(temp.size() < this->numVertices){
+                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            spacePartition(this, min, max, verbose);
             break;
         case 4:
-            min = poisson(generator) - poisson(generator); 
-            max = poisson(generator) - poisson(generator); 
+            min = clip(50*(poisson(generator) - poisson(generator))); 
+            max = clip(50*(poisson(generator) - poisson(generator))); 
             if(min > max){
-                int temp = min;
+                double temp = min;
                 min = max;
                 max = temp;
             }
-            spacePartition(this, clip(50*min), clip(50*max), verbose);
+            while(temp.size() < this->numVertices){
+                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            spacePartition(this, min, max, verbose);
             break;
         case 5:
-            min = normal(generator); max = normal(generator);
+            min = clip(normal(generator)); 
+            max = clip(normal(generator));
             if(min > max){
-                int temp = min;
+                double temp = min;
                 min = max;
                 max = temp;
             }
-            spacePartition(this, clip(min), clip(max), verbose);
+            while(temp.size() < this->numVertices){
+                temp.insert(make_pair(min + (max - min) * random_ratio(generator), (max - min) * random_ratio(generator)));
+            }
+            for(auto pt : temp)	this->coordinates.push_back(pt);
+            spacePartition(this, min, max, verbose);
             break;
         default:
             break;

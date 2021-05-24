@@ -12,9 +12,6 @@ extern double timer;
 static default_random_engine generator(clock());
 static uniform_real_distribution<double> random_ratio(0, 1);
 
-// Initialises the coordinate vector with num_vertices number of random points
-static void random_points(Polygon *polygon, double min, double max);
-
 // Return a random point on the given line segment
 static pair<double,double> random_point_segment(const pair<double,double> &start_point, const pair<double,double> &end_point);
 
@@ -33,8 +30,6 @@ static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned in
 // Implementation of the space partition algorithm to generate random polygons
 void spacePartition(Polygon *polygon, int min, int max, bool verbose){
 	start_timer(start);
-	random_points(polygon, min, max);
-	
 	// Choose the start point as the first element and any random point as the initial final element
 	int end_index = rand()%(polygon->numVertices - 1) + 1; 
 	
@@ -120,9 +115,10 @@ void swap(Polygon *polygon, unsigned int first_index, unsigned int second_index)
 	#ifdef DEBUG 
 		cout << "Before swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << '\n';
 	#endif
-	
+
 	// Using in-built swap function to swap the tuples
 	polygon->coordinates[second_index].swap(polygon->coordinates[first_index]);
+	
 	#ifdef DEBUG 
 		cout << "After swapping " << polygon->coordinates[first_index].first << " " << polygon->coordinates[first_index].second << " " << polygon->coordinates[second_index].first << " " << polygon->coordinates[second_index].second << '\n';
 	#endif
@@ -148,14 +144,4 @@ pair<double,double> random_point_segment(const pair<double,double> &start_point,
 	random_point.first = start_point.first + (end_point.first - start_point.first) * random_ratio_;
 	random_point.second = start_point.second + (end_point.second - start_point.second) * random_ratio_;  
 	return random_point;
-}
-
-// Generates a random set of points from which a random polygon is constructed
-void random_points(Polygon *polygon, double min, double max){
-	for (unsigned i = 0; i < polygon->numVertices; i++){
-		polygon->coordinates.push_back(pair<double,double>(min + (max - min) * random_ratio(generator), min + (max - min) * random_ratio(generator)));
-		#ifdef DEBUG
-			cout << "Random point " << polygon->coordinates[i].first << " " << polygon->coordinates[i].second << '\n';
-		#endif
-	}
 }
