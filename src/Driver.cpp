@@ -88,6 +88,8 @@ int main(int argc, const char** argv){
         }
     }
     else{
+        if(choice == 3) --choice;
+        else if(choice == 4) ++choice;
         #pragma omp parallel for
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));

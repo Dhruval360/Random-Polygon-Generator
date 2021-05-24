@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<random>
 #include<set>
-#include <utility>
+#include<utility>
 #include"Polygon.hpp"
 
 using namespace std;
@@ -16,11 +16,6 @@ double clip(double x, double min = -Scale, double max = Scale){
     x = x > max ? max : x;
     return x;
 } 
-
-// Comparator to insert into set
-bool cmpPoints(const pair<double,double> &a,const pair<double,double> &b){
-	return ((a.first < b.first) || (a.second < b.second));
-}
 
 Polygon::Polygon(unsigned int numVertices){
     static default_random_engine generator(clock());
@@ -143,7 +138,7 @@ void Polygon::Generator2(bool verbose, int choice){
 };
 
 void Polygon::Generator3(bool verbose, int choice){
-    set <pair<double,double>,bool(*)(const pair<double,double>&,const pair<double,double>&)> temp(&cmpPoints); // A set to store non duplicate points only
+    set<pair<double, double>> temp; // A set to store non duplicate points only
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-Scale, Scale);
     static binomial_distribution<int> binomial(Scale, 0.5);
@@ -151,10 +146,9 @@ void Polygon::Generator3(bool verbose, int choice){
     static poisson_distribution<int> poisson(Scale/10);        // Broken
     static normal_distribution<double> normal(0, Scale/2);
     double x, y;
-    choice = 1;
     switch(choice){
         case 1:
-            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+            while(temp.size() < this->numVertices){
                 x = uniform(generator); 
                 y = uniform(generator);
                 temp.insert(make_pair(x, y));
@@ -162,7 +156,7 @@ void Polygon::Generator3(bool verbose, int choice){
             for(auto pt : temp)	this->coordinates.push_back(pt);
             break;
         case 2:
-            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+            while(temp.size() < this->numVertices){
                 x = clip(15*(binomial(generator) - binomial(generator))); 
                 y = clip(15*(binomial(generator) - binomial(generator)));
                 temp.insert(make_pair(x, y));
@@ -170,7 +164,7 @@ void Polygon::Generator3(bool verbose, int choice){
             for(auto pt : temp)	this->coordinates.push_back(pt);
             break;
         case 3:
-            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+            while(temp.size() < this->numVertices){
                 x = clip(55*(geometric(generator) - geometric(generator)*0.5)); 
                 y = clip(55*(geometric(generator) - geometric(generator)*0.5));
                 temp.insert(make_pair(x, y));
@@ -178,7 +172,7 @@ void Polygon::Generator3(bool verbose, int choice){
             for(auto pt : temp)	this->coordinates.push_back(pt);
             break;
         case 4:
-            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+            while(temp.size() < this->numVertices){
                 x = clip(50*(poisson(generator) - poisson(generator))); 
                 y = clip(50*(poisson(generator) - poisson(generator))); 
                 temp.insert(make_pair(x, y));
@@ -186,7 +180,7 @@ void Polygon::Generator3(bool verbose, int choice){
             for(auto pt : temp)	this->coordinates.push_back(pt);
             break;
         case 5:
-            for(unsigned i = 0; (unsigned)temp.size() < this->numVertices; i++){
+            while(temp.size() < this->numVertices){
                 x = clip(normal(generator)); 
                 y = clip(normal(generator));
                 temp.insert(make_pair(x, y));
