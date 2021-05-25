@@ -25,7 +25,7 @@ class Polygon{
         void Generator3(bool verbose, int choice);
 }; 
 
-void spacePartition(Polygon *polygon, int min, int max, bool verbose);
+void spacePartition(Polygon *polygon, bool verbose);
 void naivePolygon(Polygon *polygon, bool verbose);
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
 double clip(double x, double min, double max);
