@@ -42,5 +42,5 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
         angle += angleSteps[i];
     }
     end_timer(start, timer);
-    if(verbose) printf("Number of vertices = %3u Center = (%10.5lf, %10.5lf), averageRadius = %10.5lf, irregularity = %8.6lf, spike = %10.5lf | Time taken for generation = %lf s\n",  p->numVertices, x, y, averageRadius, irregularity, spike, timer);
+    if(verbose) printf("Number of vertices = %3u, Center = (%10.5lf, %10.5lf), averageRadius = %10.5lf, irregularity = %8.6lf, spike = %10.5lf | Time taken for generation = %lf s\n",  p->numVertices, x, y, averageRadius, irregularity, spike, timer);
 }

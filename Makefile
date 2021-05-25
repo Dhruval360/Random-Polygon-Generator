@@ -22,11 +22,11 @@ polygonGenerator: ${OBJS}
 
 debug: FLAGS := -g -Wall
 debug: ${OBJS}
-	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator -?"
+	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator"
 
 polygonGenerator_SharedLibrary: FLAGS := ${FLAGS} -shared -fPIC -pie
 polygonGenerator_SharedLibrary: ${SHARED_OBJS}
-	${COMPILER} ${FLAGS} -o ${SHARED_LIBRARY} $^ ${LIBS} && echo "Compiled Successfully!!"
+	${COMPILER} ${FLAGS} -o ${SHARED_LIBRARY} $^ ${LIBS} && echo "Compiled Successfully!! The Shared Library is available as" ${SHARED_LIBRARY}
 
 ${OBJ}/%.o: ${SRC}/%.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@ ${LIBS} 
