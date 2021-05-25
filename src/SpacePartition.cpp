@@ -28,7 +28,7 @@ static void recursive_partioning(Polygon *polygon, unsigned int begin, unsigned 
 static void partition_logic(Polygon *polygon, unsigned int &temp_lr, unsigned int &temp_rl, unsigned int &begin, unsigned int &end, pair<double, double> &start_point, pair<double, double> &end_point, int flag);
 
 // Implementation of the space partition algorithm to generate random polygons
-void spacePartition(Polygon *polygon, bool verbose){
+void spacePartition(Polygon *polygon, int min, int max, bool verbose){
 	start_timer(start);
 	// Choose the start point as the first element and any random point as the initial final element
 	int end_index = rand()%(polygon->numVertices - 1) + 1; 
@@ -55,7 +55,7 @@ void spacePartition(Polygon *polygon, bool verbose){
 	// Solve for the right sub vector  
 	recursive_partioning(polygon, temp_rl, end); 
 	end_timer(start, timer);
-	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n", polygon->numVertices, timer);
+	if(verbose) printf("Number of vertices = %3u,  Lower bound = %4d, Upper bound = %4d | Time taken for generation = %lf s\n", polygon->numVertices, min, max, timer);
 }
 
 // Recursive function to solve the problem by the means of divide and conquer
