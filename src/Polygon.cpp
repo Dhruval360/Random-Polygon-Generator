@@ -136,8 +136,8 @@ void Polygon::Generator3(bool verbose, int choice){
     static default_random_engine generator(clock());
     static uniform_int_distribution<int> uniform(-Scale, Scale);
     static binomial_distribution<int> binomial(Scale, 0.5);
-    static geometric_distribution<int> geometric(Scale/10000); // Broken
-    static poisson_distribution<int> poisson(Scale/10);        // Broken
+    static geometric_distribution<int> geometric(Scale/10000); 
+    static poisson_distribution<int> poisson(Scale/10);        
     static normal_distribution<double> normal(0, Scale/2);
     double x, y;
     switch(choice){
