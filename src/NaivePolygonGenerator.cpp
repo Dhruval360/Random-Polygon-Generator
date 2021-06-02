@@ -2,6 +2,7 @@
 #include<stack>
 #include<math.h>
 #include <set>
+#include <algorithm>
 #include"Polygon.hpp"
 
 //CONVEX HULL ALGORITHM IS WORKING LIKE A CHARM
@@ -18,37 +19,44 @@ using namespace std;
 extern double timer;
 extern float Scale;
 
-typedef struct edge{
+//overloading pair with print operation
+ostream& operator<<(ostream& out,pair<double,double>& rhs){
+	out << "(" << rhs.first << "," << rhs.second << ")";
+	return out;
+}
+
+//overloading pair with operator-
+pair<double,double> operator-(pair<double,double>& p1,
+	pair<double,double>& p2){
+	return {p1.first-p2.first,p1.second-p2.second};
+}
+
+struct Edge{
 	pair<double,double> startVertex;
 	pair<double,double> endVertex;
-}Edge;
+
+	bool operator==(struct Edge& rhs){
+		return rhs.startVertex == startVertex && rhs.endVertex == endVertex;
+	}
+
+	//we use friend to allow rhs as point
+	//or else "this" instance of struct will be used as lhs parameter
+	friend ostream& operator<<(ostream& out,Edge& rhs){
+		out << rhs.startVertex << "->" << rhs.endVertex;
+		return out;
+	}
+};
 
 /******************************* Helper Functions *******************************/
-#ifdef DEBUG
-	void pointPrinter(pair<double,double> &pt){
-		cout << '(' << "X:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << '\n';
-	}
 
-	void edgePrinter(Edge &e){
-		cout << "From ";
-		pointPrinter(e.startVertex);
-		cout << "To ";
-		pointPrinter(e.endVertex);
-	}
-#endif
-
-bool vertexComparator(pair<double,double> &a, pair<double,double> &b){
-	return (a.first == b.first && a.second == b.second);
-}
-
-bool vertexNegComparator(pair<double,double> &a, pair<double,double> &b){
-	return (a.first != b.first || a.second != b.second);
-}
-
-double point2lineDist(pair<double,double> &p, pair<double,double> &p1, pair<double,double> &p2){
-	//line segment starting point to the point vector
-	double A = p.first-p1.first;
+//p is the point
+//p1 to p2 is the line segment
+double point2lineDist(pair<double,double> &p,
+ pair<double,double> &p1, pair<double,double> &p2){
+	//vectors from p to p1
+	double A = p.first - p1.first;
 	double B = p.second - p1.second;
+
 	//line segment vector
 	double C = p2.first - p1.first;
 	double D = p2.second - p1.second;
@@ -79,21 +87,28 @@ double point2lineDist(pair<double,double> &p, pair<double,double> &p1, pair<doub
 
 	double dx = p.first-xx;
 	double dy = p.second-yy;
-	return sqrt((dx*dx)+(dy*dy));
+	return (dx*dx)+(dy*dy);
 }
 
 /*
 	Function to find orientation
-	Consider points A, B, C. If slope of A->C is GREATER than slope of A->B, then A, B, C are in ccw dir
+	Consider points A, B, C. 
+	If slope of A->C is GREATER than slope of A->B,
+	then A, B, C are in ccw dir
 */
-bool isccw(pair<double,double> &a,pair<double,double> &b, pair<double,double> &c){
-	return (c.second-a.second)*(b.first-a.first) > (b.second-a.second)*(c.first-a.first);
+bool isccw(pair<double,double> &a,pair<double,double> &b,
+ pair<double,double> &c){
+	return (c.second-a.second)*(b.first-a.first) > 
+	(b.second-a.second)*(c.first-a.first);
 }
 
 /*
-	Consder the 4 points A, B, C, D. If segment CD intersects segment AB, then ACD and BCD
-	will have opposite orientation i.e one will be having clockwise orientation and the other will
-	be having anticlockwise orientation. Similarly triangle ABD and ABC will have opposite orientation
+	Consder the 4 points A, B, C, D. 
+	If segment CD intersects segment AB, then ACD and BCD
+	will have opposite orientation i.e one will be having 
+	clockwise orientation and the other will
+	be having anticlockwise orientation. 
+	Similarly triangle ABD and ABC will have opposite orientation
 */
 bool isIntersectingUtil(pair<double,double> &a, pair<double,double> &b, pair<double,double> &c, pair<double,double> &d){
 	return (isccw(a,c,d) != isccw(b,c,d) && isccw(a,b,d) != isccw(a,b,c));
@@ -103,12 +118,14 @@ bool isIntersectingUtil(pair<double,double> &a, pair<double,double> &b, pair<dou
 bool isIntersectingEdge(vector <Edge> &edges, Edge e){
 	//check fr all the edges of the polygon with the edge e for intersection
 	for(auto iterE : edges){
-		//if edge to be checked and iterEdge share same end points,then they can lie on each
-		//at max but cannot intersect,hence check for that case
-		if(vertexNegComparator(e.startVertex,iterE.startVertex) && 
-		vertexNegComparator(e.endVertex,iterE.startVertex)){
-			if(vertexNegComparator( e.startVertex ,iterE.endVertex) &&
-				vertexNegComparator( e.endVertex,iterE.endVertex)){
+		//if edge to be checked and iterEdge share same end points,
+		//then they can lie on each
+		//at max but cannot intersect,
+		//hence check for that case
+		if(e.startVertex != iterE.startVertex && 
+			(e.endVertex != iterE.startVertex)){
+			if(e.startVertex != iterE.endVertex && 
+			e.endVertex != iterE.endVertex){
 				//check for orientation of edge points
 				if(isIntersectingUtil(iterE.startVertex,iterE.endVertex,e.startVertex,e.endVertex))
 					return true;
@@ -133,15 +150,10 @@ bool isValidEdge(vector <Edge> &edges, Edge &e, pair<double, double> &p){
 	return false;
 }
 
-bool edgeComparator(Edge e1,Edge e2){
-	return (vertexComparator(e1.startVertex,e2.startVertex) &&
-	 vertexComparator(e1.endVertex,e2.endVertex));
-}
-
 //function to find index of entity in the vector
 int indexInEdgesVec(vector <Edge> arr,Edge k){
 	for(int i = 0;i<arr.size();i++){
-		if(edgeComparator(arr.at(i),k)){
+		if(arr.at(i) == k){
 			return i;
 		}
 	}
@@ -151,7 +163,7 @@ int indexInEdgesVec(vector <Edge> arr,Edge k){
 
 Edge myFind(vector <Edge> &edges, int &i, bool* status){
 	for(int i = 0;i<(int)edges.size();i++)
-		if(edgeComparator(edges[i], edges[i])){
+		if(edges[i] == edges[i]){
 			*status = true;
 			return edges[i];
 		}
@@ -177,7 +189,8 @@ int orientationOfPoints(pair<double,double> p, pair<double,double> &q, pair<doub
 
 // Return (euclidsDistance)^2 of the points p1 and p2
 double euclidsDist(pair<double,double> &p1, pair<double,double> &p2){
-	return ((p2.first-p1.first)*(p2.first-p1.first))+((p2.second-p1.second)*(p2.second-p1.second));
+	return ((p2.first-p1.first)*(p2.first-p1.first))+
+	((p2.second-p1.second)*(p2.second-p1.second));
 }
 
 // Sorting based on polar angles from the anchor point
@@ -242,14 +255,13 @@ vector <pair<double,double>> &resHull){
 		//pointPrinter(points[i]);
 	}
 
-	//sort the remaining n-1 points with respect to this anchor point
-	//ie the first point based on the POLAR angle in anti clock wise 
-	//dir because its a convex hull
+	/*sort the remaining n-1 points with respect to this anchor point
+	ie the first point based on the POLAR angle in anti clock wise 
+	dir because its a convex hull*/
 	auto p = coordinates[0];
 	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
-	//sort(points.begin()+1,points.end(),polAngSorter);
-	//qsort(&points[1],points.size()-1,sizeof(pair<double,double>),polAngSorter);
-	qsort_r(&coordinates[1],coordinates.size()-1, sizeof(pair<double,double>), polAngSorter, &p);
+	qsort_r(&coordinates[1],coordinates.size()-1, 
+	sizeof(pair<double,double>), polAngSorter, &p);
 	////cout << "Smallest polar angle point from ";pointPrinter(p);
 	//cout << "After sorting\n";
 	for(int i = 0;i<coordinates.size();i++){
@@ -446,7 +458,7 @@ void generatePolygon(Polygon *polygon){
 		//resHull.insert(resHull.begin()+ i,nearestPoint);
 		//remove the point from the interior points array
 		for(auto i = interiorPoints.begin();i<interiorPoints.end();i++){
-			if(vertexComparator(*i,nearestPoint)){
+			if(*i == nearestPoint){
 				interiorPoints.erase(i);
 				break;
 			}
@@ -471,3 +483,31 @@ void naivePolygon(Polygon* polygon, bool verbose){
 	end_timer(start, timer);
 	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n",  polygon->numVertices, timer);
 }
+
+//*************Deprecated Functions****************************************
+/*
+bool vertexComparator(pair<double,double> &a, pair<double,double> &b){
+	return (a.first == b.first && a.second == b.second);
+}
+
+bool vertexNegComparator(pair<double,double> &a, pair<double,double> &b){
+	return (a.first != b.first || a.second != b.second);
+}
+
+bool edgeComparator(Edge e1,Edge e2){
+	return (e1.startVertex == e2.startVertex &&
+	 e1.endVertex == e2.endVertex);
+}
+
+void pointPrinter(pair<double,double> &pt){
+		cout << '(' << "X:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << '\n';
+	}
+
+void edgePrinter(Edge &e){
+	cout << "From ";
+	pointPrinter(e.startVertex);
+	cout << "To ";
+	pointPrinter(e.endVertex);
+}
+
+*/
