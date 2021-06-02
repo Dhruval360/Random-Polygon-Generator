@@ -3,11 +3,13 @@
 #include<stack>
 #include<math.h>
 #include <set>
+#include <limits>
 #include <algorithm>
 #include"Polygon.hpp"
 using namespace std;
 
-#define inf INFINITY
+double inf = numeric_limits<double>::infinity();
+
 #define col 0
 #define cw  1
 #define ccw 2
@@ -136,10 +138,12 @@ bool isValidEdge(vector <Edge> &edges, Edge &e, pair<double,double> &p){
 	Edge e1;
 	e1.startVertex = e.startVertex;
 	e1.endVertex = p;
+
 	//create an edge from p to e.end
 	Edge e2;
 	e2.startVertex = p;
 	e2.endVertex = e.endVertex;
+
 	//check if the edges are intersecting with the polygon
 	if(!isIntersectingEdge(edges, e1) && !isIntersectingEdge(edges, e2)) return true;
 	return false;
@@ -221,7 +225,8 @@ pair<double,double> justBelowTop(stack <pair<double,double>>* stk){
 	return retVal;
 }
 
-void generateconvexHull(vector<pair<double,double>> coordinates, vector <pair<double,double>> &resHull){
+void generateconvexHull(vector<pair<double,double>> coordinates,
+	vector <pair<double,double>>& resHull){
 	// Finding the bottom most point out of all the points
 	pair<double,double> min_point = coordinates.at(0);
 	int min_index = 0;
@@ -237,39 +242,22 @@ void generateconvexHull(vector<pair<double,double>> coordinates, vector <pair<do
 			min_point = pt;
 			min_index = i;
 		}
-		++i;
+		i++;
 	}
-	#ifdef DEBUG
-		cout << "Bottom most point : \n";
-		pointPrinter(min_point);
-	#endif
 	// Swap the pos of bottom most point with the first index
 	iter_swap(coordinates.begin(), coordinates.begin()+min_index);
-	
-	#ifdef DEBUG
-		cout << "After swapping : \n";
-		for(unsigned i = 0; i < coordinates.size(); ++i) pointPrinter(coordinates[i]);
-	#endif
 
 	/*sort the remaining n-1 points with respect to this anchor point
 	ie the first point based on the POLAR angle in anti clock wise 
 	dir because its a convex hull*/
 	auto p = coordinates[0];
-	//SORT does NOT work,fix that - maybe we need to send boolean for SORT
 	qsort_r(&coordinates[1],coordinates.size()-1, 
 	sizeof(pair<double,double>), polAngSorter, &p);
-	////cout << "Smallest polar angle point from ";pointPrinter(p);
-	//cout << "After sorting\n";
-	for(int i = 0;i<coordinates.size();i++){
-		//pointPrinter(points[i]);
-	}
-	//pointPrinter(points[1]);
-	//now remove all the points with same polar angle from anchor point
-	//except for the farthest point
-	//the array is already sorted based on polar angles and also when 
-	//the polar angles where same we consdered their dist from p0 as the 
-	//factor for sorting.Hence the farthest point with similar polar
-	//angles is located at the end
+
+	/*now remove all the points with same polar angle from anchor point
+	except for the farthest point.
+	Since the array is already sorted based on polar angles the 
+	farthest point is located at the end*/
 	for(int i = 1;i<coordinates.size();i++){
 		//iter through the sub vector to find same polar angle points
 		int j = i;
@@ -280,19 +268,10 @@ void generateconvexHull(vector<pair<double,double>> coordinates, vector <pair<do
 		}
 		// Erase from i to j if i!=j
 		if(i!=j){
-			#ifdef DEBUG
-				cout << "i " << i << '\n';
-				cout << "j " << j << '\n';
-				cout << j-i << " Dups found, removing them..\n";
-			#endif
-			coordinates.erase(coordinates.begin() + i, coordinates.begin() + j);
+			coordinates.erase(coordinates.begin() + i,
+			 coordinates.begin() + j);
 		}
 	}
-
-	#ifdef DEBUG
-		cout << "After removing duplicates : \n";
-		for(unsigned i = 0; i < coordinates.size(); ++i) pointPrinter(coordinates[i]);
-	#endif
 
 	// If the new vector has less than 3 points, then no convex hull formed
 	if(coordinates.size()<3) return ;
@@ -301,118 +280,76 @@ void generateconvexHull(vector<pair<double,double>> coordinates, vector <pair<do
 	stack <pair<double,double>> stk;
 
 	// Push the first three points p0, p1, p2	
-	#ifdef DEBUG
-		cout << "Pushing.....\n";
-		pointPrinter(coordinates[0]);
-		pointPrinter(coordinates[1]);
-		pointPrinter(coordinates[2]);
-	#endif
-	
 	stk.push(coordinates[0]);	
 	stk.push(coordinates[1]);	
 	stk.push(coordinates[2]);
 	
 	// Now start analysing the points from p3
-	for(unsigned i = 3; i < coordinates.size(); ++i){
-		// Check the orientation i.e. angle formed from the point at the top of the stack with the curr iter point.
-		// If its to the right i.e. cw(CONCAVE), then it violates convex hull rule
-		while(stk.size() && orientationOfPoints(justBelowTop(&stk), stk.top(), coordinates[i]) != ccw)
+	for(unsigned i = 3; i < coordinates.size(); i++){
+		/*Check the orientation i.e. angle formed from the point at the top
+		the stack with the curr iter point.
+		If its to the right i.e. cw(CONCAVE), 
+		then it violates convex hull rule*/
+		while(stk.size()>=2 && orientationOfPoints(justBelowTop(&stk), 
+		stk.top(), coordinates[i]) != ccw)
 			stk.pop();
 		// Push the next point under consideration onto the stack
 		stk.push(coordinates[i]);
 	}
-	
-	#ifdef DEBUG
-		cout << "stk size:" << stk.size() << '\n';
-		cout << "points arr size " << coordinates.size() << '\n';
-		cout << "Result : \n";
-	#endif
 
 	// Stack has all the points of the HULL
 	while(!stk.empty()){
 		pair<double,double> temp = stk.top();
-		#ifdef DEBUG
-			pointPrinter(temp);
-		#endif
 		resHull.push_back(temp);
 		stk.pop();
 	}
-	#ifdef DEBUG
-		cout << "\n************ResHULL************\n";
-		cout << "{";
-		for(auto p : resHull){
-			cout << "{" << p.first << ", " << p.second << "},";
-		}
-		cout << "}\n";
-	#endif
 }
 
 void generatePolygon(Polygon *polygon){
-	#ifdef DEBUG
-		cout << "The size of polygon coordinates is " << polygon->numVertices << '\n';
-		cout << "{";
-		for(auto p : polygon->coordinates){
-			cout << "{";
-			cout << p.first << ", " << p.second << "}, ";
-		}
-		cout << "}";
-	#endif
-	vector <pair<double,double>> resHull; // The resultant CONVEX HULL
+	//vector to store resultant convex hull points
+	vector <pair<double,double>> resHull;
+
+	//generate the conve hull points
 	generateconvexHull(polygon->coordinates, resHull);
 
-	vector <Edge> edges; // Edges of the convex hull
-	for (int i = 0; i < (int)(resHull.size()-1); ++i){ // Creating edges of poly from convex hull vertices
-		Edge e1;
+	// Edges of the convex hull
+	vector <Edge> edges;
+
+	// Creating edges of convex hull from convex hull vertices
+	Edge e1;
+	for (int i = 0; i < (int)(resHull.size()-1); ++i){ 
 		e1.startVertex = resHull[i];
 		e1.endVertex = resHull[i+1];
 		edges.push_back(e1);
 	}
 	// Connect the starting and the last vertex
-	Edge e;
-	e.startVertex = resHull[resHull.size()-1];
-	e.endVertex = resHull[0];
-	edges.push_back(e);
+	e1.startVertex = resHull[resHull.size()-1];
+	e1.endVertex = resHull[0];
+	edges.push_back(e1);
 
 	// Interior points are those points that are not part of the convex hull vertices
-	// Interior points are correctly generated
 	vector <pair<double,double>> interiorPoints;
-	for(auto v : polygon->coordinates){
+	for(auto& v : polygon->coordinates){
 		bool isPresent = false;
-		for(auto cv : resHull) if(cv.first == v.first && cv.second == v.second){
-			 isPresent = true;
-			 break;
+		for(auto& cv : resHull) 
+			if(cv == v){
+			 	isPresent = true;
+			 	break;
 		}
 		if(!isPresent) interiorPoints.push_back(v);
 	}
 
-	#ifdef DEBUG
-		cout << "Interior Points : ";
-		for(auto pt : interiorPoints) pointPrinter(pt);
-		cout << "\nThe edges of convex Hull are : \n";
-		for(auto e : edges){
-			edgePrinter(e);
-			cout << ' ';
-		} 
-	#endif
-
 	// While there are interior points remaining
 	while(interiorPoints.size()){
-		double minDist = inf; 				// Initially the distance iallpoins infinite ???????
+		double minDist = inf; 				// Initially the distance is inf
 		Edge toRemEdge;						// Edge to be removed
 		pair<double,double> nearestPoint; 	// The nearest point
-		for(auto e : edges){ 				// Iterate over all edges
-			for(auto ip : interiorPoints){ 	// Iterate over all interior points for each edge
+		for(auto& e : edges){ 				// Iterate over all edges
+			for(auto& ip : interiorPoints){ 	// Iterate over all interior points for each edge
 				// Find distance between line(edge under consideration) and 
 				// Point(interior point under consideration)
-				double currDist = point2lineDist(ip, e.startVertex, e.endVertex);
-				#ifdef DEBUG
-					cout << "Curr Dist " << currDist << '\n';
-					cout << "Dist of edge ";
-					edgePrinter(e);
-					cout << " To point ";
-					pointPrinter(ip);
-					cout << " is " << currDist << '\n';
-				#endif
+				double currDist = point2lineDist(ip, e.startVertex, 
+														e.endVertex);
 				if(currDist < minDist)
 					if(isValidEdge(edges, e, ip)){ // This can be the minDist between point and edge
 						minDist = currDist;
@@ -421,16 +358,11 @@ void generatePolygon(Polygon *polygon){
 				}
 			}
 		}
-		#ifdef DEBUG
-			cout << "\nChosen : \n" << "Dist of edge ";
-			edgePrinter(toRemEdge);
-			cout << " To point ";
-			pointPrinter(nearestPoint);
-			cout << " is " << minDist << "\nEnd\n";
-		#endif
 		// By here we would have the closest point to edge data 
-		unsigned i = indexInEdgesVec(edges, toRemEdge); // The index of the toRemEdge in edges array
-		// Hence replace the "toRemEdge" with an edge from toRemEdge.start to nearestPoint
+		// The index of the toRemEdge in edges array
+		unsigned i = indexInEdgesVec(edges, toRemEdge);
+		// Hence replace the "toRemEdge" with an edge from toRemEdge.start
+		// to nearestPoint
 		Edge e;
 		e.startVertex = toRemEdge.startVertex;
 		e.endVertex = nearestPoint;
@@ -441,14 +373,8 @@ void generatePolygon(Polygon *polygon){
 		f.startVertex = nearestPoint;
 		f.endVertex = toRemEdge.endVertex;
 		//find iterator of the edge at i+1 and insert the new edge
-		/*
-			//auto j = find(edges.begin(),edges.end(),edges.at(i+1));
-			//bool isFindSuccess = false;
-			//auto j = myFind(edges,i+1,&isFindSuccess);
-		*/
 		auto j = edges.begin()+(i+1);
 		edges.insert(j,f);
-		//if(isVerbose) cout << "#";
 		//add the point to the current vertices of the polygon ie to the resHull
 		//resHull.insert(resHull.begin()+ i,nearestPoint);
 		//remove the point from the interior points array
@@ -482,31 +408,3 @@ void naivePolygon(Polygon* polygon, bool verbose){
 	end_timer(start, timer);
 	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n",  polygon->numVertices, timer);
 }
-
-//*************Deprecated Functions****************************************
-/*
-bool vertexComparator(pair<double,double> &a, pair<double,double> &b){
-	return (a.first == b.first && a.second == b.second);
-}
-
-bool vertexNegComparator(pair<double,double> &a, pair<double,double> &b){
-	return (a.first != b.first || a.second != b.second);
-}
-
-bool edgeComparator(Edge e1,Edge e2){
-	return (e1.startVertex == e2.startVertex &&
-	 e1.endVertex == e2.endVertex);
-}
-
-void pointPrinter(pair<double,double> &pt){
-		cout << '(' << "X:" << pt.first << ','<< "y:" <<pt.second << ')' << ',' << '\n';
-	}
-
-void edgePrinter(Edge &e){
-	cout << "From ";
-	pointPrinter(e.startVertex);
-	cout << "To ";
-	pointPrinter(e.endVertex);
-}
-
-*/
