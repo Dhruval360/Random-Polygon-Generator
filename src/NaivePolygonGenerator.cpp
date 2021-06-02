@@ -5,7 +5,6 @@
 #include <set>
 #include <algorithm>
 #include"Polygon.hpp"
-
 using namespace std;
 
 #define inf INFINITY
