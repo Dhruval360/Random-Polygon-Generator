@@ -2,7 +2,9 @@
 #include<random>
 #include<set>
 #include<utility>
+#include <vector>
 #include"Polygon.hpp"
+#include "./NaivePoly/Geom.hpp"
 
 using namespace std;
 
@@ -185,4 +187,32 @@ void Polygon::Generator3(bool verbose, int choice){
             break;
     }
     naivePolygon(this, verbose);
+}
+
+void Polygon::constructEdges(){
+
+	int n = this->coordinates.size();
+	for (int i = 0; i < (int)(n-1); ++i){ 
+		Edge e1(this->coordinates[i],this->coordinates[i+1]);
+		this->edges.push_back(e1);
+	}
+	// Connect the starting and the last vertex
+	Edge e2(this->coordinates[n-1],this->coordinates[0]);
+	this->edges.push_back(e2);
+}
+
+bool Polygon::validityCheck(){
+
+    //construct the edges of the Polygon
+    this->constructEdges();
+
+    //for each edge,check for intersection
+    for(auto& edge : this->edges){
+        if(edge.isIntersecting(this->edges,true)){
+            cout << "The intersecting edges are " << edge;
+            return false;
+        }
+    }
+    //if not returned till now,all edges are valid
+    return true;
 }

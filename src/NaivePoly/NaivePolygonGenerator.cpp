@@ -5,9 +5,8 @@
 #include<iostream>
 #include<algorithm>
 #include"../Polygon.hpp"
-#include"Edge.hpp"
 #include"Helpers.hpp"
-#include"MyMath.hpp"
+#include"Geom.hpp"
 #include"ConvexHull.hpp"
 using namespace std;
 
@@ -95,9 +94,9 @@ void generatePolygon(Polygon *polygon){
 		//find iterator of the edge at i+1 and insert the new edge
 		auto j = edges.begin()+(i+1);
 		edges.insert(j,f);
-		// Add the point to the current vertices of the polygon ie to the resHull
-		//resHull.insert(resHull.begin()+ i,nearestPoint);
-		// Remove the point from the interior points array
+		/* Add the point to the current vertices of the polygon ie
+		to the resHull
+		Remove the point from the interior points array*/
 		for(auto i = interiorPoints.begin();i<interiorPoints.end();++i){
 			if(*i == nearestPoint){
 				interiorPoints.erase(i);
@@ -116,7 +115,8 @@ void generatePolygon(Polygon *polygon){
 /********************************* The Algorithm *********************************/
 void naivePolygon(Polygon* polygon, bool verbose){
 	start_timer(start);
-	generatePolygon(polygon); // Generate the polygon with ordered points
+	// Generate the polygon with ordered points
+	generatePolygon(polygon);
 	end_timer(start, timer);
 	if(verbose) printf("Number of vertices = %3u | Time taken for generation = %lf s\n",  polygon->numVertices, timer);
 }

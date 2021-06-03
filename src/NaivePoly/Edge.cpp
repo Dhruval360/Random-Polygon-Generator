@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "Edge.hpp"
-#include "MyMath.hpp"
+#include "Geom.hpp"
 using namespace std;
 
 /**************OverLoaded Operator Functions************************/
@@ -25,6 +25,10 @@ bool operator==(Edge& lhs,Edge& rhs){
 ostream& operator<<(ostream& out,Edge& rhs){
 		out << rhs.startVertex << "->" << rhs.endVertex;
 		return out;
+}
+void Edge::operator=(Edge& rhs){
+	this->startVertex = rhs.startVertex;
+	this->endVertex = rhs.endVertex;
 }
 
 Edge::Edge(pair<double,double> p1, pair<double,double> p2){
@@ -51,7 +55,7 @@ bool Edge::intersectingUtil(pair<double,double> &a,
 }
 
 
-bool Edge::isIntersecting(vector <Edge> &edges){
+bool Edge::isIntersecting(vector <Edge> &edges,bool log){
     /* Check for all the edges of the polygon with the edge e
     for intersection */
     for(Edge iterE : edges){
@@ -65,8 +69,12 @@ bool Edge::isIntersecting(vector <Edge> &edges){
         iterE.endVertex == this->endVertex) continue;
         
         //check for orientation of edge points
-		if(this->intersectingUtil(iterE.startVertex,iterE.endVertex))
-            return true;
+		if(this->intersectingUtil(iterE.startVertex,iterE.endVertex)){
+			if(log){
+				
+			}
+			return true;
+		}
     }
     return false;
 }
