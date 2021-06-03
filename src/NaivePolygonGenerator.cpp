@@ -1,15 +1,15 @@
-#include<math.h>
-#include<iostream>
-#include<stack>
-#include<math.h>
+#include <math.h>
+#include <iostream>
+#include <stack>
+#include <math.h>
 #include <set>
 #include <limits>
 #include <algorithm>
-#include"Polygon.hpp"
-#include "Edge.hpp"
-#include "Helpers.hpp"
-#include "MyMath.hpp"
-#include "ConvexHull.hpp"
+#include "Polygon.hpp"
+#include "./NaivePoly/Edge.hpp"
+#include "./NaivePoly/Helpers.hpp"
+#include "./NaivePoly/MyMath.hpp"
+#include "./NaivePoly/ConvexHull.hpp"
 using namespace std;
 
 double inf = numeric_limits<double>::infinity();
