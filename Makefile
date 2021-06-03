@@ -11,11 +11,13 @@ BIN := bin
 EXECUTABLE := ${BIN}/polygonGenerator
 SHARED_LIBRARY := ${BIN}/polygonGenerator.so
 
-SRCS := $(wildcard $(SRC)/*.cpp)
+SRCS := $(wildcard $(SRC)/*.cpp) $(wildcard $(SRC)/*/*.cpp)
 OBJS := $(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SRCS))
-SHARED_OBJS = $(patsubst $(SRC)/%.cpp, $(SHARED_OBJ)/%.o, $(SRCS))
+SHARED_OBJS := $(patsubst $(SRC)/%.cpp, $(SHARED_OBJ)/%.o, $(SRCS))
+SUBDIRECTORIES := $(sort $(dir $(wildcard $(SRC)/*/)))
+DIRECTORIES := $(patsubst $(SRC)/%, $(SHARED_OBJ)/%, $(SUBDIRECTORIES)) $(patsubst $(SRC)/%, $(OBJ)/%, $(SUBDIRECTORIES)) ${BIN}
 
-$(shell mkdir -p ${BIN} ${OBJ} ${SHARED_OBJ})
+$(shell mkdir -p ${DIRECTORIES})
 
 polygonGenerator: ${OBJS}
 	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS} && echo "Compiled Successfully!! Run the program using ./bin/polygonGenerator"

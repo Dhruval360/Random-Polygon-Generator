@@ -4,11 +4,11 @@
 #include<limits>
 #include<iostream>
 #include<algorithm>
-#include"Polygon.hpp"
-#include "Edge.hpp"
-#include "Helpers.hpp"
-#include "MyMath.hpp"
-#include "ConvexHull.hpp"
+#include"../Polygon.hpp"
+#include"Edge.hpp"
+#include"Helpers.hpp"
+#include"MyMath.hpp"
+#include"ConvexHull.hpp"
 using namespace std;
 
 double inf = numeric_limits<double>::infinity();
