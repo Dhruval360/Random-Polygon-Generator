@@ -26,10 +26,10 @@ ostream& operator<<(ostream& out,Edge& rhs){
 		out << rhs.startVertex << "->" << rhs.endVertex;
 		return out;
 }
-void Edge::operator=(Edge& rhs){
+/*void Edge::operator=(Edge& rhs){
 	this->startVertex = rhs.startVertex;
 	this->endVertex = rhs.endVertex;
-}
+}*/
 
 Edge::Edge(pair<double,double> p1, pair<double,double> p2){
 	this->startVertex = p1;

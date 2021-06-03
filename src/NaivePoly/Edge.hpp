@@ -21,7 +21,7 @@ class Edge{
 	//or else "this" instance of struct will be used as lhs parameter
 	friend ostream& operator<<(ostream& out,Edge& rhs);
 
-	void operator=(Edge& rhs);
+	//void operator=(Edge& rhs);
 
 	//function to find index of entity in the vector
 	int indexIn(vector <Edge>& arr);
