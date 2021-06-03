@@ -2,7 +2,7 @@ bin/
 obj/
 shared/
 src/a.out
-src/temp
+temp
 src/*.wkt
 .vscode/
 *.wkt
