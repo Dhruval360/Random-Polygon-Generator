@@ -1,4 +1,5 @@
 #include<vector>
+#include "NaivePoly/Edge.hpp"
 #include<chrono>
 
 using namespace std;
@@ -15,10 +16,17 @@ class Polygon{
         unsigned int numVertices;
         float color[3]; // Holds the rgb color values for the polygon's edges
         vector<pair<double, double>> coordinates;
+        //vector to store the edges of the final polygon
+        vector<Edge> edges;
 
         Polygon(){}
 
         Polygon(unsigned int numVertices);
+
+        //function to check if the polygon formed are intersection free
+        bool validityCheck();
+        //function to convert points of polygon to edges of the poly
+        void constructEdges();
 
         void Generator1(bool verbose, int choice);
         void Generator2(bool verbose, int choice);

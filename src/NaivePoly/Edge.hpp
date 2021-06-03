@@ -15,11 +15,13 @@ class Edge{
 	Edge(pair<double,double>p1 = {-1,-1}, pair<double,double> p2 = {-1,-1});
 
     //friend func operator overload for == operator
-	friend bool operator==(Edge& rhs,Edge& lhs);
+	friend bool operator==(Edge& lhs,Edge& rhs);
 
 	//we use friend to allow rhs as point
 	//or else "this" instance of struct will be used as lhs parameter
 	friend ostream& operator<<(ostream& out,Edge& rhs);
+
+	void operator=(Edge& rhs);
 
 	//function to find index of entity in the vector
 	int indexIn(vector <Edge>& arr);
@@ -36,7 +38,7 @@ class Edge{
 
 	/*Function to check if the edge e is 
 	intersecting with any of the exisitng polygon edges*/
-	bool isIntersecting(vector <Edge> &edges);
+	bool isIntersecting(vector <Edge> &edges,bool log=false);
 
 	/* Function to check if the 2 edges we 
 	are creating will be valid or not the edges are 

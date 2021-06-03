@@ -78,6 +78,12 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator1(verbose, choice);
+            bool isPolyValid = polygons[i].validityCheck();
+            if(!isPolyValid){
+                cout << "Not a valid Polygon" << endl;
+            }else{
+                cout << "Valid Polygon Generated"  << endl;
+            }
         }
     }
     else if(!strcasecmp(algorithm, "spacePartition")){
@@ -85,6 +91,12 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator2(verbose, choice);
+            bool isPolyValid = polygons[i].validityCheck();
+            if(!isPolyValid){
+                cout << "Not a valid Polygon" << endl;
+            }else{
+                cout << "Valid Polygon Generated"  << endl;
+            }
         }
     }
     else{
@@ -92,6 +104,12 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator3(verbose, choice);
+            bool isPolyValid = polygons[i].validityCheck();
+            if(!isPolyValid){
+                cout << "Not a valid Polygon" << endl;
+            }else{
+                cout << "Valid Polygon Generated"  << endl;
+            }
         }
     }
 
