@@ -71,7 +71,8 @@ bool Edge::isIntersecting(vector <Edge> &edges,bool log){
         //check for orientation of edge points
 		if(this->intersectingUtil(iterE.startVertex,iterE.endVertex)){
 			if(log){
-				
+				Edge temp(iterE.startVertex,iterE.endVertex);
+				cout << "The intersecting edges are : " << temp;
 			}
 			return true;
 		}

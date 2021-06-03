@@ -209,7 +209,7 @@ bool Polygon::validityCheck(){
     //for each edge,check for intersection
     for(auto& edge : this->edges){
         if(edge.isIntersecting(this->edges,true)){
-            cout << "The intersecting edges are " << edge;
+            cout << " and "<< edge;
             return false;
         }
     }
