@@ -91,7 +91,7 @@ int main(int argc, const char** argv){
         #pragma omp parallel for
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
-            polygons[i].Generator2(verbose, choice);
+            polygons[i].Generator3(verbose, choice);
         }
     }
 
