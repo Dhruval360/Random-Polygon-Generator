@@ -21,7 +21,7 @@ Polygon *polygons;
 
 // Distribution for number of vertices in the polygon
 default_random_engine generator(clock());
-uniform_int_distribution<unsigned> distribution(500,1000); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
+uniform_int_distribution<unsigned> distribution(10,500); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
 
 int main(int argc, const char** argv){ 
     srand(time(0));
@@ -80,9 +80,9 @@ int main(int argc, const char** argv){
             polygons[i].Generator1(verbose, choice);
             bool isPolyValid = polygons[i].validityCheck();
             if(!isPolyValid){
-                cout << "Not a valid Polygon" << endl;
+                cout << " => Not a valid Polygon" << "\n";
             }else{
-                cout << "Valid Polygon Generated"  << endl;
+                cout << "Valid Polygon Generated"  << "\n";
             }
         }
     }
@@ -91,12 +91,12 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator2(verbose, choice);
-            cout << "Choice " << choice << endl;
+            cout << "Choice " << choice << "\n";
             bool isPolyValid = polygons[i].validityCheck();
             if(!isPolyValid){
-                cout << "Not a valid Polygon" << endl;
+                cout << "Not a valid Polygon" << "\n";
             }else{
-                cout << "Valid Polygon Generated"  << endl;
+                cout << "Valid Polygon Generated"  << "\n";
             }
         }
     }
@@ -107,9 +107,9 @@ int main(int argc, const char** argv){
             polygons[i].Generator3(verbose, choice);
             bool isPolyValid = polygons[i].validityCheck();
             if(!isPolyValid){
-                cout << "Not a valid Polygon" << endl;
+                cout << "Not a valid Polygon" << "\n";
             }else{
-                cout << "Valid Polygon Generated"  << endl;
+                cout << "Valid Polygon Generated"  << "\n";
             }
         }
     }
