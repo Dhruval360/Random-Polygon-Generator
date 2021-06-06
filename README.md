@@ -3,23 +3,41 @@ A Program to generate Random Polygons using three different algorithms, write th
 #### Authors 
 [Chandradhar Rao](https://github.com/chandradharrao) , [Mihir M Kestur](https://github.com/mihirkestur) , [Dhruval PB](https://github.com/Dhruval360)
 ## Project Structure
-The `src` folder contains all the source code for this project. It consists of the following files:
-1. **Driver.cpp** which contains the main function
-2. **Graphics.cpp** which contains the OpenGL graphing routines
-3. **Polygon.hpp** which contains the Polygon class definition
-4. **Polygon.cpp** which contains the definitions of the Polygon class member functions
-5. The files **NaivePolygonGenerator.cpp, SpacePartition.cpp and Polar.cpp** contain the three random polygon generation algorithms
-6. **WKT_writer.cpp** contains the routines to write the generated Polygons to a file in `WKT` format
-
-The file `Profiler.sh` contains a shell script that can be used to profile our program.
-
-The files `Distribution.py` and `Metrics.py` are used for graphing the Distribution of the generated polygons and visualising the metrics generated after profiling respectively.
+```
+Random-Polygon-Generator
+├── Images                        [Contains sample Images]
+├── Makefile
+├── Profiler.sh                   [A Shell script for profiling our program]
+├── Distribution.py               [A Python program for graphing the Distribution of the generated polygons]
+├── Metrics.py                    [A Python program for visualising the metrics generated after profiling the program]
+├── Plotter.py                    [A Python program for plotting the polygons from a WKT file using matplotlib]
+├── README.md
+├── Requirements.txt
+└── src
+    ├── Driver.cpp                [Contains the main funtion]
+    ├── Graphics.cpp              [Contains the OpenGL graphing routines]
+    ├── WKT_writer.cpp            [Contains the routines to write the generated Polygons to a file in WKT format]
+    ├── Algorithms                [Contains various polygon generation algorithms]
+    │   ├── Naive.cpp
+    │   ├── Polar.cpp
+    │   └── SpacePartition.cpp
+    ├── Classes                   [Contains the definitions of all the classes used]
+    │   ├── Classes.cpp               
+    │   └── Classes.hpp               
+    └── Utils                     [Contains utility functions]
+        ├── ConvexHull.cpp
+        ├── ConvexHull.hpp
+        ├── Geom.cpp
+        ├── Geom.hpp
+        ├── Helpers.cpp
+        └── Helpers.hpp
+```
 
 ## Dependencies
 - A C++ compiler like g++ or clang
 - popt.h (for command line input)
 - OpenGL (for visualising the generated polygons)
-- Python 3 interpreter with all the packages in `requirements.txt` installed
+- Python 3 interpreter with all the packages in `Requirements.txt` installed
 ## Compiling and running
 Install the dependencies:
 
