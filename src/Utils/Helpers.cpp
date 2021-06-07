@@ -1,5 +1,6 @@
 #include <stack>
 #include "Helpers.hpp"
+
 using namespace std;
 
 pair<double,double> justBelowTop(stack <pair<double,double>>& stk){

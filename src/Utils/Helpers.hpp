@@ -1,4 +1,5 @@
 #include <stack>
+
 using namespace std;
 
 // Get the element just below the top

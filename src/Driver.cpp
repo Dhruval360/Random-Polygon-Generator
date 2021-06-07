@@ -1,11 +1,13 @@
-#include<popt.h>
-#include<string.h>
-#include<pthread.h>
-#include<unistd.h>
-#include<omp.h>
-#include<random>
-#include"Polygon.hpp"
+#include <omp.h>
+#include <popt.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <random>
+#include "./Classes/Classes.hpp"
 
+// Uncomment the line below to enable polygon validity checking
+#define CHECKVALIDITY 1
 using namespace std;
 
 // Default values of parameters
@@ -79,11 +81,12 @@ int main(int argc, const char** argv){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator1(verbose, choice);
             bool isPolyValid = polygons[i].validityCheck();
-            if(!isPolyValid){
-                cout << " => Not a valid Polygon" << "\n";
-            }else{
-                cout << "Valid Polygon Generated"  << "\n";
-            }
+            #ifdef CHECKVALIDITY
+                if(!isPolyValid){
+                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
+                    polygons[i].valid = false;                
+                }
+            #endif
         }
     }
     else if(!strcasecmp(algorithm, "spacePartition")){
@@ -91,13 +94,13 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator2(verbose, choice);
-            cout << "Choice " << choice << "\n";
             bool isPolyValid = polygons[i].validityCheck();
-            if(!isPolyValid){
-                cout << "Not a valid Polygon" << "\n";
-            }else{
-                cout << "Valid Polygon Generated"  << "\n";
-            }
+            #ifdef CHECKVALIDITY
+                if(!isPolyValid){
+                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
+                    polygons[i].valid = false;                
+                }
+            #endif
         }
     }
     else{
@@ -106,11 +109,12 @@ int main(int argc, const char** argv){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator3(verbose, choice);
             bool isPolyValid = polygons[i].validityCheck();
-            if(!isPolyValid){
-                cout << "Not a valid Polygon" << "\n";
-            }else{
-                cout << "Valid Polygon Generated"  << "\n";
-            }
+            #ifdef CHECKVALIDITY
+                if(!isPolyValid){
+                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
+                    polygons[i].valid = false;                
+                }
+            #endif
         }
     }
 

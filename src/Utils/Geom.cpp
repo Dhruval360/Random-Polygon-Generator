@@ -2,30 +2,25 @@
 #include <iostream>
 #include "Geom.hpp"
 
-#define col 0
-#define cw  1
-#define ccw 2
+using namespace std;
 
-bool isccw(pair<double,double> &a,pair<double,double> &b,
- pair<double,double> &c){
-	return (c.second-a.second)*(b.first-a.first) > 
-	(b.second-a.second)*(c.first-a.first);
+bool isccw(pair<double,double> &a,pair<double,double> &b, pair<double,double> &c){
+	return (c.second-a.second)*(b.first-a.first) > (b.second-a.second)*(c.first-a.first);
 }
 
-double point2lineDist(pair<double,double> &p,
- pair<double,double> &p1, pair<double,double> &p2){
-	//vectors from p to p1
+double point2lineDist(pair<double,double> &p, pair<double,double> &p1, pair<double,double> &p2){
+	// Vectors from p to p1
 	double A = p.first - p1.first;
 	double B = p.second - p1.second;
 
-	//line segment vector
+	// Line segment vector
 	double C = p2.first - p1.first;
 	double D = p2.second - p1.second;
 
 	// Dot product of point vec and line segment
-	double dot = (A*C)+(B*D);
+	double dot = (A*C) + (B*D);
 	// Length of line segment
-	double len_seg = (C*C)+(D*D);
+	double len_seg = (C*C) + (D*D);
 
 	// Cases
 	double param = -1;
@@ -45,24 +40,21 @@ double point2lineDist(pair<double,double> &p,
 		yy = p1.second + (param*D);
 	}
 
-	double dx = p.first-xx;
-	double dy = p.second-yy;
-	return (dx*dx)+(dy*dy);
+	double dx = p.first  - xx;
+	double dy = p.second - yy;
+	return (dx*dx) + (dy*dy);
 }
 
-int orientationOfPoints(pair<double,double> p,
- pair<double,double> &q, pair<double,double> &r){
+int orientationOfPoints(pair<double,double> p, pair<double,double> &q, pair<double,double> &r){
 	// Find diff between slope
-	double resM = (((q.second-p.second)*(r.first-q.first)) 
-    - ((q.first-p.first)*(r.second-q.second)));
+	double resM = (((q.second-p.second)*(r.first-q.first)) - ((q.first-p.first)*(r.second-q.second)));
 	if(resM == 0) return col; // Collinear
-	if(resM>0) return cw;
+	if(resM > 0) return cw;
 	return ccw;
 }
 
 double euclidsDist(pair<double,double> &p1, pair<double,double> &p2){
-	return ((p2.first-p1.first)*(p2.first-p1.first))+
-	((p2.second-p1.second)*(p2.second-p1.second));
+	return ((p2.first-p1.first)*(p2.first-p1.first)) + ((p2.second-p1.second)*(p2.second-p1.second));
 }
 
 // Sorting based on polar angles from the anchor point

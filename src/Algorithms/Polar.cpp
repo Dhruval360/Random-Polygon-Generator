@@ -1,7 +1,7 @@
-#include<stdio.h>
-#include<math.h>
-#include<random>
-#include"Polygon.hpp"
+#include <stdio.h>
+#include <math.h>
+#include <random>
+#include "../Classes/Classes.hpp"
 #define PI 3.14159265358979323846
 
 using namespace std;
@@ -38,7 +38,7 @@ void polarGenerator(double x, double y, double averageRadius, double irregularit
     double angle = uniformDistribution(generator) * 2*PI;
     for(unsigned i = 0; i < p->numVertices; i++){
         radial_distance = clip(normalDistribution(generator), 0, diameter);
-        p->coordinates.push_back(pair<double, double>(x + radial_distance*cos(angle), y + radial_distance*sin(angle)));
+        p->coordinates.push_back(pair<double,double>(x + radial_distance*cos(angle), y + radial_distance*sin(angle)));
         angle += angleSteps[i];
     }
     end_timer(start, timer);

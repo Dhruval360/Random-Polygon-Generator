@@ -1,8 +1,6 @@
-#include<GL/freeglut.h>
-#include<GL/gl.h>
-#include<pthread.h>
-#include<random>
-#include"Polygon.hpp"
+#include <GL/gl.h>
+#include <GL/freeglut.h>
+#include "./Classes/Classes.hpp"
 
 float Scale; // The default coordinate system in openGL is -1 to +1 (the entire screen height and width will be 2 units in length)
 

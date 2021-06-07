@@ -1,19 +1,17 @@
-#include<math.h>
-#include<set>
-#include<stack>
-#include<limits>
-#include<iostream>
-#include<algorithm>
-#include"../Polygon.hpp"
-#include"Helpers.hpp"
-#include"Geom.hpp"
-#include"ConvexHull.hpp"
+#include <math.h>
+#include <set>
+#include <stack>
+#include <limits>
+#include <iostream>
+#include <algorithm>
+#include "../Classes/Classes.hpp"
+#include "../Utils/Helpers.hpp"
+#include "../Utils/Geom.hpp"
+#include "../Utils/ConvexHull.hpp"
+
 using namespace std;
 
 double inf = numeric_limits<double>::infinity();
-#define col 0
-#define cw  1
-#define ccw 2
 
 extern double timer;
 
@@ -69,7 +67,7 @@ void generatePolygon(Polygon *polygon){
 														e.endVertex);
 				if(currDist < minDist)
 					// This can be the minDist between point and edge
-					if(e.isValid(edges,ip)){
+					if(e.isValidEdge(edges,ip)){
 						minDist = currDist;
 						toRemEdge = e;
 						nearestPoint = ip;
@@ -97,7 +95,7 @@ void generatePolygon(Polygon *polygon){
 		/* Add the point to the current vertices of the polygon ie
 		to the resHull
 		Remove the point from the interior points array*/
-		for(auto i = interiorPoints.begin();i<interiorPoints.end();++i){
+		for(auto i = interiorPoints.begin(); i<interiorPoints.end(); ++i){
 			if(*i == nearestPoint){
 				interiorPoints.erase(i);
 				break;
@@ -106,7 +104,7 @@ void generatePolygon(Polygon *polygon){
 	}
 	// Clear the polygon coordinates of the previous elements
 	vector <pair<double,double>> polyPoints;
-	for(auto e : edges){
+	for(auto&e : edges){
 		polyPoints.push_back(e.startVertex);
 	}
 	polygon->coordinates = polyPoints;
