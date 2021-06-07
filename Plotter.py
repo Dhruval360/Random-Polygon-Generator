@@ -1,49 +1,26 @@
 import matplotlib.pyplot as plt
+from itertools import cycle
+cycol = cycle('bgrcmk')
+plt.rcParams['axes.facecolor'] = 'gray'
+fig = plt.figure()
+fig.patch.set_facecolor('orange')
 
-def readFile():
-	f = open("map.wkt","r")
-	lines = f.read()
-	#points = []
-	f.close()
-	#print(lines)
-	lines = lines.split("\n")
-	numPoly = 0
-	for line in lines:
-		doesContainDigit = False
-		for achar in line:
-			if achar.isdigit():
-				doesContainDigit = True
-				break
-		if doesContainDigit:
-			X = []
-			Y = []
-			numPoly += 1
-			line = line.replace("POLYGON ","")
-			###print(line)
-			line = line.replace("(","")
-			line = line.replace(")","")
-			line = line.replace("\n","")
-			#print(line)
-			for coord in line.split(", "):
-				#print("Coord: {x}".format(x=coord))
-				x,y = coord.split(" ")
-				X.append(float(x))
-				Y.append(float(y))
-				#points.append([float(x),float(y)])
-				##print("({i},{j})".format(i=x,j=y))
-			#create closed loop
-			X.append(X[0])
-			Y.append(Y[0])
-			#points.append(points[0])
-			##print(X)
-			##print(Y)
-			##print(points)
-			plt.plot(X,Y,label="POLYGON {cnt}".format(cnt = numPoly))
-			del X
-			del Y
-			#plt.Polygon(points,color="red")
-	plt.title("Polygon Plotter")
-	plt.legend()
-	plt.show()
+file = open("map.wkt", mode="r")
+polygons = file.read().splitlines()
+file.close()
 
-readFile()
+def converter(a):
+    a = a.split(" ")
+    return tuple((float(a[0]), float(a[1])))
+
+for polygon in polygons:
+    polygon = polygon.strip("POLYGON")[3:-2:].split(", ")
+    polygon = list(map(converter, polygon))
+    xCoordinates = [a[0] for a in polygon]
+    yCoordinates = [a[1] for a in polygon]
+    color = next(cycol)
+    for i in range(0, len(xCoordinates)):
+        plt.plot(xCoordinates[i:i+2], yCoordinates[i:i+2], c=color,  marker=".", markersize=2, mfc="black", mec='k') 
+		
+plt.grid()
+plt.show()
