@@ -1,6 +1,4 @@
-bin/
-obj/
-shared/
+build/
 src/a.out
 temp
 src/*.wkt
