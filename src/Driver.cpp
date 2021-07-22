@@ -6,8 +6,6 @@
 #include <random>
 #include "./Classes/Classes.hpp"
 
-// Uncomment the line below to enable polygon validity checking
-#define CHECKVALIDITY 1
 using namespace std;
 
 // Default values of parameters
@@ -26,6 +24,9 @@ default_random_engine generator(clock());
 uniform_int_distribution<unsigned> distribution(10,500); // This program generates polygons with 10 to 500 vertices. Change these bounds for larger polygons
 
 int main(int argc, const char** argv){ 
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     srand(time(0));
     int choice = rand()%5 + 1;
     Scale = 1000; // Default canvas size
@@ -80,8 +81,8 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator1(verbose, choice);
-            bool isPolyValid = polygons[i].validityCheck();
             #ifdef CHECKVALIDITY
+                bool isPolyValid = polygons[i].validityCheck();
                 if(!isPolyValid){
                     fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
                     polygons[i].valid = false;                
@@ -94,8 +95,8 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator2(verbose, choice);
-            bool isPolyValid = polygons[i].validityCheck();
             #ifdef CHECKVALIDITY
+                bool isPolyValid = polygons[i].validityCheck();
                 if(!isPolyValid){
                     fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
                     polygons[i].valid = false;                
@@ -108,8 +109,8 @@ int main(int argc, const char** argv){
         for(int i = 0; i < number_of_polygons; i++){
             polygons[i] = Polygon(distribution(generator));
             polygons[i].Generator3(verbose, choice);
-            bool isPolyValid = polygons[i].validityCheck();
             #ifdef CHECKVALIDITY
+                bool isPolyValid = polygons[i].validityCheck();
                 if(!isPolyValid){
                     fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
                     polygons[i].valid = false;                

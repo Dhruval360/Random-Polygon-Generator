@@ -2,8 +2,6 @@
 #include <iostream>
 #include "../Classes/Classes.hpp"
 
-// Uncomment the line below to enable debug 
-//#define DEBUG 1
 using namespace std;
 
 extern double timer;
@@ -30,7 +28,7 @@ void spacePartition(Polygon *polygon, bool verbose){
 	vector<pair<double,double>> points_vector = polygon->coordinates;
 	#ifdef DEBUG
 		cout << "Points received:\n[ ";
-		for(int i = 0; i < points_vector.size(); ++i)
+		for(unsigned i = 0; i < points_vector.size(); ++i)
 			cout << points_vector[i] << ' ';
 		cout << "]\n" ;
 	#endif
@@ -50,11 +48,11 @@ void spacePartition(Polygon *polygon, bool verbose){
 	}
 	#ifdef DEBUG
 		cout << "\nGroup 1:\n[ ";
-		for(int i = 0; i < sub_vector_1.size(); ++i)
+		for(unsigned i = 0; i < sub_vector_1.size(); ++i)
 			cout << sub_vector_1[i] << ' ';
 
 		cout <<  "]\nGroup 2:\n[ ";
-		for(int i = 0; i < sub_vector_2.size(); ++i)
+		for(unsigned i = 0; i < sub_vector_2.size(); ++i)
 			cout << sub_vector_2[i] << ' ';
 		cout << "]\n\n";
 	#endif
@@ -64,11 +62,11 @@ void spacePartition(Polygon *polygon, bool verbose){
 	vector<pair<double,double>> hull_2 = recursive_partioning(final_point, initial_point, sub_vector_2);
 	#ifdef DEBUG
 		cout << "\nHull 1:\n[ ";
-		for(int i = 0; i < hull_1.size(); ++i)
+		for(unsigned i = 0; i < hull_1.size(); ++i)
 			cout << hull_1[i] << ' ';
 
 		cout << "]\nHull 2:\n[ ";
-		for(int i = 0;i < hull_2.size();++i)
+		for(unsigned i = 0; i < hull_2.size(); ++i)
 			cout << hull_2[i] << ' ';		
 		cout << "]\n\n";
 	#endif

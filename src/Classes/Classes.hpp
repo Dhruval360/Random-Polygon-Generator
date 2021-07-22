@@ -19,10 +19,10 @@ class Edge{
 		Edge(pair<double,double> p1 = {-1, -1}, pair<double,double> p2 = {-1, -1});
 
 		// Friend function operator overload for == operator
-		friend bool operator==(Edge& lhs,Edge& rhs);
+		friend bool operator == (Edge& lhs, Edge& rhs);
 
 		// We use friend to allow rhs as point or else "this" instance of struct will be used as lhs parameter
-		friend ostream& operator<<(ostream& out, Edge& rhs);
+		friend ostream& operator << (ostream& out, Edge& rhs);
 
 		// Function to find index of entity in the vector
 		int indexIn(vector <Edge>& arr);

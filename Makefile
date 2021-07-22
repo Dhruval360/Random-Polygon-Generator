@@ -1,3 +1,5 @@
+ifneq (,$(findstring clean, $(MAKECMDGOALS))) # Prevent searching for compilers if the make target clean
+else
 CHECK := $(shell g++ --version >/dev/null 2>&1 || (echo "Failed to search for g++ with error: $$"))
 ifeq (,${CHECK})
     COMPILER := g++
@@ -15,9 +17,10 @@ $(info )
 $(error No C++ compilers found.)
 	endif
 endif
+endif
 
-FLAGS := -O3 -DNDEBUG
-LIBS  := -lm -lpopt -lglut -lGLU -lGL -fopenmp -lpthread ${LIBS}
+FLAGS := -O3 -DNDEBUG -D CHECKVALIDITY -fopenmp
+LIBS  := -lm -lpopt -lglut -lGLU -lGL -lpthread ${LIBS}
 BUILD := build
 SRC := src
 OBJ := ${BUILD}/obj
@@ -40,7 +43,7 @@ polygonGenerator: ${OBJS}
 	@echo
 	@echo "Compiled Successfully!! Run the program using ${EXECUTABLE}"
 
-debug: FLAGS := -g -Wall
+debug: FLAGS := -g -Wall -D DEBUG -D CHECKVALIDITY
 debug: ${OBJS}
 	${COMPILER} ${FLAGS} -o ${EXECUTABLE} $^ ${LIBS}
 	@echo
@@ -53,10 +56,10 @@ polygonGenerator_SharedLibrary: ${SHARED_OBJS}
 	@echo "Compiled Successfully!! The Shared Library is available as" ${SHARED_LIBRARY}
 
 ${OBJ}/%.o: ${SRC}/%.cpp
-	${COMPILER} ${FLAGS} -c $^ -o $@ 
+	${COMPILER} ${FLAGS} -c $^ -o $@
 
 ${SHARED_OBJ}/%.o: ${SRC}/%.cpp
 	${COMPILER} ${FLAGS} -c $^ -o $@
 
 clean:
-	rm -rf ${OBJ} ${SHARED_OBJ} ${BIN}
+	rm -rf ${BUILD}

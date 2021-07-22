@@ -45,7 +45,7 @@ double point2lineDist(pair<double,double> &p, pair<double,double> &p1, pair<doub
 	return (dx*dx) + (dy*dy);
 }
 
-int orientationOfPoints(pair<double,double> p, pair<double,double> &q, pair<double,double> &r){
+int orientationOfPoints(const pair<double,double> &p, const pair<double,double> &q, const pair<double,double> &r){
 	// Find diff between slope
 	double resM = (((q.second-p.second)*(r.first-q.first)) - ((q.first-p.first)*(r.second-q.second)));
 	if(resM == 0) return col; // Collinear
@@ -53,15 +53,15 @@ int orientationOfPoints(pair<double,double> p, pair<double,double> &q, pair<doub
 	return ccw;
 }
 
-double euclidsDist(pair<double,double> &p1, pair<double,double> &p2){
+double euclidsDist(const pair<double,double> &p1, const pair<double,double> &p2){
 	return ((p2.first-p1.first)*(p2.first-p1.first)) + ((p2.second-p1.second)*(p2.second-p1.second));
 }
 
 // Sorting based on polar angles from the anchor point
 int polAngSorter(const void* vp1, const void* vp2, void* anchor){
-	pair<double,double> p1 = *((pair<double,double>*)vp1);
-	pair<double,double> p2 = *((pair<double,double>*)vp2);
-	pair<double,double> p  = *((pair<double,double>*)anchor);
+	const pair<double,double> p1 = *((pair<double,double>*)vp1);
+	const pair<double,double> p2 = *((pair<double,double>*)vp2);
+	const pair<double,double> p  = *((pair<double,double>*)anchor);
 	int ori = orientationOfPoints(p, p1, p2);
 	switch(ori){
 		// If they are collinear then use euclids distance

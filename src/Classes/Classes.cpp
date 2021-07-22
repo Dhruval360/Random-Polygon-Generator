@@ -50,7 +50,7 @@ Edge::Edge(pair<double,double> p1, pair<double,double> p2){
 }
 
 int Edge::indexIn(vector <Edge>& arr){
-	for(int i = 0; i < arr.size(); i++)
+	for(int i = 0; i < (int)arr.size(); i++)
 		if(arr.at(i) == *this) return i;
     return -1;
 }
