@@ -48,7 +48,8 @@ class Edge{
 
 class Polygon{
     public:
-        bool valid = true;                        // Holds the validity of the polygon
+        bool valid = true;                       // Holds the validity of the polygon
+		bool processing = true;				  // Tells the writer thread to wait untill this polygon has been processed to know its validity
         unsigned int numVertices;
         float color[3];                           // Holds the rgb color values for the polygon's edges
         vector<pair<double,double>> coordinates;
@@ -70,7 +71,7 @@ void spacePartition(Polygon *polygon, bool verbose);
 void naivePolygon(Polygon *polygon, bool verbose);
 void polarGenerator(double x, double y, double averageRadius, double irregularity, double spike, Polygon *p, bool verbose);
 double clip(double x, double min, double max);
-void writer(Polygon *p, unsigned num, char *filename); 
+void* writer(void *arg); 
 void* GraphicsInit(void *arg);
 ostream& operator << (ostream& out,pair<double,double>& rhs);
 pair<double,double> operator - (pair<double,double>& p1, pair<double,double>& p2);

@@ -74,6 +74,9 @@ int main(int argc, const char** argv){
 
     if(!profiling && graph) printf("Graph scale = %f\n", Scale);
 
+    pthread_t writerThread; // This thread writes the polygons to the file in WKT format
+    int ret = pthread_create(&writerThread, NULL, writer, (void*)&number_of_polygons);
+    if(ret) fprintf(stderr, "There was an error launching the writer thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
     start_timer(total);
 
     if(!strcasecmp(algorithm, "polar")){
@@ -88,6 +91,7 @@ int main(int argc, const char** argv){
                     polygons[i].valid = false;                
                 }
             #endif
+            polygons[i].processing = false;
         }
     }
     else if(!strcasecmp(algorithm, "spacePartition")){
@@ -102,6 +106,7 @@ int main(int argc, const char** argv){
                     polygons[i].valid = false;                
                 }
             #endif
+            polygons[i].processing = false;
         }
     }
     else{
@@ -116,6 +121,7 @@ int main(int argc, const char** argv){
                     polygons[i].valid = false;                
                 }
             #endif
+            polygons[i].processing = false;
         }
     }
 
@@ -132,15 +138,15 @@ int main(int argc, const char** argv){
     // Plotting generated polygons onto a single canvas
     if(graph){
         pthread_t graphicsThread;
-        int ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
+        ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
         if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
-        writer(polygons, number_of_polygons, filename);  // Writing the polygons to the file in WKT format
+        pthread_join(writerThread, NULL);
         if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
         else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
         pthread_join(graphicsThread, NULL);
     } 
     else{
-        writer(polygons, number_of_polygons, filename); // Writing the polygons to the file in WKT format
+        pthread_join(writerThread, NULL);
         if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
         else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
     }  
