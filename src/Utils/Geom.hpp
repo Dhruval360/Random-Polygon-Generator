@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define col 0 // Colenear
+#define col 0 // Collinear
 #define cw  1 // Clockwise
 #define ccw 2 // Counter Clockwise
 
