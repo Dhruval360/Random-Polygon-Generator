@@ -14,6 +14,7 @@ char *algorithm = NULL, *filename = NULL;
 
 double timer;
 long fileSize;
+unsigned validPolygons = 0;
 
 extern float Scale; // Canvas size
 
@@ -131,24 +132,28 @@ int main(int argc, const char** argv){
         const char *distributions[25] = {"Uniform Distribution", "Binomial Distribution", "Geometric Distribution", "Poisson Distribution", "Normal Distribution"};
         printf("\nSampling from %s\n", distributions[choice - 1]);
     }  
-    if(!profiling){
-        printf("Total time taken for generating %u polygons is %lf s\n", number_of_polygons, timer);
-        printf("Writing the polygons to the file... \n");
-    } 
+    if(!profiling) printf("Writing the polygons to the file... ");
+    
     // Plotting generated polygons onto a single canvas
     if(graph){
         pthread_t graphicsThread;
         ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
         if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
         pthread_join(writerThread, NULL);
-        if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
-        else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
+        if(!profiling) {
+            printf("Done\nFile size = %lu B\n", fileSize);
+            printf("Total time taken for generating %u valid polygons is %lf s\n", validPolygons, timer);
+        } 
+        else printf("%u, %lf, %lu, %s\n", validPolygons, timer, fileSize, algorithm);
         pthread_join(graphicsThread, NULL);
     } 
     else{
         pthread_join(writerThread, NULL);
-        if(!profiling) printf("Done\nFile size = %lu B\n", fileSize);
-        else printf("%u, %lf, %lu, %s\n", number_of_polygons, timer, fileSize, algorithm);
+        if(!profiling) {
+            printf("Done\nFile size = %lu B\n", fileSize);
+            printf("Total time taken for generating %u valid polygons is %lf s\n", validPolygons, timer);
+        } 
+        else printf("%u, %lf, %lu, %s\n", validPolygons, timer, fileSize, algorithm);
     }  
 
     // Distribution plot for generated map of polygons

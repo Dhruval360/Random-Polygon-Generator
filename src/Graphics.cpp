@@ -14,19 +14,21 @@ void Plotter() {
     glColor3f(1.0, 1.0, 1.0);
 
     for(unsigned j = 0; j < number_of_polygons; j++) {
-        glBegin(GL_LINE_LOOP);
-        glColor3f(polygons[j].color[0], polygons[j].color[1], polygons[j].color[2]);
-        for(unsigned i = 0; i < polygons[j].numVertices; i++) glVertex2f(polygons[j].coordinates[i].first/Scale, polygons[j].coordinates[i].second/Scale); 
-        glVertex2f(polygons[j].coordinates[0].first/Scale, polygons[j].coordinates[0].second/Scale);
-        glEnd(); 
+        if(polygons[j].valid) { // Draw only the valid polygons
+            glBegin(GL_LINE_LOOP);
+            glColor3f(polygons[j].color[0], polygons[j].color[1], polygons[j].color[2]);
+            for(unsigned i = 0; i < polygons[j].numVertices; i++) glVertex2f(polygons[j].coordinates[i].first/Scale, polygons[j].coordinates[i].second/Scale); 
+            glVertex2f(polygons[j].coordinates[0].first/Scale, polygons[j].coordinates[0].second/Scale);
+            glEnd(); 
 
-        glPointSize(2);  
-        glBegin(GL_POINTS);
-        glColor3f(1, 1, 1);
-        for(unsigned i = 0; i < polygons[j].numVertices; i++) glVertex2f(polygons[j].coordinates[i].first/Scale, polygons[j].coordinates[i].second/Scale); 
-        glEnd();
+            glPointSize(2);  
+            glBegin(GL_POINTS);
+            glColor3f(1, 1, 1);
+            for(unsigned i = 0; i < polygons[j].numVertices; i++) glVertex2f(polygons[j].coordinates[i].first/Scale, polygons[j].coordinates[i].second/Scale); 
+            glEnd();
 
-        glFlush();
+            glFlush();
+        }
     }
 }
 
