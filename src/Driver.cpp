@@ -29,7 +29,7 @@ int main(int argc, const char** argv){
     cin.tie(NULL);
 
     srand(time(0));
-    int choice = rand()%5 + 1;
+    int choice = rand()%5 + 1, algoChoice = -1;
     Scale = 1000; // Default canvas size
     static struct poptOption options[] = { 
         { "number_of_polygons", 'n',POPT_ARG_INT, &number_of_polygons, 0, "Set n = number of polygons that needs to be generated. [Default : n = 1]", "NUM" },
@@ -60,11 +60,21 @@ int main(int argc, const char** argv){
         return 1;
     }
 
-    if(algorithm == NULL){
-        fprintf(stderr, "polygonGenerator: Choose an algorithm.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
-        exit(1);
-    } 
-    else if(strcasecmp(algorithm, "polar") && strcasecmp(algorithm, "spacePartition") && strcasecmp(algorithm, "naivePoly")){
+    const unsigned numAlgos = 3;
+    typedef void (Polygon::*FunctionPointers)(bool, int);
+    FunctionPointers generators[] = {&Polygon::Generator1, &Polygon::Generator2, &Polygon::Generator3}, currentGenerator;
+    const char *validAlgos[] = {"Polar", "SpacePartition", "NaivePoly"};
+    const char *algoFullNames[] = {"Polar", "Space Partition", "Naive Polygon Generation"};
+    
+    for(unsigned i = 0; i < numAlgos; ++i) {
+        if(!strcasecmp(algorithm, validAlgos[i])) {
+            algoChoice = i;
+            currentGenerator = generators[i];
+            break;
+        }
+    }
+
+    if(algoChoice < 0){
         fprintf(stderr, "polygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
         exit(1);
     }
@@ -75,55 +85,25 @@ int main(int argc, const char** argv){
 
     if(!profiling && graph) printf("Graph scale = %f\n", Scale);
 
-    pthread_t writerThread; // This thread writes the polygons to the file in WKT format
+    pthread_t writerThread,   // This thread writes the polygons to the file in WKT format
+              graphicsThread; // This thread plots the polygons onto a canvas using openGL
     int ret = pthread_create(&writerThread, NULL, writer, (void*)&number_of_polygons);
-    if(ret) fprintf(stderr, "There was an error launching the writer thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
+    if(ret) fprintf(stderr, "There was an error launching the writer thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
+    
     start_timer(total);
 
-    if(!strcasecmp(algorithm, "polar")){
-        #pragma omp parallel for
-        for(int i = 0; i < number_of_polygons; i++){
-            polygons[i] = Polygon(distribution(generator));
-            polygons[i].Generator1(verbose, choice);
-            #ifdef CHECKVALIDITY
-                bool isPolyValid = polygons[i].validityCheck();
-                if(!isPolyValid){
-                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
-                    polygons[i].valid = false;                
-                }
-            #endif
-            polygons[i].processing = false;
-        }
-    }
-    else if(!strcasecmp(algorithm, "spacePartition")){
-        #pragma omp parallel for
-        for(int i = 0; i < number_of_polygons; i++){
-            polygons[i] = Polygon(distribution(generator));
-            polygons[i].Generator2(verbose, choice);
-            #ifdef CHECKVALIDITY
-                bool isPolyValid = polygons[i].validityCheck();
-                if(!isPolyValid){
-                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
-                    polygons[i].valid = false;                
-                }
-            #endif
-            polygons[i].processing = false;
-        }
-    }
-    else{
-        #pragma omp parallel for
-        for(int i = 0; i < number_of_polygons; i++){
-            polygons[i] = Polygon(distribution(generator));
-            polygons[i].Generator3(verbose, choice);
-            #ifdef CHECKVALIDITY
-                bool isPolyValid = polygons[i].validityCheck();
-                if(!isPolyValid){
-                    fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algorithm);
-                    polygons[i].valid = false;                
-                }
-            #endif
-            polygons[i].processing = false;
-        }
+    #pragma omp parallel for
+    for(int i = 0; i < number_of_polygons; i++){
+        polygons[i] = Polygon(distribution(generator));
+        (polygons[i].*currentGenerator)(verbose, choice);
+        #ifdef CHECKVALIDITY
+            bool isPolyValid = polygons[i].validityCheck();
+            if(!isPolyValid){
+                fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algoFullNames[algoChoice]);
+                polygons[i].valid = false;                
+            }
+        #endif
+        polygons[i].processing = false;
     }
 
     end_timer(total, timer);
@@ -136,25 +116,18 @@ int main(int argc, const char** argv){
     
     // Plotting generated polygons onto a single canvas
     if(graph){
-        pthread_t graphicsThread;
         ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
-        if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error value returned by pthread_create() is %s\n", strerror(ret));
-        pthread_join(writerThread, NULL);
-        if(!profiling) {
-            printf("Done\nFile size = %lu B\n", fileSize);
-            printf("Total time taken for generating %u valid polygons is %lf s\n", validPolygons, timer);
-        } 
-        else printf("%u, %lf, %lu, %s\n", validPolygons, timer, fileSize, algorithm);
-        pthread_join(graphicsThread, NULL);
+        if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
     } 
-    else{
-        pthread_join(writerThread, NULL);
-        if(!profiling) {
-            printf("Done\nFile size = %lu B\n", fileSize);
-            printf("Total time taken for generating %u valid polygons is %lf s\n", validPolygons, timer);
-        } 
-        else printf("%u, %lf, %lu, %s\n", validPolygons, timer, fileSize, algorithm);
-    }  
+    
+    pthread_join(writerThread, NULL);
+    if(!profiling) {
+        printf("Done\nFile size = %lu B\n", fileSize);
+            printf("Total time taken for generating %u valid polygons using %s algorithm is %lf s\n", validPolygons, algoFullNames[algoChoice], timer);
+    } 
+    else printf("%u, %lf, %lu, %s\n", validPolygons, timer, fileSize, algorithm);
+    
+    if(graph) pthread_join(graphicsThread, NULL);
 
     // Distribution plot for generated map of polygons
     if(dist_analysis){
