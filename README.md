@@ -53,7 +53,7 @@ $ make polygonGenerator -j$(($(nproc)*2))
 
 Run the following command to print the help doc for the program:
 ```bash
-$ ./bin/polygonGenerator -?
+$ ./build/bin/polygonGenerator -?
 ```
 
 Compile the Shared Library using:
