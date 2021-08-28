@@ -54,7 +54,7 @@ int main(int argc, const char** argv){
     int c; 
     while((c = poptGetNextOpt(poptCONT)) >= 0);
     if (c < -1) { // An error occurred during option processing 
-        fprintf(stderr, "polygonGenerator: %s -- \'%s\'\n",
+        fprintf(stderr, "\033[1;31mpolygonGenerator: %s -- \'%s\'\033[0m\n",
                 poptStrerror(c), poptBadOption(poptCONT, POPT_BADOPTION_NOALIAS));
         poptPrintUsage(poptCONT, stderr, 0);
         return 1;
@@ -75,7 +75,7 @@ int main(int argc, const char** argv){
     }
 
     if(algoChoice < 0){
-        fprintf(stderr, "polygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\n");
+        fprintf(stderr, "\033[1;31mpolygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\033[0m\n");
         exit(1);
     }
     
@@ -88,7 +88,7 @@ int main(int argc, const char** argv){
     pthread_t writerThread,   // This thread writes the polygons to the file in WKT format
               graphicsThread; // This thread plots the polygons onto a canvas using openGL
     int ret = pthread_create(&writerThread, NULL, writer, (void*)&number_of_polygons);
-    if(ret) fprintf(stderr, "There was an error launching the writer thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
+    if(ret) fprintf(stderr, "\033[1;31mThere was an error launching the writer thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
     
     start_timer(total);
 
@@ -99,7 +99,7 @@ int main(int argc, const char** argv){
         #ifdef CHECKVALIDITY
             bool isPolyValid = polygons[i].validityCheck();
             if(!isPolyValid){
-                fprintf(stderr, "polygonGenerator: An invalid polygon was generated. Algorithm used: %s. This polygon will be ignored\n", algoFullNames[algoChoice]);
+                fprintf(stderr, "\033[1;31m                  Algorithm used: %s.\033[0m\n\n", algoFullNames[algoChoice]);
                 polygons[i].valid = false;                
             }
         #endif
@@ -117,7 +117,7 @@ int main(int argc, const char** argv){
     // Plotting generated polygons onto a single canvas
     if(graph){
         ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
-        if(ret) fprintf(stderr, "There was an error launching the graphics thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
+        if(ret) fprintf(stderr, "\033[1;31mThere was an error launching the graphics thread.\nThe error returned by pthread_create() is %s\033[0m\n", strerror(ret));
     } 
     
     pthread_join(writerThread, NULL);

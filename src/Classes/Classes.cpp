@@ -80,7 +80,7 @@ bool Edge::isIntersecting(vector <Edge> &edges, bool log){
 		if(this->intersectingUtil(iterE.startVertex,iterE.endVertex)){
 			if(log){
 				Edge temp(iterE.startVertex, iterE.endVertex);
-				cout << "The intersecting edges are : " << temp;
+				cerr << "\033[1;31m" << "\npolygonGenerator: An invalid polygon was generated! (This polygon will be ignored)\n                  Intersecting edges : " << temp;
 			}
 			return true;
 		}
@@ -293,8 +293,8 @@ bool Polygon::validityCheck(){
 
     // For each edge, check for intersection
     for(auto& edge : this->edges){
-        if(edge.isIntersecting(this->edges,true)){
-            cout << " and "<< edge;
+        if(edge.isIntersecting(this->edges, true)){
+            cerr << " and "<< edge << "\033[0m\n";
             return false;
         }
     }
