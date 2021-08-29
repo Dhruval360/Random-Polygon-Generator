@@ -6,6 +6,14 @@
 #include <random>
 #include "./Classes/Classes.hpp"
 
+#ifdef COLOR
+    const char* redText = "\033[1;31m";
+    const char* resetText = "\033[0m";
+#else
+    const char* redText = "";
+    const char* resetText = "";
+#endif
+
 using namespace std;
 
 // Default values of parameters
@@ -54,8 +62,7 @@ int main(int argc, const char** argv){
     int c; 
     while((c = poptGetNextOpt(poptCONT)) >= 0);
     if (c < -1) { // An error occurred during option processing 
-        fprintf(stderr, "\033[1;31mpolygonGenerator: %s -- \'%s\'\033[0m\n",
-                poptStrerror(c), poptBadOption(poptCONT, POPT_BADOPTION_NOALIAS));
+        fprintf(stderr, "%spolygonGenerator: %s -- \'%s\'%s\n", redText, poptStrerror(c), poptBadOption(poptCONT, POPT_BADOPTION_NOALIAS), resetText);
         poptPrintUsage(poptCONT, stderr, 0);
         return 1;
     }
@@ -75,7 +82,7 @@ int main(int argc, const char** argv){
     }
 
     if(algoChoice < 0){
-        fprintf(stderr, "\033[1;31mpolygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.\033[0m\n");
+        fprintf(stderr, "%spolygonGenerator: Invalid algorithm name.\npolygonGenerator: Try './bin/polygonGenerator -?' for more information.%s\n", redText, resetText);
         exit(1);
     }
     
@@ -88,7 +95,7 @@ int main(int argc, const char** argv){
     pthread_t writerThread,   // This thread writes the polygons to the file in WKT format
               graphicsThread; // This thread plots the polygons onto a canvas using openGL
     int ret = pthread_create(&writerThread, NULL, writer, (void*)&number_of_polygons);
-    if(ret) fprintf(stderr, "\033[1;31mThere was an error launching the writer thread.\nThe error returned by pthread_create() is %s\n", strerror(ret));
+    if(ret) fprintf(stderr, "%sThere was an error launching the writer thread.\nThe error returned by pthread_create() is %s%s\n", redText, strerror(ret), resetText);
     
     start_timer(total);
 
@@ -99,7 +106,7 @@ int main(int argc, const char** argv){
         #ifdef CHECKVALIDITY
             bool isPolyValid = polygons[i].validityCheck();
             if(!isPolyValid){
-                fprintf(stderr, "\033[1;31m                  Algorithm used: %s.\033[0m\n\n", algoFullNames[algoChoice]);
+                fprintf(stderr, "%s                  Algorithm used: %s.%s\n\n", redText, algoFullNames[algoChoice], resetText);
                 polygons[i].valid = false;                
             }
         #endif
@@ -117,7 +124,7 @@ int main(int argc, const char** argv){
     // Plotting generated polygons onto a single canvas
     if(graph){
         ret = pthread_create(&graphicsThread, NULL, GraphicsInit, NULL);
-        if(ret) fprintf(stderr, "\033[1;31mThere was an error launching the graphics thread.\nThe error returned by pthread_create() is %s\033[0m\n", strerror(ret));
+        if(ret) fprintf(stderr, "%sThere was an error launching the graphics thread.\nThe error returned by pthread_create() is %s%s\n", redText, strerror(ret), resetText);
     } 
     
     pthread_join(writerThread, NULL);

@@ -1,7 +1,29 @@
 #!/bin/bash
+# check if stdout is a terminal...
+if test -t 1; then
+
+    # see if it supports colors...
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        bold="$(tput bold)"
+        underline="$(tput smul)"
+        standout="$(tput smso)"
+        normal="$(tput sgr0)"
+        black="$(tput setaf 0)"
+        red="$(tput setaf 1)"
+        green="$(tput setaf 2)"
+        yellow="$(tput setaf 3)"
+        blue="$(tput setaf 4)"
+        magenta="$(tput setaf 5)"
+        cyan="$(tput setaf 6)"
+        white="$(tput setaf 7)"
+    fi
+fi
+
 if [ "$#" -lt 1 ] 
 then 
-    echo "Number of iterations not specified. Using a default value of 5..."
+    echo "${red}Number of iterations not specified. Using a default value of 5...${normal}"
     echo 
     iterations=5;    
 else 
@@ -19,8 +41,9 @@ for i in $(seq 1 $iterations); do
     ./build/bin/polygonGenerator -a spacePartition -n $numPolygons -p 1 >> metrics.csv
     echo -e "\tExecuting Naive Polygon algorithm..."
     ./build/bin/polygonGenerator -a naivePoly -n $numPolygons -p 1 >> metrics.csv
-    echo "Finished generating $numPolygons polygons using every algorithm. [$(($i * 100 / $iterations))% complete]"
+    echo "${green}${bold}Finished generating $numPolygons polygons using every algorithm. [$(($i * 100 / $iterations))% complete]${normal}"
     echo "----------------------------------------------------------------------------------------------"
 done
-echo "Profiling complete. Plotting the graphs..."
+echo
+echo "${yellow}${bold}Profiling complete. Plotting the graphs...${normal}"
 python3 Metrics.py

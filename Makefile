@@ -17,9 +17,14 @@ $(info )
 $(error No C++ compilers found.)
 	endif
 endif
+
+ifneq (,$(findstring xterm,${TERM}))
+	FLAGS = -D COLOR
 endif
 
-FLAGS := -O3 -DNDEBUG -D CHECKVALIDITY -fopenmp -MMD
+endif
+
+FLAGS += -O3 -DNDEBUG -D CHECKVALIDITY -fopenmp -MMD
 LIBS  := -lm -lpopt -lglut -lGLU -lGL -lpthread ${LIBS}
 BUILD := build
 SRC := src

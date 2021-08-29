@@ -9,6 +9,9 @@
 
 using namespace std;
 
+extern const char* redText;
+extern const char* resetText;
+
 extern double timer; // Used for storing the calculated time taken
 extern float Scale;
 extern unsigned number_of_polygons;
@@ -80,7 +83,7 @@ bool Edge::isIntersecting(vector <Edge> &edges, bool log){
 		if(this->intersectingUtil(iterE.startVertex,iterE.endVertex)){
 			if(log){
 				Edge temp(iterE.startVertex, iterE.endVertex);
-				cerr << "\033[1;31m" << "\npolygonGenerator: An invalid polygon was generated! (This polygon will be ignored)\n                  Intersecting edges : " << temp;
+				cerr << redText << "\npolygonGenerator: An invalid polygon was generated! (This polygon will be ignored)\n                  Intersecting edges : " << temp;
 			}
 			return true;
 		}
@@ -294,7 +297,7 @@ bool Polygon::validityCheck(){
     // For each edge, check for intersection
     for(auto& edge : this->edges){
         if(edge.isIntersecting(this->edges, true)){
-            cerr << " and "<< edge << "\033[0m\n";
+            cerr << " and "<< edge << resetText << '\n';
             return false;
         }
     }
